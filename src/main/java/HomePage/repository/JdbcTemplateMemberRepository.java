@@ -75,9 +75,9 @@ public class JdbcTemplateMemberRepository implements MemberRepository{
             Member member = new Member();
             member.setId(rs.getLong("member_id"));
             member.setName(rs.getString("member_name"));
-            member.setPassword("member_password");
+            member.setPassword(rs.getString("member_password"));
             member.setEmail(rs.getString("member_email"));
-            member.setEmail(rs.getString("member_phoneNumber"));
+            member.setPhoneNumber(rs.getString("member_phoneNumber"));
             return member;
         };
     }

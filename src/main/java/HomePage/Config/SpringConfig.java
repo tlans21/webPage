@@ -1,4 +1,4 @@
-package HomePage;
+package HomePage.Config;
 
 import HomePage.repository.JdbcTemplateMemberRepository;
 import HomePage.repository.MemberRepository;

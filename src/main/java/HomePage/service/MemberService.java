@@ -45,10 +45,10 @@ public class MemberService {
         Optional<Member> member = memberRepository.findByEmail(email);
         System.out.println(member.get());
         System.out.println(member.get().getEmail());
+        System.out.println(member.get().getPassword());
         if(!member.isPresent()){
             return Optional.empty();
         }
-        System.out.println(member.get().getPassword());
         System.out.println(password);
         if(!password.equals(member.get().getPassword())){
             return Optional.empty();

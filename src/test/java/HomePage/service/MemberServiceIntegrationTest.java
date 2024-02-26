@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -59,5 +61,21 @@ class MemberServiceIntegrationTest {
         IllegalStateException e2 = assertThrows(IllegalStateException.class,
                 () -> memberService.join(member4));//예외가 발생해야 한다.
         assertThat(e2.getMessage()).isEqualTo("이미 존재하는 이메일입니다.");
+    }
+
+    @Test
+    public void 로그인(){
+        Member registeredMember = new Member();
+        registeredMember.setName("simunss");
+        registeredMember.setEmail("simun@naver.com");
+        registeredMember.setPassword("1234");
+        memberService.join(registeredMember); // 회원 가입
+
+        Member member = new Member();
+        member.setName("simunss");
+        member.setEmail("simun@naver.com");
+        member.setPassword("1234");
+        Optional<Member> result = memberService.authenticateMember(member.getEmail(), member.getPassword());
+        assertThat(member.getName()).isEqualTo(result.get().getName());
     }
 }
