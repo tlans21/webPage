@@ -1,46 +1,46 @@
 package HomePage.repository;
 
-import HomePage.domain.Member;
+import HomePage.domain.model.User;
 
 import java.util.*;
 
-public class MemoryMemberRepository implements MemberRepository {
-    private static Map<Long, Member> store = new HashMap<>();
+public class MemoryUserRepository implements UserRepository {
+    private static Map<Long, User> store = new HashMap<>();
     private static long sequence = 0L;
 
     @Override
-    public Member save(Member member) {
-        member.setId(++sequence);
-        store.put(member.getId(), member);
-        return member;
+    public User save(User user) {
+        user.setId(++sequence);
+        store.put(user.getId(), user);
+        return user;
     }
 
     @Override
-    public Optional<Member> findById(Long id) {
+    public Optional<User> findById(Long id) {
         return Optional.ofNullable(store.get(id));
     }
 
     @Override
-    public List<Member> findAll() {
+    public List<User> findAll() {
         return new ArrayList<>(store.values());
     }
 
     @Override
-    public Optional<Member> findByName(String name) {
+    public Optional<User> findByUsername(String name) {
         return store.values().stream()
-                .filter(member -> member.getName().equals(name))
+                .filter(member -> member.getUsername().equals(name))
                 .findAny();
     }
 
     @Override
-    public Optional<Member> findByEmail(String email) {
+    public Optional<User> findByEmail(String email) {
         return store.values().stream()
                 .filter(member -> member.getEmail().equals(email))
                 .findAny();
     }
 
     @Override
-    public Optional<Member> findByPhoneNumber(String phoneNumber) {
+    public Optional<User> findByPhoneNumber(String phoneNumber) {
         return store.values().stream()
                 .filter(member -> member.getPhoneNumber().equals(phoneNumber))
                 .findAny();

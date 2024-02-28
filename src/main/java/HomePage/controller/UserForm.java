@@ -1,18 +1,18 @@
 package HomePage.controller;
 
-public class MemberForm {
-    private String name;
+public class UserForm {
+    private String username;
 
     private String password;
     private String email;
     private String phoneNumber;
 
-    public String getName() {
-        return name;
+    public String getUsername() {
+        return username;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUsername(String name) {
+        this.username = name;
     }
     public String getPassword() {
         return password;

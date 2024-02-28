@@ -1,8 +1,8 @@
-package HomePage.Config;
+package HomePage.config;
 
-import HomePage.repository.JdbcTemplateMemberRepository;
-import HomePage.repository.MemberRepository;
-import HomePage.service.MemberService;
+import HomePage.repository.JdbcTemplateUserRepository;
+import HomePage.repository.UserRepository;
+import HomePage.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,13 +21,13 @@ public class SpringConfig {
     }
 
     @Bean
-    public MemberService memberService(){
-        return new MemberService(memberRepository());
+    public UserService userService(){
+        return new UserService(userRepository());
     }
 
     @Bean
-    public MemberRepository memberRepository(){
-        return new JdbcTemplateMemberRepository(dataSource);
+    public UserRepository userRepository(){
+        return new JdbcTemplateUserRepository(dataSource);
     }
 
 }
