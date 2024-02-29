@@ -24,10 +24,11 @@ public class PrincipalDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Optional<User> userOptional = userRepository.findByEmail(email);
         if (userOptional.isPresent()){
-            System.out.print(userOptional);
+            System.out.print("userOptional" + userOptional);
             User userEntity = userOptional.get();
             return new PrincipalDetails(userEntity);
         }
         return null;
     }
+
 }

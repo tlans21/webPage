@@ -19,6 +19,9 @@ public class User {
 
     private Timestamp loginDate;
 
+    private String provider;
+    private String providerId;
+
     public Long getId() {
         return id;
     }
