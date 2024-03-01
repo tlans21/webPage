@@ -45,7 +45,7 @@ public class AuthenticationController {
 
     @PostMapping("/join")
     public String join(UserForm userForm){
-        User user = new User();
+        User user = User.builder().build();
         user.setEmail(userForm.getEmail());
         String rawPassword = userForm.getPassword();
         String encPassword = bCryptPasswordEncoder.encode(rawPassword);
@@ -65,6 +65,7 @@ public class AuthenticationController {
     }
     @GetMapping("/user")
     public @ResponseBody String user(@AuthenticationPrincipal PrincipalDetails principalDetails){
+        System.out.println("principalDetails : " + principalDetails.getUser().getUsername());
         return "user";
     }
 

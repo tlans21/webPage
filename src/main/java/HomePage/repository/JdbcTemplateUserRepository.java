@@ -56,6 +56,7 @@ public class JdbcTemplateUserRepository implements UserRepository {
     @Override
     public Optional<User> findByUsername(String name) {
         List<User> result = jdbcTemplate.query("select * from security.user where username = ?", memberRowMapper(), name);
+        System.out.println(result);
         return result.stream().findAny();
     }
 
@@ -67,6 +68,7 @@ public class JdbcTemplateUserRepository implements UserRepository {
     @Override
     public Optional<User> findByEmail(String email) {
         List<User> result = jdbcTemplate.query("select * from security.user where email = ?", memberRowMapper(), email);
+        System.out.println(result);
         return result.stream().findAny();
     }
 

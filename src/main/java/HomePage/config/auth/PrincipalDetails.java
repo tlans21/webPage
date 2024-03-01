@@ -17,9 +17,17 @@ import java.util.Map;
 // Security Session => Authentication => UserDetails(PrincipalDetails)
 public class PrincipalDetails implements UserDetails, OAuth2User {
     private User user; // 컴포지션
+    private Map<String, Object> attributes;
 
+
+    // 일반 로그인
     public PrincipalDetails(User user) {
         this.user = user;
+    }
+    //oAuth2 로그인
+    public PrincipalDetails(User user, Map<String, Object> attributes){
+        this.user = user;
+        this.attributes = attributes;
     }
 
     public User getUser() {
@@ -33,7 +41,7 @@ public class PrincipalDetails implements UserDetails, OAuth2User {
 
     @Override
     public Map<String, Object> getAttributes() {
-        return null;
+        return attributes;
     }
 
     // 유저의 권한을 리턴
