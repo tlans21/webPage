@@ -38,6 +38,9 @@ public class JdbcTemplateUserRepository implements UserRepository {
         parameters.put("role", user.getRole());
         parameters.put("createDate",user.getCreateDate() );
         parameters.put("loginDate", user.getLoginDate());
+        parameters.put("provider", user.getProvider());
+        parameters.put("providerId", user.getProviderId());
+
         Number key = jdbcInsert.executeAndReturnKey(new MapSqlParameterSource(parameters));
         user.setId(key.longValue());
 
