@@ -35,7 +35,7 @@ public class JdbcTemplateUserRepository implements UserRepository {
         parameters.put("password", user.getPassword());
         parameters.put("email", user.getEmail());
         parameters.put("phoneNumber", user.getPhoneNumber());
-        parameters.put("role", user.getRole());
+        parameters.put("role", user.getRoleList());
         parameters.put("createDate",user.getCreateDate() );
         parameters.put("loginDate", user.getLoginDate());
         parameters.put("provider", user.getProvider());

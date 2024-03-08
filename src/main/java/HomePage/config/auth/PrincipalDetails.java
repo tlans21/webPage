@@ -47,14 +47,11 @@ public class PrincipalDetails implements UserDetails, OAuth2User {
     // 유저의 권한을 리턴
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        Collection<GrantedAuthority> collect = new ArrayList<>();
-        collect.add(new GrantedAuthority() {
-            @Override
-            public String getAuthority() {
-                return user.getRole();
-            }
+        Collection<GrantedAuthority> authorities = new ArrayList<>();
+        user.getRoleList().forEach(r-> {
+            authorities.add(()->r);
         });
-        return collect;
+        return authorities;
     }
 
     @Override

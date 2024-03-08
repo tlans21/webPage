@@ -1,16 +1,20 @@
 package HomePage.config;
 
 
+import HomePage.config.jwt.JwtAuthenticationFilter;
 import HomePage.config.oauth.PrincipalOauth2UserService;
-import org.springframework.web.filter.CorsFilter;
+import HomePage.filter.Filter3;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.context.SecurityContextHolderFilter;
+import org.springframework.web.filter.CorsFilter;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true) //secured 어노테이션 활성화, preAuthorization 활성화
@@ -56,17 +60,20 @@ public class SecurityConfig{
 //
 //        return http.build();
         // JWT 방식
+
+
         http
+                .addFilterBefore(new Filter3(), SecurityContextHolderFilter.class)
                 .csrf((csrfConfig) ->
                         csrfConfig.disable()
                 )
                 .sessionManagement((sessionManagementConfig) -> sessionManagementConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-                .addFilter(corsFilter)
                 .formLogin((formLogin) -> formLogin.disable()
                 )
                 .httpBasic((httpBasicConfig) -> httpBasicConfig.disable()
                 )
+                .addFilter(new JwtAuthenticationFilter(http.getSharedObject(AuthenticationManager.class)))
                 .authorizeHttpRequests((authorizeRequests) ->
                         authorizeRequests
                                 .requestMatchers("/api/v1/user/**").hasAnyRole("USER", "MANAGER", "ADMIN")
@@ -76,4 +83,5 @@ public class SecurityConfig{
                 );
         return http.build();
     }
+
 }

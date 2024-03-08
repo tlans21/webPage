@@ -3,6 +3,9 @@ package HomePage.domain.model;
 import lombok.Builder;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 
 public class User {
@@ -14,7 +17,7 @@ public class User {
     private String password;
 
     private String email;
-    private String role;
+    private String roles;
 
     private String phoneNumber;
 
@@ -35,7 +38,7 @@ public class User {
        this.username = username;
        this.password = password;
        this.email = email;
-       this.role = role;
+       this.roles = role;
        this.provider = provider;
        this.providerId = providerId;
        this.createDate = createDate;
@@ -73,12 +76,15 @@ public class User {
         this.email = email;
     }
 
-    public String getRole() {
-        return role;
+    public List<String> getRoleList() {
+        if (this.roles.length() > 0) {
+            return Arrays.asList(this.roles.split(","));
+        }
+        return new ArrayList<>();
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setRole(String roles) {
+        this.roles = roles;
     }
 
     public String getPhoneNumber() {
