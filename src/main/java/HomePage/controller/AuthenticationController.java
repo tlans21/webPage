@@ -1,7 +1,6 @@
 package HomePage.controller;
 
 import HomePage.config.auth.PrincipalDetails;
-import HomePage.domain.model.User;
 import HomePage.service.UserService;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -43,21 +42,7 @@ public class AuthenticationController {
         return "user/createUserForm";
     }
 
-    @PostMapping("/join")
-    public String join(UserForm userForm){
-        User user = User.builder().build();
-        user.setEmail(userForm.getEmail());
-        String rawPassword = userForm.getPassword();
-        String encPassword = bCryptPasswordEncoder.encode(rawPassword);
-        user.setPassword(encPassword);
-        System.out.println(encPassword);
-        user.setUsername(userForm.getUsername());
-        user.setRole("ROLE_USER");
-        user.setPhoneNumber(userForm.getPhoneNumber());
-        userService.join(user);
 
-        return "redirect:/";
-    }
 
     @GetMapping("/manager")
     public @ResponseBody String manager(){

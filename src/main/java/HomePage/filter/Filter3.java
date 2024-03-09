@@ -26,5 +26,6 @@ public class Filter3 implements Filter {
               out.println("인증 안됨");
             }
         }
+        chain.doFilter(req, res);
     }
 }

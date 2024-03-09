@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -26,6 +27,12 @@ public class SecurityConfig{
     private CorsFilter corsFilter;
 
 
+    //AuthenticationConfiguration을 통해서 AuthenticationManager을 가져올 수 있다.
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
+            throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -73,7 +80,7 @@ public class SecurityConfig{
                 )
                 .httpBasic((httpBasicConfig) -> httpBasicConfig.disable()
                 )
-                .addFilter(new JwtAuthenticationFilter(http.getSharedObject(AuthenticationManager.class)))
+                .addFilter(new JwtAuthenticationFilter(authenticationManager))
                 .authorizeHttpRequests((authorizeRequests) ->
                         authorizeRequests
                                 .requestMatchers("/api/v1/user/**").hasAnyRole("USER", "MANAGER", "ADMIN")
