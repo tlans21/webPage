@@ -68,6 +68,7 @@ public class SecurityConfig{
 //        return http.build();
         // JWT 방식
 
+        AuthenticationConfiguration authenticationConfiguration = http.getSharedObject(AuthenticationConfiguration.class);
 
         http
                 .addFilterBefore(new Filter3(), SecurityContextHolderFilter.class)
@@ -76,11 +77,12 @@ public class SecurityConfig{
                 )
                 .sessionManagement((sessionManagementConfig) -> sessionManagementConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
+                .addFilter(corsFilter)
                 .formLogin((formLogin) -> formLogin.disable()
                 )
                 .httpBasic((httpBasicConfig) -> httpBasicConfig.disable()
                 )
-                .addFilter(new JwtAuthenticationFilter(authenticationManager))
+                .addFilter(new JwtAuthenticationFilter(authenticationManager(authenticationConfiguration)))
                 .authorizeHttpRequests((authorizeRequests) ->
                         authorizeRequests
                                 .requestMatchers("/api/v1/user/**").hasAnyRole("USER", "MANAGER", "ADMIN")
