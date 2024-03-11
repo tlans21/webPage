@@ -2,8 +2,9 @@ package HomePage.config;
 
 
 import HomePage.config.jwt.JwtAuthenticationFilter;
+import HomePage.config.jwt.JwtAuthorizationFilter;
 import HomePage.config.oauth.PrincipalOauth2UserService;
-import HomePage.filter.Filter3;
+import HomePage.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,7 +15,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.context.SecurityContextHolderFilter;
 import org.springframework.web.filter.CorsFilter;
 @Configuration
 @EnableWebSecurity
@@ -23,6 +23,8 @@ public class SecurityConfig{
     @Autowired
     private PrincipalOauth2UserService principalOauth2UserService;
 
+    @Autowired
+    private UserRepository userRepository;
     @Autowired
     private CorsFilter corsFilter;
 
@@ -71,7 +73,7 @@ public class SecurityConfig{
         AuthenticationConfiguration authenticationConfiguration = http.getSharedObject(AuthenticationConfiguration.class);
 
         http
-                .addFilterBefore(new Filter3(), SecurityContextHolderFilter.class)
+//                .addFilterBefore(new Filter3(), SecurityContextHolderFilter.class)
                 .csrf((csrfConfig) ->
                         csrfConfig.disable()
                 )
@@ -83,6 +85,7 @@ public class SecurityConfig{
                 .httpBasic((httpBasicConfig) -> httpBasicConfig.disable()
                 )
                 .addFilter(new JwtAuthenticationFilter(authenticationManager(authenticationConfiguration)))
+                .addFilter(new JwtAuthorizationFilter(authenticationManager(authenticationConfiguration), userRepository))
                 .authorizeHttpRequests((authorizeRequests) ->
                         authorizeRequests
                                 .requestMatchers("/api/v1/user/**").hasAnyRole("USER", "MANAGER", "ADMIN")

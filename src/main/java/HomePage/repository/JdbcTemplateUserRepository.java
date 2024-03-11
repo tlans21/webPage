@@ -35,7 +35,7 @@ public class JdbcTemplateUserRepository implements UserRepository {
         parameters.put("password", user.getPassword());
         parameters.put("email", user.getEmail());
         parameters.put("phoneNumber", user.getPhoneNumber());
-        parameters.put("role", user.getRoleList());
+        parameters.put("role", user.getRoles());
         parameters.put("createDate",user.getCreateDate() );
         parameters.put("loginDate", user.getLoginDate());
         parameters.put("provider", user.getProvider());
@@ -90,7 +90,7 @@ public class JdbcTemplateUserRepository implements UserRepository {
             user.setPassword(rs.getString("password"));
             user.setEmail(rs.getString("email"));
             user.setPhoneNumber(rs.getString("phoneNumber"));
-            user.setRole(rs.getString("Role"));
+            user.setRoles(rs.getString("Role"));
             return user;
         };
     }

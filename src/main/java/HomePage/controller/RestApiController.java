@@ -1,7 +1,9 @@
 package HomePage.controller;
 
+import HomePage.config.auth.PrincipalDetails;
 import HomePage.domain.model.User;
 import HomePage.service.UserService;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -38,10 +40,27 @@ public class RestApiController {
         user.setPassword(encPassword);
         System.out.println(encPassword);
         user.setUsername(userForm.getUsername());
-        user.setRole("ROLE_USER");
+        user.setRoles("ROLE_USER");
         user.setPhoneNumber(userForm.getPhoneNumber());
         userService.join(user);
 
         return "회원 가입 완료";
+    }
+
+    @GetMapping("/api/v1/user")
+    public String user(Authentication authentication){
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        System.out.println("authentication : " + principalDetails.getUsername());
+        return "user";
+    }
+
+    @GetMapping("/api/v1/manager")
+    public String manager(){
+        return "manager";
+    }
+
+    @GetMapping("/api/v1/admin")
+    public String admin(Authentication authentication){
+        return "admin";
     }
 }
