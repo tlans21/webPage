@@ -2,9 +2,9 @@ package HomePage.config.jwt;
 
 import HomePage.config.auth.PrincipalDetails;
 import HomePage.domain.model.User;
+import HomePage.repository.UserRepository;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,6 +15,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.Date;
 
@@ -23,8 +24,11 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     private AuthenticationManager authenticationManager;
 
-    public JwtAuthenticationFilter(AuthenticationManager authenticationManager){
+    private UserRepository userRepository;
+
+    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, UserRepository userRepository){
         this.authenticationManager = authenticationManager;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -32,22 +36,42 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         System.out.println("JwtAuthentication : 로그인 시도중");
 
         try {
-//            BufferedReader br = request.getReader();
-//            String input = null;
-//            while((input = br.readLine()) != null){
-//                System.out.println(input);
-//            }
+            BufferedReader br = request.getReader();
+            String input = null;
+            String data = "";
+            while((input = br.readLine()) != null) {
+                data += input;
+            }
+            System.out.println(data);
+            String parsedUsername = null;
+            String parsedPassword = null;
+            // parse
+            String[] pairs = data.split("&");
+            for (String pair : pairs){
+                String[] keyValue = pair.split("=");
+                if (keyValue[0].equals("username")) {
+                    parsedUsername = keyValue[1];
+                } else if (keyValue[0].equals("password")) {
+                    parsedPassword = keyValue[1];
+                }
+            }
+            System.out.println("Username: " + parsedUsername);
+            System.out.println("Password: " + parsedPassword);
 
             // json 방식
 
-            ObjectMapper objectMapper = new ObjectMapper();
-            User user = objectMapper.readValue(request.getInputStream(), User.class);
-            System.out.println(user);
+//            ObjectMapper objectMapper = new ObjectMapper();
+//            User user = objectMapper.readValue(request.getInputStream(), User.class);
+//            System.out.println(user);
 
+            User user = userRepository.findByUsername(parsedUsername).get();
+
+            System.out.println(user.getUsername());
+            System.out.println(user.getRoles());
             // 토큰 생성
 
             UsernamePasswordAuthenticationToken authenticationToken =
-                    new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());
+                    new UsernamePasswordAuthenticationToken(parsedUsername, parsedPassword);
             // 토큰을 이용하여 로그인 정보를 얻는다.
             Authentication authentication = authenticationManager.authenticate(authenticationToken);
 
@@ -55,6 +79,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             // authentication 객체가 session 영역에 저장되고, 즉 로그인이 되었다는 뜻임.
 
             System.out.println(principalDetails.getUser().getUsername());
+            System.out.println(principalDetails.getUser().getPassword());
             System.out.println("================================================");
             return authentication;
         } catch (Exception e) {

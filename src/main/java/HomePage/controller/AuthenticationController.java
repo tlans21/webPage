@@ -95,5 +95,9 @@ public class AuthenticationController {
 
         return "세션 정보 확인하기";
     }
+    @GetMapping("/test23")
+    public String test(){
+        return "test";
+    }
 
 }
