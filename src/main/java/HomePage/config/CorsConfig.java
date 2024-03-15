@@ -7,6 +7,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
+import java.util.Arrays;
+
 @Configuration
 public class CorsConfig {
     @Bean
@@ -18,6 +20,7 @@ public class CorsConfig {
         corsConfig.addAllowedOrigin("*");
         corsConfig.addAllowedHeader("*");
         corsConfig.addAllowedMethod("*");
+        corsConfig.setExposedHeaders(Arrays.asList("Authorization", "Authorization-refresh"));
         source.registerCorsConfiguration("/api/**", corsConfig);
 
         return new CorsFilter(source);

@@ -1,6 +1,7 @@
 package HomePage.config.jwt;
 
 import HomePage.config.auth.PrincipalDetails;
+import HomePage.config.jwt.handler.UserLoginSuccessHandler;
 import HomePage.domain.model.User;
 import HomePage.repository.UserRepository;
 import com.auth0.jwt.JWT;
@@ -23,13 +24,16 @@ import java.util.Date;
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private AuthenticationManager authenticationManager;
-
     private UserRepository userRepository;
+    private UserLoginSuccessHandler userLoginSuccessHandler;
 
-    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, UserRepository userRepository){
+    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, UserRepository userRepository, UserLoginSuccessHandler userLoginSuccessHandler){
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
+        this.userLoginSuccessHandler = userLoginSuccessHandler;
     }
+
+
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
@@ -103,5 +107,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                         .sign(Algorithm.HMAC512("COS"));
 
         response.addHeader("Authorization", "Bearer " + jwtToken);
+        userLoginSuccessHandler.onAuthenticationSuccess(request, response, authResult);
     }
 }

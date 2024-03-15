@@ -32,7 +32,7 @@ public class AuthenticationController {
         return "/login/loginForm";
     }
 
-    @PostMapping("/login/s")
+    @PostMapping("/login")
     public String login(UserForm userForm){
         userService.authenticateMember(userForm.getEmail(), userForm.getPassword());
         return "redirect:/";
@@ -99,5 +99,6 @@ public class AuthenticationController {
     public String test(){
         return "test";
     }
+
 
 }
