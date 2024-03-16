@@ -604,5 +604,44 @@
   <!-- end owl carousel script -->
 
 </body>
+<script>
+    $(document).ready(function() {
+        // 로그아웃 버튼 이벤트
+        $('#logoutButton').click(function() {
+            // 로컬 스토리지에서 토큰 제거
+            localStorage.removeItem('accessToken');
+            // 로그인 페이지로 리다이렉션
+            window.location.href = '/login';
+        });
+
+        // 테스트 버튼 이벤트
+        $('#testButton').click(function() {
+            // 로컬 스토리지에서 토큰 가져오기
+            const token = localStorage.getItem('accessToken');
+            if (token) {
+                $.ajax({
+                    url: '/api/test', // 요청할 서버의 URL
+                    type: 'GET', // HTTP 메서드
+                    beforeSend: function(xhr) {
+                        // 요청 헤더에 토큰 추가
+                        xhr.setRequestHeader('Authorization', token);
+                    },
+                    success: function(data) {
+                        // 요청 성공 시 로직
+                        console.log("테스트 요청 성공:", data);
+                        alert("테스트 요청 성공");
+                    },
+                    error: function(xhr, status, error) {
+                        // 요청 실패 시 로직
+                        console.error("테스트 요청 실패:", xhr.responseText);
+                        alert("테스트 요청 실패");
+                    }
+                });
+            } else {
+                alert("토큰이 없습니다. 다시 로그인해주세요.");
+            }
+        });
+    });
+</script>
 
 </html>

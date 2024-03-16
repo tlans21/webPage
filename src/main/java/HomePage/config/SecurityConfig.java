@@ -42,6 +42,7 @@ public class SecurityConfig{
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         AuthenticationManager authenticationManager = authenticationManager(http.getSharedObject(AuthenticationConfiguration.class));
+
         http
 //                .addFilterBefore(new Filter3(), SecurityContextHolderFilter.class)
                 .csrf((csrfConfig) ->
@@ -64,6 +65,7 @@ public class SecurityConfig{
                 )
                 .authorizeHttpRequests((authorizeRequests) ->
                         authorizeRequests
+                                .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
                                 .requestMatchers("/api/v1/user/**").hasAnyRole("USER", "MANAGER", "ADMIN")
                                 .requestMatchers("/api/v1/manager/**").hasAnyRole("MANAGER", "ADMIN")
                                 .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
@@ -83,6 +85,7 @@ public class SecurityConfig{
         try {
             JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(authenticationManager, userRepository, userLoginSuccessHandler);
             jwtAuthenticationFilter.setAuthenticationManager(authenticationManager);
+//            jwtAuthenticationFilter.setFilterProcessesUrl("/login");
             jwtAuthenticationFilter.setAuthenticationSuccessHandler(userLoginSuccessHandler);
             return jwtAuthenticationFilter;
         } catch (Exception e) {

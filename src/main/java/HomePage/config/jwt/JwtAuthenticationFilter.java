@@ -38,7 +38,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         System.out.println("JwtAuthentication : 로그인 시도중");
-
         try {
             BufferedReader br = request.getReader();
             String input = null;

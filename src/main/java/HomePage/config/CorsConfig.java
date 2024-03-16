@@ -21,7 +21,7 @@ public class CorsConfig {
         corsConfig.addAllowedHeader("*");
         corsConfig.addAllowedMethod("*");
         corsConfig.setExposedHeaders(Arrays.asList("Authorization", "Authorization-refresh"));
-        source.registerCorsConfiguration("/api/**", corsConfig);
+        source.registerCorsConfiguration("/**", corsConfig);
 
         return new CorsFilter(source);
     }
