@@ -9,10 +9,12 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
+@CrossOrigin(origins = "http://localhost:3000", exposedHeaders = "Authorization")
 public class AuthenticationController {
 
 
@@ -68,7 +70,7 @@ public class AuthenticationController {
 
     @GetMapping("/test/login")
     public @ResponseBody String testLogin(Authentication authentication, @AuthenticationPrincipal PrincipalDetails userDetails){
-        System.out.println("/test/lgoin =======================" );
+        System.out.println("/test/login =======================" );
         // PrincipalDetails principalDetails = authentication.getPrincipal()
         // authentication 의 getPrincipal 메소드를 통해서 principal 을 얻어온 다음 타입에 맞게 캐스팅.
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();

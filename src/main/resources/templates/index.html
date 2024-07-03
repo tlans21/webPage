@@ -54,10 +54,11 @@
             <div id="myNav" class="overlay">
               <div class="overlay-content">
                 <a href="/index">HOME</a>
-                <a href="about">ABOUT</a>
-                <a href="food">Food</a>
+                <a href="/about">ABOUT</a>
+                <a href="/food">Food</a>
                 <a href="/joinForm">회원 가입</a>
                 <a href="/loginForm">로그인</a>
+                <a href="#" onclick="accessBoard(event)">게시판</a>
               </div>
             </div>
           </div>
@@ -569,6 +570,54 @@
   <script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
   <script type="text/javascript" src="js/bootstrap.js"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js">
+  </script>
+  <script>
+        function accessBoard(event) {
+            event.preventDefault(); // 기본 이벤트(링크 이동) 방지
+
+            const accessToken = getAccessToken(); // 쿠키에서 액세스 토큰 가져오기
+
+            if (accessToken) {
+                fetch('/api/board', {
+                    method: 'GET',
+                    credentials: 'same-origin', // 서버와 동일한 출처의 쿠키를 요청에 포함
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Board Content:', data);
+                    // 게시판 페이지로 이동하거나 데이터를 처리하는 추가 로직 작성
+                    window.location.href = '/board'; // 예시로 페이지 이동
+                })
+                .catch(error => {
+                    console.error('Error accessing board:', error);
+                });
+            } else {
+                console.log('Access token not found.');
+                // 로그인이 필요한 메시지 표시 또는 로그인 페이지로 이동 등의 처리
+                window.location.href = '/loginForm'; // 예시로 로그인 페이지로 이동
+            }
+        }
+
+        // 쿠키에서 액세스 토큰을 가져오는 함수
+        function getAccessToken() {
+            const cookieString = document.cookie;
+            const cookies = cookieString.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.startsWith('access_token=')) {
+                    return cookie.substring('access_token='.length);
+                }
+            }
+            return null;
+        }
   </script>
 
   <script>

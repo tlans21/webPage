@@ -25,6 +25,7 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
     @Autowired
     BCryptPasswordEncoder bCryptPasswordEncoder;
 
+
     // 구글로 부터 후처리되는 함수
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {

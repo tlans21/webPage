@@ -2,7 +2,6 @@ package HomePage.config.jwt;
 
 import HomePage.config.auth.PrincipalDetails;
 import HomePage.config.jwt.handler.UserLoginSuccessHandler;
-import HomePage.domain.model.User;
 import HomePage.repository.UserRepository;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -61,18 +60,16 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             System.out.println("Username: " + parsedUsername);
             System.out.println("Password: " + parsedPassword);
 
-            // json 방식
+//             json 방식
 
 //            ObjectMapper objectMapper = new ObjectMapper();
 //            User user = objectMapper.readValue(request.getInputStream(), User.class);
 //            System.out.println(user);
-
-            User user = userRepository.findByUsername(parsedUsername).get();
-
-            System.out.println(user.getUsername());
-            System.out.println(user.getRoles());
-            // 토큰 생성
-
+//
+//            System.out.println(user.getUsername());
+//            System.out.println(user.getRoles());
+//            // 토큰 생성
+//
             UsernamePasswordAuthenticationToken authenticationToken =
                     new UsernamePasswordAuthenticationToken(parsedUsername, parsedPassword);
             // 토큰을 이용하여 로그인 정보를 얻는다.
@@ -80,9 +77,9 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
             PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
             // authentication 객체가 session 영역에 저장되고, 즉 로그인이 되었다는 뜻임.
-
-            System.out.println(principalDetails.getUser().getUsername());
-            System.out.println(principalDetails.getUser().getPassword());
+//
+//            System.out.println(principalDetails.getUser().getUsername());
+//            System.out.println(principalDetails.getUser().getPassword());
             System.out.println("================================================");
             return authentication;
         } catch (Exception e) {
@@ -105,7 +102,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                         .withClaim("username", principalDetails.getUser().getUsername())
                         .sign(Algorithm.HMAC512("COS"));
 
-        response.addHeader("Authorization", "Bearer " + jwtToken);
-        userLoginSuccessHandler.onAuthenticationSuccess(request, response, authResult);
+        response.setHeader("Authorization", "Bearer " + jwtToken);
+//        userLoginSuccessHandler.onAuthenticationSuccess(request, response, authResult);
     }
 }
