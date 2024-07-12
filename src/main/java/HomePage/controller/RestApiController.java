@@ -44,7 +44,7 @@ public class RestApiController {
         user.setPhoneNumber(userForm.getPhoneNumber());
         userService.join(user);
 
-        return "회원 가입 완료";
+        return "redirect:/index";
     }
 
     @GetMapping("/api/v1/user")

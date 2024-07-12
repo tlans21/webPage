@@ -1,14 +1,15 @@
 package HomePage.config.jwt;
 
 import HomePage.config.auth.PrincipalDetails;
+import HomePage.config.jwt.provider.TokenProvider;
 import HomePage.domain.model.User;
 import HomePage.repository.UserRepository;
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -21,6 +22,8 @@ import java.io.IOException;
 // 권한이나 인증이 필요한 특정한 주소를 요청했을 때, 위 필터를 무조건 거치게 되어 있음.
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     UserRepository userRepository;
+    @Autowired
+    TokenProvider tokenProvider;
     public JwtAuthorizationFilter(AuthenticationManager authenticationManager, UserRepository userRepository) {
         super(authenticationManager);
         this.userRepository = userRepository;
@@ -29,19 +32,29 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         System.out.println("인증이나 권한이 필요한 주소 요청이 됨");
+        String accessToken = getAccessTokenFromRequest(request);
 
-        String jwtHeader = request.getHeader("Authorization");
-        System.out.println("jwtHeader : " + jwtHeader);
+        System.out.println("accessToken : " + accessToken);
 
-        if (jwtHeader == null || !jwtHeader.startsWith("Bearer")){
+        if (accessToken == null){  // accessToken이 없으면 종료하고 다음 체인
             chain.doFilter(request, response);
             return;
         }
 
-        String jwtToken = jwtHeader.replace("Bearer", "").trim();
-        System.out.println(jwtToken);
-        String username =
-                JWT.require(Algorithm.HMAC512("COS")).build().verify(jwtToken).getClaim("username").asString();
+        boolean isValid = tokenProvider.validateToken(accessToken);
+
+        if (!isValid) { // 검증이 안되었으면 종료하고 다음 체인
+            boolean isExpired = tokenProvider.isTokenExpired(accessToken);
+            if (isExpired){
+                System.out.println("액세스토큰이 만료되었습니다.");
+            }
+            chain.doFilter(request, response);
+            return;
+        }
+
+        String username = tokenProvider.getUsernameFromToken(accessToken);
+
+        System.out.println("username : " + username);
 
         if(username != null){
             User userEntity = userRepository.findByUsername(username).get();
@@ -52,12 +65,27 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
             Authentication authentication = new UsernamePasswordAuthenticationToken(principalDetails, null, principalDetails.getAuthorities());
 
-            // 세션에 authentication 저장
+            // 세션에 authentication 저장이 되어야지만 접근 제한이 있는 리소스에 접근이 가능함.
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
 
         }
 
         chain.doFilter(request, response);
+    }
+
+    private String getAccessTokenFromRequest(HttpServletRequest request){
+        String accessToken = null;
+        Cookie[] cookies = request.getCookies();
+
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("access_token")) { // 쿠키의 이름에 맞게 수정
+                       accessToken = cookie.getValue();
+                       break;
+                }
+            }
+        }
+        return accessToken;
     }
 }

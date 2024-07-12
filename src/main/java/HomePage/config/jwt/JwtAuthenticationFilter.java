@@ -2,14 +2,13 @@ package HomePage.config.jwt;
 
 import HomePage.config.auth.PrincipalDetails;
 import HomePage.config.jwt.handler.UserLoginSuccessHandler;
-import HomePage.domain.model.User;
+import HomePage.config.jwt.provider.TokenProvider;
 import HomePage.repository.UserRepository;
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -18,7 +17,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.Date;
 
 
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
@@ -26,6 +24,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     private AuthenticationManager authenticationManager;
     private UserRepository userRepository;
     private UserLoginSuccessHandler userLoginSuccessHandler;
+    @Autowired
+    TokenProvider tokenProvider;
 
     public JwtAuthenticationFilter(AuthenticationManager authenticationManager, UserRepository userRepository, UserLoginSuccessHandler userLoginSuccessHandler){
         this.authenticationManager = authenticationManager;
@@ -68,10 +68,10 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 //            User user = objectMapper.readValue(request.getInputStream(), User.class);
 //            System.out.println(user);
 
-            User user = userRepository.findByUsername(parsedUsername).get();
-
-            System.out.println(user.getUsername());
-            System.out.println(user.getRoles());
+//            User user = userRepository.findByUsername(parsedUsername).get();
+//
+//            System.out.println(user.getUsername());
+//            System.out.println(user.getRoles());
             // 토큰 생성
 
             UsernamePasswordAuthenticationToken authenticationToken =
@@ -96,17 +96,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         System.out.println("successfulAuthentication이 실행됨");
-        PrincipalDetails principalDetails = (PrincipalDetails) authResult.getPrincipal();
-
-        // Hash 방식
-        String jwtToken = JWT.create()
-                        .withSubject(principalDetails.getUsername())
-                        .withExpiresAt(new Date(System.currentTimeMillis() + (60000 * 10)))
-                        .withClaim("id", principalDetails.getUser().getId())
-                        .withClaim("username", principalDetails.getUser().getUsername())
-                        .sign(Algorithm.HMAC512("COS"));
-
-        response.addHeader("Authorization", "Bearer " + jwtToken);
         userLoginSuccessHandler.onAuthenticationSuccess(request, response, authResult);
     }
 }

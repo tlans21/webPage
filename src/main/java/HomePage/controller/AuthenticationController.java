@@ -10,7 +10,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
@@ -32,11 +31,11 @@ public class AuthenticationController {
         return "/login/loginForm";
     }
 
-    @PostMapping("/login")
-    public String login(UserForm userForm){
-        userService.authenticateMember(userForm.getEmail(), userForm.getPassword());
-        return "redirect:/";
-    }
+//    @PostMapping("/login")
+//    public String login(UserForm userForm){
+//        userService.authenticateMember(userForm.getEmail(), userForm.getPassword());
+//        return "redirect:/";
+//    }
     @GetMapping("/joinForm")
     public String createUserForm(){
         return "user/createUserForm";

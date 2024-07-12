@@ -7,6 +7,7 @@ import HomePage.config.oauth.provider.NaverUserInfo;
 import HomePage.config.oauth.provider.OAuth2UserInfo;
 import HomePage.domain.model.User;
 import HomePage.repository.UserRepository;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -24,6 +25,13 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
     UserRepository userRepository;
     @Autowired
     BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    private HttpServletResponse response;
+
+    @Autowired
+    public PrincipalOauth2UserService(HttpServletResponse response) {
+        this.response = response;
+    }
 
     // 구글로 부터 후처리되는 함수
     @Override
