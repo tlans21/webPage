@@ -25,6 +25,6 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         cookie.setPath("/");
         response.addCookie(cookie);
 
-        response.sendRedirect("/index");
+        response.sendRedirect("/");
     }
 }
