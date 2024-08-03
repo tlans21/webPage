@@ -1,10 +1,8 @@
 package HomePage.config;
 
-import HomePage.repository.JdbcTemplateCommunityBoardRepository;
-import HomePage.repository.JdbcTemplateReviewBoardRepository;
-import HomePage.repository.JdbcTemplateUserRepository;
-import HomePage.repository.UserRepository;
+import HomePage.repository.*;
 import HomePage.service.CommunityBoardService;
+import HomePage.service.CommunityCommentService;
 import HomePage.service.ReviewBoardService;
 import HomePage.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +50,16 @@ public class SpringConfig {
     @Bean
     public ReviewBoardService reviewBoardService(){
         return new ReviewBoardService(reviewBoardBoardRepository());
+    }
+
+    @Bean
+    public JdbcTemplateCommunityCommentRepository communityCommentRepository(){
+        return new JdbcTemplateCommunityCommentRepository(dataSource);
+    }
+
+    @Bean
+    public CommunityCommentService communityCommentService(){
+        return new CommunityCommentService(communityCommentRepository());
     }
 
 }

@@ -96,19 +96,7 @@ body {
     text-decoration: none;
     color: #333;
 }
-.ad-space {
-    height: 100px;
-    background-color: #e0e0e0;
-    margin: 20px 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-style: italic;
-    color: #666;
-}
-.content-wrapper {
-    padding-top: 70px; /* 네비게이션 바의 높이만큼 상단 패딩 추가 */
-}
+
 .pagination-container {
     display: flex;
     justify-content: center;

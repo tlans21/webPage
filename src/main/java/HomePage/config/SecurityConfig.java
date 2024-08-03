@@ -37,7 +37,6 @@ public class SecurityConfig{
     private OAuth2LoginSuccessHandler oAuthLoginSuccessHandler;
 
     //AuthenticationConfiguration을 통해서 AuthenticationManager을 가져올 수 있다.
-
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
          return authenticationConfiguration.getAuthenticationManager();

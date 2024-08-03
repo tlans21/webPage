@@ -69,6 +69,20 @@ body {
     transform: translateY(-2px);
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
+.ad-space {
+    height: 100px;
+    background-color: #e0e0e0;
+    margin: 20px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-style: italic;
+    color: #666;
+}
+
+.content-wrapper {
+    padding-top: 70px; /* 네비게이션 바의 높이만큼 상단 패딩 추가 */
+}
 @media (max-width: 768px) {
     .nav-items {
             display: none;

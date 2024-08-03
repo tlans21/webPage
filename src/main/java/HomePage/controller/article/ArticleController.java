@@ -2,6 +2,7 @@ package HomePage.controller.article;
 
 import HomePage.domain.model.CommunityBoard;
 import HomePage.service.CommunityBoardService;
+import HomePage.service.CommunityCommentService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,9 +14,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("/articles")
 public class ArticleController {
     private final CommunityBoardService boardService;
+    private final CommunityCommentService commentService;
 
-    public ArticleController(CommunityBoardService boardService) {
+    public ArticleController(CommunityBoardService boardService, CommunityCommentService commentService) {
         this.boardService = boardService;
+        this.commentService = commentService;
     }
 
     @GetMapping("/{id}")
@@ -29,6 +32,9 @@ public class ArticleController {
         if (article == null){
             return "error/404";
         }
+
+
+
         model.addAttribute("article", article);
         model.addAttribute("topic", topic);
         model.addAttribute("page", page);
