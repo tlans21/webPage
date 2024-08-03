@@ -29,8 +29,11 @@ dependencies {
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.2'
 	implementation 'com.auth0:java-jwt:4.0.0'
 	implementation 'mysql:mysql-connector-java:8.0.30'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+compileJava {	options.compilerArgs << '-parameters'}

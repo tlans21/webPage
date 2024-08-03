@@ -3,6 +3,7 @@ package HomePage.config.jwt;
 import HomePage.config.auth.PrincipalDetails;
 import HomePage.config.jwt.handler.UserLoginSuccessHandler;
 import HomePage.config.jwt.provider.TokenProvider;
+import HomePage.exception.CustomBadCredentialsException;
 import HomePage.repository.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -13,6 +14,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.io.BufferedReader;
@@ -31,19 +33,20 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
         this.userLoginSuccessHandler = userLoginSuccessHandler;
+        setFilterProcessesUrl("/api/login"); // 로그인 처리 URL
     }
 
 
 
     @Override
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
+    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException{
         System.out.println("JwtAuthentication : 로그인 시도중");
 
         try {
             BufferedReader br = request.getReader();
             String input = null;
             String data = "";
-            while((input = br.readLine()) != null) {
+            while ((input = br.readLine()) != null) {
                 data += input;
             }
             System.out.println(data);
@@ -51,7 +54,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             String parsedPassword = null;
             // parse
             String[] pairs = data.split("&");
-            for (String pair : pairs){
+            for (String pair : pairs) {
                 String[] keyValue = pair.split("=");
                 if (keyValue[0].equals("username")) {
                     parsedUsername = keyValue[1];
@@ -62,33 +65,29 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             System.out.println("Username: " + parsedUsername);
             System.out.println("Password: " + parsedPassword);
 
-            // json 방식
-
-//            ObjectMapper objectMapper = new ObjectMapper();
-//            User user = objectMapper.readValue(request.getInputStream(), User.class);
-//            System.out.println(user);
-
-//            User user = userRepository.findByUsername(parsedUsername).get();
-//
-//            System.out.println(user.getUsername());
-//            System.out.println(user.getRoles());
-            // 토큰 생성
-
             UsernamePasswordAuthenticationToken authenticationToken =
                     new UsernamePasswordAuthenticationToken(parsedUsername, parsedPassword);
-            // 토큰을 이용하여 로그인 정보를 얻는다.
             Authentication authentication = authenticationManager.authenticate(authenticationToken);
-
             PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-            // authentication 객체가 session 영역에 저장되고, 즉 로그인이 되었다는 뜻임.
 
             System.out.println(principalDetails.getUser().getUsername());
             System.out.println(principalDetails.getUser().getPassword());
             System.out.println("================================================");
             return authentication;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        }catch (AuthenticationException authenticationException) {
+            // IOException 처리
+            try{
+                unsuccessfulAuthentication(request, response, new CustomBadCredentialsException());
+                System.out.println("next");
+            }catch (IOException e2){
+                System.out.println("next1");
+            }catch (ServletException e3){
+                System.out.println("next2");
+            }
+        }catch (IOException e1){
+            System.out.println("next3");
         }
+        return null;
     }
 
     // 정상적으로 attemptAuthentication이 동작하면 successfulAuthentication이 동작
@@ -97,5 +96,14 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         System.out.println("successfulAuthentication이 실행됨");
         userLoginSuccessHandler.onAuthenticationSuccess(request, response, authResult);
+    }
+
+    @Override
+    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
+        System.out.println("unsuccessfulAuthentication");
+        SecurityContextHolder.clearContext();
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.getWriter().write("Authentication Failed: " + failed.getMessage());
+        logger.warn("Authentication failed for request: " + request.getRequestURI(), failed);
     }
 }

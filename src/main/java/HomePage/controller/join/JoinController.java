@@ -1,0 +1,40 @@
+package HomePage.controller.join;
+
+import HomePage.controller.UserForm;
+import HomePage.domain.model.User;
+import HomePage.exception.JoinException;
+import HomePage.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.view.RedirectView;
+
+@Controller
+@RequestMapping("/api")
+public class JoinController {
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    @Autowired
+    private UserService userService;
+
+    @PostMapping("/join")
+    public RedirectView join(UserForm userForm) {
+        try {
+            User user = User.builder()
+                    .email(userForm.getEmail())
+                    .password(bCryptPasswordEncoder.encode(userForm.getPassword()))
+                    .username(userForm.getUsername())
+                    .role("ROLE_USER")
+                    .build();
+
+            userService.join(user);
+            System.out.println("회원가입에 성공");
+            return new RedirectView("/loginForm");
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw new JoinException("Error joining user");
+        }
+    }
+}

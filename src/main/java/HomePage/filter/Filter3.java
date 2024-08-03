@@ -18,7 +18,6 @@ public class Filter3 implements Filter {
             System.out.println("POST 요청됨");
             String headerAuth = req.getHeader("Authorization");
             System.out.println(headerAuth);
-            System.out.println("필터3");
             if (headerAuth.equals("cos")){
                 chain.doFilter(req, res);
             } else {

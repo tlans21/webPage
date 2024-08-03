@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>게시글 상세</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+</head>
+<body>
+
+    <header>
+        <!-- 헤더 내용 -->
+    </header>
+
+    <main>
+        <h1>게시글 상세</h1>
+
+        <div class="board-detail">
+            <h2 th:text="${board.title}">제목</h2>
+            <p><strong>작성자:</strong> <span th:text="${board.writer}">작성자</span></p>
+            <p><strong>등록일자:</strong> <span th:text="${#dates.format(board.registerDate, 'yyyy-MM-dd HH:mm:ss')}">등록일자</span></p>
+            <p><strong>내용:</strong></p>
+            <p th:text="${board.content}">내용</p>
+        </div>
+
+        <a href="/board" class="btn btn-primary">목록으로 돌아가기</a>
+
+    </main>
+
+    <footer>
+        <!-- 푸터 내용 -->
+    </footer>
+
+</body>
+</html>

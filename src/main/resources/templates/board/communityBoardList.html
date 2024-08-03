@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>커뮤니티 게시판</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/navBarStyle.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/communityBoardStyle.css}">
+</head>
+<body>
+    <header th:replace="~{fragments/navBar :: navBar}"></header>
+    <div class="content-wrapper">
+        <div class="ad-space">
+                광고 영역 (추후 구현 예정)
+        </div>
+        <div class="container">
+            <div class="header">
+                <form th:action="@{/api/v1/community/write}" method="get">
+                    <button class="btn-primary">작성하기</button>
+                </form>
+                <nav>
+                    <a href="#">사는얘기</a>
+                    <a href="#">모임&스터디</a>
+                    <a href="#">전체</a>
+                </nav>
+                <button class="btn-secondary">국 최신순</button>
+            </div>
+
+            <div class="search-bar">
+                <input type="text" placeholder="커뮤니티 내에서 검색">
+            </div>
+
+            <div class="post-list" th:each="board : ${boardPage.content}">
+                <div class="post-item">
+                    <div class="post-header">
+                        <span class="author" th:text="${board.writer}"></span>
+                        <span class="badge">541</span>
+                        <span class="timestamp" th:text="${board.registerDate}"></span>
+                    </div>
+                    <a th:href="@{/articles/{id}(id=${board.id}, topic='community', page=${boardPage.currentPage})}"><div class="post-title" th:text="${board.title}"></div></a>
+                    <div class="post-tags">
+                        <span class="tag">공지사항</span>
+                        <span class="tag">국비지원교육</span>
+                        <span class="tag">취준컴집대</span>
+                        <span class="tag">국비컴집대</span>
+                    </div>
+                    <div class="post-stats">
+                        <span class="views" th:text="${board.viewCnt}"></span>
+                        <span class="comments">댓글 2</span>
+                        <span class="likes">좋아요 3</span>
+                    </div>
+                </div>
+                <!-- 추가 게시물 항목들... -->
+            </div>
+
+            <div>
+                총 페이지: <span th:text="${boardPage.totalPages}"></span>
+                현재 페이지: <span th:text="${boardPage.currentPage}"></span>
+            </div>
+
+
+            <nav class="pagination-container">
+                <div class="pagination">
+                    <button th:if="${boardPage.currentPage > 1}"
+                            th:onclick="'window.location.href=\'' + @{/community/list(page=${boardPage.currentPage - 1})} + '\''"
+                            class="pagination-button">Previous</button>
+
+                    <button th:if="${start > 1}"
+                            th:onclick="'window.location.href=\'' + @{/community/list(page=1)} + '\''"
+                            class="pagination-button">1</button>
+                    <span th:if="${start > 2}" class="pagination-ellipsis">...</span>
+
+                    <button th:each="pageNum : ${#numbers.sequence(start, end)}"
+                            th:onclick="'window.location.href=\'' + @{/community/list(page=${pageNum})} + '\''"
+                            th:text="${pageNum}"
+                            th:class="${pageNum == boardPage.currentPage} ? 'pagination-button active' : 'pagination-button'"></button>
+
+                    <span th:if="${end < boardPage.totalPages - 1}" class="pagination-ellipsis">...</span>
+                    <button th:if="${end < boardPage.totalPages}"
+                            th:onclick="'window.location.href=\'' + @{/community/list(page=${boardPage.totalPages})} + '\''"
+                            th:text="${boardPage.totalPages}"
+                            class="pagination-button"></button>
+
+                    <button th:if="${boardPage.currentPage < boardPage.totalPages}"
+                            th:onclick="'window.location.href=\'' + @{/community/list(page=${boardPage.currentPage + 1})} + '\''"
+                            class="pagination-button">Next</button>
+                </div>
+            </nav>
+        </div>
+        <!-- 여기에 페이지 컨텐츠가 들어갑니다 -->
+    </div>
+</body>
+</html>
+

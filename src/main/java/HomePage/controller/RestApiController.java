@@ -1,13 +1,11 @@
 package HomePage.controller;
 
 import HomePage.config.auth.PrincipalDetails;
-import HomePage.domain.model.User;
 import HomePage.service.UserService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -31,21 +29,6 @@ public class RestApiController {
         return "<h1>token</h1>";
     }
 
-    @PostMapping("/join")
-    public String join(@RequestBody UserForm userForm){
-        User user = User.builder().build();
-        user.setEmail(userForm.getEmail());
-        String rawPassword = userForm.getPassword();
-        String encPassword = bCryptPasswordEncoder.encode(rawPassword);
-        user.setPassword(encPassword);
-        System.out.println(encPassword);
-        user.setUsername(userForm.getUsername());
-        user.setRoles("ROLE_USER");
-        user.setPhoneNumber(userForm.getPhoneNumber());
-        userService.join(user);
-
-        return "redirect:/index";
-    }
 
     @GetMapping("/api/v1/user")
     public String user(Authentication authentication){

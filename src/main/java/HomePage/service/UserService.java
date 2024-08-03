@@ -2,13 +2,16 @@ package HomePage.service;
 
 import HomePage.domain.model.User;
 import HomePage.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.List;
 import java.util.Optional;
 
 public class UserService {
     private final UserRepository userRepository;
-
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
@@ -29,8 +32,6 @@ public class UserService {
                         .ifPresent(m -> {
                             throw new IllegalStateException("이미 존재하는 이메일입니다.");
                         });
-
-
     }
 
     public List<User> findMembers(){
@@ -41,19 +42,24 @@ public class UserService {
         return userRepository.findById(memberId);
     }
 
-    public Optional<User> authenticateMember(String email, String password){
-        Optional<User> member = userRepository.findByEmail(email);
-        System.out.println(member.get());
-        System.out.println(member.get().getEmail());
-        System.out.println(member.get().getPassword());
-        if(!member.isPresent()){
+    public Optional<User> findByUsername(String username){
+        Optional<User> user = userRepository.findByUsername(username);
+        if (!user.isPresent()){
             return Optional.empty();
         }
-        System.out.println(password);
-        if(!password.equals(member.get().getPassword())){
+        return user.stream().findAny();
+    }
+    public Optional<User> authenticateMember(String username, String rawPassword){
+        Optional<User> user = userRepository.findByUsername(username);
+        if(!user.isPresent()){
+            System.out.println("이름으로 찾을수없음");
+            return Optional.empty();
+        }
+        if(!bCryptPasswordEncoder.matches(rawPassword, user.get().getPassword())){
+            System.out.println("패스워드 동일하지않음");
             return Optional.empty();
         }
 
-        return member.stream().findAny();
+        return user.stream().findAny();
     }
 }

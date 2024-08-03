@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/navBarStyle.css">
+</head>
+<body>
+    <nav class="nav-menu"th:fragment="navBar">
+        <div class="nav-container">
+            <a href="#" class="logo">Gourmet Code</a>
+            <ul class="nav-items">
+                <li><a href="#">맛집 탐색</a></li>
+                <li><a href="#">리뷰 작성</a></li>
+                <li><a href="#">푸드 갤러리</a></li>
+                <li><a href="/community/list">커뮤니티</a></li>
+            </ul>
+            <button class="auth-button" id="authButton"><a href="/loginForm">로그인</a></button>
+        </div>
+    </nav>
+
+</body>
+</html>
