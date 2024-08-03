@@ -1,0 +1,35 @@
+/* 버튼 스타일링 */
+.create-button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    z-index: 10; /* 버튼을 수평선 위에 배치 */
+    position: relative; /* z-index가 동작하도록 설정 */
+}
+
+/* 버튼을 수평선에 가깝게 위치시키기 위한 스타일 */
+.button-wrapper {
+    width: 100%;
+    position: relative;
+    padding: 10px 0; /* 버튼과 선 사이의 간격 조정 */
+}
+
+.button-wrapper hr {
+    margin: 0;
+    border: none;
+    border-top: 1px solid #000;
+}
+
+.button-wrapper .button-container {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin-top: 5px; /* 버튼과 선 사이의 간격 조정 */
+}

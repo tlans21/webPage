@@ -3,6 +3,7 @@ package HomePage.config;
 
 import HomePage.config.jwt.JwtAuthenticationFilter;
 import HomePage.config.jwt.JwtAuthorizationFilter;
+import HomePage.config.jwt.handler.OAuth2LoginSuccessHandler;
 import HomePage.config.jwt.handler.UserLoginSuccessHandler;
 import HomePage.config.oauth.PrincipalOauth2UserService;
 import HomePage.repository.UserRepository;
@@ -32,6 +33,9 @@ public class SecurityConfig{
     @Autowired
     private UserLoginSuccessHandler userLoginSuccessHandler;
 
+    @Autowired
+    private OAuth2LoginSuccessHandler oAuthLoginSuccessHandler;
+
     //AuthenticationConfiguration을 통해서 AuthenticationManager을 가져올 수 있다.
 
     @Bean
@@ -56,17 +60,17 @@ public class SecurityConfig{
                 .oauth2Login((oauth2Login) ->
                                            oauth2Login
                                                    .loginPage("/loginForm")
-                                                   .defaultSuccessUrl("/")
+                                                   .defaultSuccessUrl("/index")
                                                    .failureUrl("/loginForm")
                                                    .userInfoEndpoint((userInfoEndpoint) ->
                                                            userInfoEndpoint
                                                                    .userService(principalOauth2UserService)
-                                                   )
-                                                   .successHandler(userLoginSuccessHandler)
+
+                                                   ).successHandler(oAuthLoginSuccessHandler)
                 )
                 .authorizeHttpRequests((authorizeRequests) ->
                         authorizeRequests
-                                .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
+                                .requestMatchers("/api/v1/community/**").hasAnyRole("USER", "MANAGER", "ADMIN")
                                 .requestMatchers("/api/v1/user/**").hasAnyRole("USER", "MANAGER", "ADMIN")
                                 .requestMatchers("/api/v1/manager/**").hasAnyRole("MANAGER", "ADMIN")
                                 .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")

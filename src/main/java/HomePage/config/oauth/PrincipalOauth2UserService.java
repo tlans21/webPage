@@ -19,11 +19,12 @@ import java.util.Map;
 import java.util.Optional;
 
 @Service
-public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
+    public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
     @Autowired
     UserRepository userRepository;
     @Autowired
     BCryptPasswordEncoder bCryptPasswordEncoder;
+
 
 
     // 구글로 부터 후처리되는 함수

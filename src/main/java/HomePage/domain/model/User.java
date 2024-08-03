@@ -34,11 +34,12 @@ public class User {
     }
 
     @Builder
-    public User(String username, String password, String email, String role, String provider, String providerId, Timestamp createDate){
+    public User(String username, String password, String email, String role, String phoneNumber, String provider, String providerId, Timestamp createDate){
        this.username = username;
        this.password = password;
        this.email = email;
        this.roles = role;
+       this.phoneNumber = phoneNumber;
        this.provider = provider;
        this.providerId = providerId;
        this.createDate = createDate;
