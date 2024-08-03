@@ -46,6 +46,7 @@ public class SecurityConfig{
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         AuthenticationManager authenticationManager = authenticationManager(http.getSharedObject(AuthenticationConfiguration.class));
+
         http
 //                .addFilterBefore(new Filter3(), SecurityContextHolderFilter.class)
                 .csrf((csrfConfig) ->
@@ -64,6 +65,7 @@ public class SecurityConfig{
                                                    .userInfoEndpoint((userInfoEndpoint) ->
                                                            userInfoEndpoint
                                                                    .userService(principalOauth2UserService)
+
                                                    ).successHandler(oAuthLoginSuccessHandler)
                 )
                 .authorizeHttpRequests((authorizeRequests) ->
@@ -88,6 +90,7 @@ public class SecurityConfig{
         try {
             JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(authenticationManager, userRepository, userLoginSuccessHandler);
             jwtAuthenticationFilter.setAuthenticationManager(authenticationManager);
+//            jwtAuthenticationFilter.setFilterProcessesUrl("/login");
             jwtAuthenticationFilter.setAuthenticationSuccessHandler(userLoginSuccessHandler);
             return jwtAuthenticationFilter;
         } catch (Exception e) {

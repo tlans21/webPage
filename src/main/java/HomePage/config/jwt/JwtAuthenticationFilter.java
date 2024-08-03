@@ -41,7 +41,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException{
         System.out.println("JwtAuthentication : 로그인 시도중");
-
         try {
             BufferedReader br = request.getReader();
             String input = null;
@@ -64,12 +63,11 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             }
             System.out.println("Username: " + parsedUsername);
             System.out.println("Password: " + parsedPassword);
-
+          
             UsernamePasswordAuthenticationToken authenticationToken =
                     new UsernamePasswordAuthenticationToken(parsedUsername, parsedPassword);
             Authentication authentication = authenticationManager.authenticate(authenticationToken);
             PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-
             System.out.println(principalDetails.getUser().getUsername());
             System.out.println(principalDetails.getUser().getPassword());
             System.out.println("================================================");

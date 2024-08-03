@@ -1,5 +1,6 @@
 package HomePage.controller;
 
+
 import HomePage.exception.JoinException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.boot.web.servlet.error.ErrorController;

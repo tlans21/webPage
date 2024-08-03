@@ -14,7 +14,7 @@ public class Filter3 implements Filter {
         HttpServletResponse res = (HttpServletResponse) response;
 
         System.out.println(req.getMethod());
-        if (req.getMethod().equals("POST")){
+        if (req.getMethod().equals("GET")){
             System.out.println("POST 요청됨");
             String headerAuth = req.getHeader("Authorization");
             System.out.println(headerAuth);

@@ -8,10 +8,12 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
+@CrossOrigin(origins = "http://localhost:3000", exposedHeaders = "Authorization")
 public class AuthenticationController {
 
 
@@ -31,8 +33,6 @@ public class AuthenticationController {
     public String loginForm(){
         return "/login/loginForm";
     }
-
-
 
     @GetMapping("/manager")
     public @ResponseBody String manager(){
@@ -60,5 +60,4 @@ public class AuthenticationController {
     public @ResponseBody String data(){
         return "데이터";
     }
-
 }

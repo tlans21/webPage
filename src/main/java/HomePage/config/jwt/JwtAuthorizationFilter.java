@@ -32,6 +32,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         System.out.println("인증이나 권한이 필요한 주소 요청이 됨");
+
         String accessToken = getAccessTokenFromRequest(request);
 
         System.out.println("accessToken : " + accessToken);
