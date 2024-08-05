@@ -8,6 +8,7 @@ public interface CommentService <T extends Comment> {
     void saveComment(T Comment);
     void updateComment(T Comment);
     void deleteComment(Long id);
-    T getCommentById(Long id);
+    T getCommentByCommentId(Long CommentId);
+    List<T> getCommentByBoardId(Long board_id);
     List<T> getAllComments();
 }

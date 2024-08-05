@@ -70,6 +70,7 @@ public class SecurityConfig{
                 .authorizeHttpRequests((authorizeRequests) ->
                         authorizeRequests
                                 .requestMatchers("/api/v1/community/**").hasAnyRole("USER", "MANAGER", "ADMIN")
+                                .requestMatchers("/api/v1/comments/**").hasAnyRole("USER", "MANAGER", "ADMIN")
                                 .requestMatchers("/api/v1/user/**").hasAnyRole("USER", "MANAGER", "ADMIN")
                                 .requestMatchers("/api/v1/manager/**").hasAnyRole("MANAGER", "ADMIN")
                                 .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")

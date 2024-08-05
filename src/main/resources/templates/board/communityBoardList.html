@@ -5,6 +5,7 @@
     <title>커뮤니티 게시판</title>
     <link rel="stylesheet" type="text/css" th:href="@{/css/communityBoardStyle.css}">
     <link rel="stylesheet" type="text/css" th:href="@{/css/navBarStyle.css}">
+    <script th:src="@{/js/elapsedTime.js}"></script>
 </head>
 <body>
     <header th:replace="~{fragments/navBar :: navBar}"></header>
@@ -33,8 +34,7 @@
                 <div class="post-item">
                     <div class="post-header">
                         <span class="author" th:text="${board.writer}"></span>
-                        <span class="badge">541</span>
-                        <span class="timestamp" th:text="${board.registerDate}"></span>
+                        <span class="board-time" th:attr="data-timestamp=${board.registerDate}">시간</span>
                     </div>
                     <a th:href="@{/articles/{id}(id=${board.id}, topic='community', page=${boardPage.currentPage})}"><div class="post-title" th:text="${board.title}"></div></a>
                     <div class="post-tags">
@@ -49,7 +49,6 @@
                         <span class="likes">좋아요 3</span>
                     </div>
                 </div>
-                <!-- 추가 게시물 항목들... -->
             </div>
 
             <div>

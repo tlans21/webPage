@@ -10,5 +10,7 @@ public interface CommentRepository <T extends Comment> {
     List<T> selectAll();
     boolean update(T comment);
     boolean deleteByWriter(String writer);
-    Optional<T> selectById(Long id);
+    List<T> selectById(Long id);
+    Optional<T> findCommentById(Long commentId);
+    int countByBoardId(Long boardId);
 }
