@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 
 public abstract class Comment {
     Long id;
+    Long board_id;
     String writer;
     String content;
     Timestamp registerDate;
@@ -16,6 +17,14 @@ public abstract class Comment {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getBoard_id() {
+        return board_id;
+    }
+
+    public void setBoard_id(Long board_id) {
+        this.board_id = board_id;
     }
 
     public String getWriter() {

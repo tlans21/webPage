@@ -6,6 +6,7 @@
     <title th:text="${article.title}">게시글 상세</title>
     <link rel="stylesheet" type="text/css" th:href="@{/css/articleStyle.css}">
     <link rel="stylesheet" type="text/css" th:href="@{/css/navBarStyle.css}">
+    <script th:src="@{/js/elapsedTime.js}"></script>
 </head>
 <body>
     <header th:replace="~{fragments/navBar :: navBar}"></header>
@@ -24,30 +25,97 @@
                 게시글 내용
             </div>
             <div class="comments-section">
-                <h3>25개의 댓글</h3>
+                <h3 th:inline="text">[[${commentCnt}]]개의 댓글</h3>
                 <div sec:authorize="!isAuthenticated()" class="comment-form">
-                    <img src="/path/to/default-avatar.png" alt="Avatar" class="avatar">
                     <div class="comment-input-wrapper">
                         <p>작성하려면 <a th:href="@{/loginForm}" class="login-link">로그인</a>이 필요합니다.</p>
                         <button type="submit" class="btn" disabled>작성</button>
                     </div>
                 </div>
                 <div sec:authorize="isAuthenticated()" class="comment-form">
-                    <img src="/path/to/default-avatar.png" alt="Avatar" class="avatar">
                     <div class="comment-input-wrapper">
-                        <form th:action="@{/articles/{id}/comment(id=${article.id})}" method="post">
+                        <form th:action="@{/api/v1/comments/create/{id}(id=${article.id})}" method="post">
                             <textarea name="content" placeholder="댓글을 입력하세요" required></textarea>
                             <button type="submit" class="btn">작성</button>
                         </form>
                     </div>
                 </div>
+                <div class="comment-list" th:each="comment : ${comments}">
+                    <div class="comment-item">
+                      <div class="comment-header">
+                        <span class="user-name" th:text="${comment.writer}"></span>
+                        <span class="comment-date" th:text="${comment.registerDate}"></span>
+                      </div>
+                      <div class="comment-content">
+                        <span th:text="${comment.content}"></span>
+                      </div>
+                      <div class="comment-actions">
+                        <button class="like-btn">좋아요</button>
+                        <span class="like-count">0</span>
+                        <button class="dislike-btn">싫어요</button>
+                        <span class="dislike-count">0</span>
+                      </div>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="list-container">
-            zz
+            <div class="community-list">
+                <h2>커뮤니티 목록</h2>
+                <ul>
+                    <li th:each="board : ${boardPage.content}">
+                        <div class="post-item">
+                            <div class="post-title" th:inline="text"><a th:href="@{/articles/{id}(id=${board.id}, topic='community', page=${boardPage.currentPage})}">[[${board.title}]]</a></div>
+                            <div class="post-meta">
+                                <span class="author" th:text="${board.writer}">작성자</span>
+                                <span class="board-time" th:attr="data-timestamp=${board.registerDate}">시간</span>
+                                <!-- <span class="likes">
+                                    <i class="fas fa-thumbs-up"></i>
+                                    <span th:text="${post.likeCount}">0</span>
+                                </span> -->
+                                <!-- <span class="comments">
+                                    <i class="fas fa-comment"></i>
+                                    <span th:text="${post.commentCount}">0</span>
+                                </span> -->
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+                <div>
+                    총 페이지: <span th:text="${boardPage.totalPages}"></span>
+                    현재 페이지: <span th:text="${boardPage.currentPage}"></span>
+                </div>
+
+
+                <!-- <nav class="pagination-container">
+                    <div class="pagination">
+                        <button th:if="${boardPage.currentPage > 1}"
+                                th:onclick="'window.location.href=\'' + @{/community/list(page=${boardPage.currentPage - 1})} + '\''"
+                                class="pagination-button">Previous</button>
+
+                        <button th:if="${start > 1}"
+                                th:onclick="'window.location.href=\'' + @{/community/list(page=1)} + '\''"
+                                class="pagination-button">1</button>
+                        <span th:if="${start > 2}" class="pagination-ellipsis">...</span>
+
+                        <button th:each="pageNum : ${#numbers.sequence(start, end)}"
+                                th:onclick="'window.location.href=\'' + @{/community/list(page=${pageNum})} + '\''"
+                                th:text="${pageNum}"
+                                th:class="${pageNum == boardPage.currentPage} ? 'pagination-button active' : 'pagination-button'"></button>
+
+                        <span th:if="${end < boardPage.totalPages - 1}" class="pagination-ellipsis">...</span>
+                        <button th:if="${end < boardPage.totalPages}"
+                                th:onclick="'window.location.href=\'' + @{/community/list(page=${boardPage.totalPages})} + '\''"
+                                th:text="${boardPage.totalPages}"
+                                class="pagination-button"></button>
+
+                        <button th:if="${boardPage.currentPage < boardPage.totalPages}"
+                                th:onclick="'window.location.href=\'' + @{/community/list(page=${boardPage.currentPage + 1})} + '\''"
+                                class="pagination-button">Next</button>
+                    </div>
+                </nav> -->
+            </div>
         </div>
     </div>
-
-    <div class="list-section"
 </body>
 </html>

@@ -28,6 +28,7 @@ public class JdbcTemplateCommunityCommentRepository implements CommentRepository
         comment.setRegisterDate(regDate);
 
         Map<String, Object> parameters = new HashMap<>();
+        parameters.put("board_id", comment.getBoard_id());
         parameters.put("writer", comment.getWriter());
         parameters.put("content", comment.getContent());
         parameters.put("regdate", comment.getRegisterDate());
@@ -35,6 +36,12 @@ public class JdbcTemplateCommunityCommentRepository implements CommentRepository
         Number key = jdbcInsert.executeAndReturnKey(new MapSqlParameterSource(parameters));
         comment.setId(key.longValue());
         return comment;
+    }
+
+    @Override
+    public int countByBoardId(Long boardId) {
+        String sql = "SELECT COUNT(*) FROM security.communitycomment WHERE board_id = ?";
+        return jdbcTemplate.queryForObject(sql, Integer.class, boardId);
     }
 
     @Override
@@ -55,9 +62,15 @@ public class JdbcTemplateCommunityCommentRepository implements CommentRepository
     }
 
     @Override
-    public Optional<CommunityComment> selectById(Long id) {
-        List<CommunityComment> result = jdbcTemplate.query("select * from security.communitycomment where comment_id = ?", communityCommentRowMapper(), id);
+    public Optional<CommunityComment> findCommentById(Long commentId) {
+        List<CommunityComment> result = jdbcTemplate.query("select * from security.communtiycomment where id = ?", communityCommentRowMapper(), commentId);
         return result.stream().findAny();
+    }
+
+    @Override
+    public List<CommunityComment> selectById(Long boardId) {
+        List<CommunityComment> result = jdbcTemplate.query("select * from security.communitycomment where board_id = ?", communityCommentRowMapper(), boardId);
+        return result;
     }
 
     @Override
@@ -72,6 +85,7 @@ public class JdbcTemplateCommunityCommentRepository implements CommentRepository
        return (rs, rowNum) -> {
            CommunityComment communityComment = new CommunityComment();
            communityComment.setId(rs.getLong("comment_id"));
+           communityComment.setBoard_id(rs.getLong("board_id"));
            communityComment.setContent(rs.getString("content"));
            communityComment.setWriter(rs.getString("writer"));
            communityComment.setRegisterDate(rs.getTimestamp("regdate"));
