@@ -56,4 +56,6 @@ public class CommunityBoardApiController {
         boardService.saveBoard(board);
         return "redirect:/community/list";
     }
+
+
 }

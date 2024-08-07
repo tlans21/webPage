@@ -13,4 +13,16 @@ public class CommunityBoardApiRestController {
         this.boardService = boardService;
     }
 
+
+//    @PutMapping("/articles/{id}")
+//    public ResponseEntity<?> editCommunityArticle(@PathVariable Long id, @RequestBody CommunityBoard board, Authentication authentication){
+//        CommunityBoard article = boardService.getBoardById(id);
+//        if (article == null){
+//            return ResponseEntity.notFound().build();
+//        }
+//
+//        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal(); // 캐스팅
+//        if (principalDetails.getUsername() ==
+//    }
+
 }

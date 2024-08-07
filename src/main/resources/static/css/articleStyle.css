@@ -43,8 +43,41 @@ body {
 .article-content {
     margin-bottom: 30px;
 }
+.article-setting {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+}
+.article-setting .editBtn{
+    margin-top: 10px;
+    padding: 5px 15px;
+    background-color: #065fd4;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: 5px;
+}
+
+.editBtn:hover{
+    background-color: #45a049;
+}
+.article-setting .deleteBtn{
+    margin-left: 5px;
+    margin-top: 10px;
+    padding: 5px 15px;
+    background-color: #065fd4;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.deleteBtn:hover {
+    background-color: #45a049
+}
+
 .comment-list {
-  margin-top: 20px;
+    margin-top: 20px;
 }
 
 .comment-item {
@@ -210,6 +243,8 @@ body {
 }
 
 .comment-input-wrapper {
+    display: flex;
+    flex-direction: column;
     margin-bottom: 20px;
 }
 
@@ -231,6 +266,7 @@ body {
     cursor: pointer;
 }
 .btn {
+    margin-left: auto;
     background-color: #1e90ff;
     color: white;
     border: none;
@@ -238,6 +274,7 @@ body {
     border-radius: 5px;
     cursor: pointer;
     margin-top: 5px;
+    
 }
 .btn:hover {
     background-color: #45a049;

@@ -1,14 +1,11 @@
-package HomePage.controller.article.api;
+package HomePage.controller.board.comment.api;
 
 import HomePage.config.auth.PrincipalDetails;
 import HomePage.domain.model.CommunityComment;
 import HomePage.service.CommunityCommentService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/api/v1/comments")
