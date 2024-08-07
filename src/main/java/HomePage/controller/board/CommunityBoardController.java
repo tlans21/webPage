@@ -1,28 +1,38 @@
 package HomePage.controller.board;
 
+import HomePage.config.auth.PrincipalDetails;
 import HomePage.domain.model.CommunityBoard;
+import HomePage.domain.model.CommunityComment;
 import HomePage.domain.model.Page;
 import HomePage.service.CommunityBoardService;
+import HomePage.service.CommunityCommentService;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.sql.Timestamp;
+import java.util.List;
 
 @Controller
 @RequestMapping("/community")
 public class CommunityBoardController {
 
     private final CommunityBoardService boardService;
+    private final CommunityCommentService commentService;
 
-    public CommunityBoardController(CommunityBoardService boardService) {
+    public CommunityBoardController(CommunityBoardService boardService, CommunityCommentService commentService) {
         this.boardService = boardService;
+        this.commentService = commentService;
     }
 
     @GetMapping("/list")
     public String showCommunityBoardList(@RequestParam(value="page", defaultValue="1") int page, Model model) {
         Page<CommunityBoard> boardPage = boardService.getBoardPage(page);
-        model.addAttribute("boardPage", boardPage);
+
 
         int totalPages = boardPage.getTotalPages();
         int currentPage = boardPage.getCurrentPage();
@@ -33,15 +43,88 @@ public class CommunityBoardController {
         if (end - start + 1 < visiblePages) {
             start = Math.max(1, end - visiblePages + 1);
         }
-
+        model.addAttribute("boardPage", boardPage);
         model.addAttribute("start", start);
         model.addAttribute("end", end);
 
         return "/board/communityBoardList";
     }
+
     @GetMapping("/writeForm")
     public String showWriteForm(){
         return "/board/communityBoardWriteForm";
     }
 
+
+    @GetMapping("/{id}")
+    public String viewBoard(@PathVariable Long id,
+                              @RequestParam(required = false) String topic,
+                              @RequestParam(defaultValue = "1") int page,
+                              Model model) {
+
+        // 게시글 상세 정보 조회 로직
+        CommunityBoard board = boardService.getBoardById(id);
+        if (board == null){
+            return "error/404";
+        }
+
+        List<CommunityComment> comments = commentService.getCommentByBoardId(id);// 게시글 id를 통해서 해당 게시글의 댓글들을 불러온다.
+        int commentCnt = commentService.getCommentCntById(id); // 게시글 id를 통해서 해당 게시글의 댓글 수를 불러온다.
+
+        Page<CommunityBoard> boardPage = boardService.getBoardPage(page); // 현재 board의 매핑되어 있는 page를 통해 boarPage를 불러온다.
+        int totalPages = boardPage.getTotalPages();
+        int currentPage = boardPage.getCurrentPage();
+        int visiblePages = 5;
+        int start = Math.max(1, currentPage - (visiblePages / 2));
+        int end = Math.min(start + visiblePages - 1, totalPages);
+        Long currentId = id;
+
+        if (end - start + 1 < visiblePages) {
+            start = Math.max(1, end - visiblePages + 1);
+        }
+
+        model.addAttribute("comments", comments);
+        model.addAttribute("article", board);
+        model.addAttribute("commentCnt", commentCnt);
+        model.addAttribute("topic", topic);
+        model.addAttribute("page", page);
+        model.addAttribute("boardPage", boardPage);
+        model.addAttribute("start", start);
+        model.addAttribute("end", end);
+
+        Timestamp timestamp = boardPage.getContent().stream().findAny().get().getRegisterDate();
+        System.out.println(timestamp);
+        return "/board/boardViewDetail";
+    }
+
+    @GetMapping("/{id}/edit")
+    public String showEditForm(@PathVariable Long id, Model model, Authentication authentication){
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        String currentUsername = principalDetails.getUsername();
+
+        CommunityBoard board = boardService.getBoardById(id); // 게시판 정보 불러오기
+
+        // 게시판이 없는 경우 리턴
+        if (board == null){
+            return "error/404";
+        }
+
+        // 해당 유저의 게시글이 맞는지 권한 체크
+        if (!hasEditPermission(board, principalDetails)){
+            return "error/403";
+        }
+
+        model.addAttribute("board", board);
+
+        return "/board/boardEditView";
+    }
+
+    private boolean hasEditPermission(CommunityBoard board, PrincipalDetails principalDetails) {
+          String currentUsername = principalDetails.getUsername();
+          return board.getWriter().equals(currentUsername) || isAdmin(principalDetails);
+    }
+
+    private boolean isAdmin(PrincipalDetails principalDetails){
+        return principalDetails.getUser().getRoles().contains("ADMIN");
+    }
 }

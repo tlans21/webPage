@@ -6,6 +6,7 @@
     <title th:text="${article.title}">게시글 상세</title>
     <link rel="stylesheet" type="text/css" th:href="@{/css/articleStyle.css}">
     <link rel="stylesheet" type="text/css" th:href="@{/css/navBarStyle.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/paginationStyle.css}">
     <script th:src="@{/js/elapsedTime.js}"></script>
 </head>
 <body>
@@ -23,6 +24,13 @@
             </div>
             <div class="article-content" th:utext="${article.content}">
                 게시글 내용
+            </div>
+            <div th:with="loggedInUsername=${#authentication.principal instanceof T(HomePage.config.auth.PrincipalDetails) ? #authentication.principal.username : 'anonymousUser'}">
+                <div th:if="${loggedInUsername == article.writer}" class="article-setting">
+                    <button type="button" class="editBtn">수정</button>
+                    <button type="button" class="deleteBtn">삭제</button>
+                </div>
+            </div>
             </div>
             <div class="comments-section">
                 <h3 th:inline="text">[[${commentCnt}]]개의 댓글</h3>
@@ -65,7 +73,7 @@
                 <ul>
                     <li th:each="board : ${boardPage.content}">
                         <div class="post-item">
-                            <div class="post-title" th:inline="text"><a th:href="@{/articles/{id}(id=${board.id}, topic='community', page=${boardPage.currentPage})}">[[${board.title}]]</a></div>
+                            <div class="post-title" th:inline="text"><a th:href="@{/community/{id}(id=${board.id}, topic='community', page=${boardPage.currentPage})}">[[${board.title}]]</a></div>
                             <div class="post-meta">
                                 <span class="author" th:text="${board.writer}">작성자</span>
                                 <span class="board-time" th:attr="data-timestamp=${board.registerDate}">시간</span>
@@ -87,33 +95,32 @@
                 </div>
 
 
-                <!-- <nav class="pagination-container">
+                <nav class="pagination-container">
                     <div class="pagination">
                         <button th:if="${boardPage.currentPage > 1}"
-                                th:onclick="'window.location.href=\'' + @{/community/list(page=${boardPage.currentPage - 1})} + '\''"
+                                th:onclick="'window.location.href=\'' + @{/community/{id}(id=${article.id}, topic='community', page=${boardPage.currentPage - 1})} + '\''"
                                 class="pagination-button">Previous</button>
-
                         <button th:if="${start > 1}"
-                                th:onclick="'window.location.href=\'' + @{/community/list(page=1)} + '\''"
+                                th:onclick="'window.location.href=\'' + @{/community/{id}(id=${article.id}, topic='community', page=1)} + '\''"
                                 class="pagination-button">1</button>
                         <span th:if="${start > 2}" class="pagination-ellipsis">...</span>
 
                         <button th:each="pageNum : ${#numbers.sequence(start, end)}"
-                                th:onclick="'window.location.href=\'' + @{/community/list(page=${pageNum})} + '\''"
+                                th:onclick="'window.location.href=\'' + @{/community/{id}(id=${article.id}, topic='community',page=${pageNum})} + '\''"
                                 th:text="${pageNum}"
                                 th:class="${pageNum == boardPage.currentPage} ? 'pagination-button active' : 'pagination-button'"></button>
 
                         <span th:if="${end < boardPage.totalPages - 1}" class="pagination-ellipsis">...</span>
                         <button th:if="${end < boardPage.totalPages}"
-                                th:onclick="'window.location.href=\'' + @{/community/list(page=${boardPage.totalPages})} + '\''"
+                                th:onclick="'window.location.href=\'' + @{/community/{id}(id=${article.id}, topic='community', page=${boardPage.totalPages})} + '\''"
                                 th:text="${boardPage.totalPages}"
                                 class="pagination-button"></button>
 
                         <button th:if="${boardPage.currentPage < boardPage.totalPages}"
-                                th:onclick="'window.location.href=\'' + @{/community/list(page=${boardPage.currentPage + 1})} + '\''"
+                                th:onclick="'window.location.href=\'' + @{/community/{id}(id=${article.id}, topic='community', page=${boardPage.currentPage + 1})} + '\''"
                                 class="pagination-button">Next</button>
                     </div>
-                </nav> -->
+                </nav>
             </div>
         </div>
     </div>
