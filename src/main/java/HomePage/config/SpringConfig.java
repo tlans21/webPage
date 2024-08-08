@@ -34,7 +34,7 @@ public class SpringConfig {
 
     @Bean
     public CommunityBoardService communityBoardService(){
-        return new CommunityBoardService(communityBoardRepository());
+        return new CommunityBoardService(communityBoardRepository(), communityCommentRepository());
     }
 
     @Bean

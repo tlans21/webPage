@@ -38,10 +38,24 @@ public class CommunityCommentService implements CommentService<CommunityComment>
     }
 
     @Override
-    public void deleteComment(Long id) {
+    public void deleteCommentByCommentId(Long id) {
         CommunityComment comment = getCommentByCommentId(id);
-        if (!commentRepository.deleteByWriter(comment.getWriter())) {
-            throw new RuntimeException("Failed to delete board with id: " + id);
+        if (!commentRepository.deleteByCommentId(comment.getId())) {
+            throw new RuntimeException("Failed to delete board with comment_id: " + id);
+        }
+    }
+
+    @Override
+    public void deleteCommentsByBoardId(Long id) {
+        if(!commentRepository.deleteByBoardId(id)){
+            throw new RuntimeException("Failed to delete board with board_id: " + id);
+        }
+    }
+
+    @Override
+    public void deleteCommentByWriter(String writer) {
+        if (!commentRepository.deleteByWriter(writer)){
+            throw new RuntimeException("Failed to delete board with writer: " + writer);
         }
     }
 

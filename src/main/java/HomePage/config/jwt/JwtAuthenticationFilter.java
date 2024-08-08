@@ -17,7 +17,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 
 
@@ -42,28 +41,32 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException{
         System.out.println("JwtAuthentication : 로그인 시도중");
         try {
-            BufferedReader br = request.getReader();
-            String input = null;
-            String data = "";
-            while ((input = br.readLine()) != null) {
-                data += input;
-            }
-            System.out.println(data);
-            String parsedUsername = null;
-            String parsedPassword = null;
-            // parse
-            String[] pairs = data.split("&");
-            for (String pair : pairs) {
-                String[] keyValue = pair.split("=");
-                if (keyValue[0].equals("username")) {
-                    parsedUsername = keyValue[1];
-                } else if (keyValue[0].equals("password")) {
-                    parsedPassword = keyValue[1];
-                }
-            }
-            System.out.println("Username: " + parsedUsername);
-            System.out.println("Password: " + parsedPassword);
-          
+//            BufferedReader br = request.getReader();
+//            String input = null;
+//            String data = "";
+//            while ((input = br.readLine()) != null) {
+//                data += input;
+//            }
+//            System.out.println(data);
+//            String parsedUsername = null;
+//            String parsedPassword = null;
+//            // parse
+//            String[] pairs = data.split("&");
+//            for (String pair : pairs) {
+//                String[] keyValue = pair.split("=");
+//                if (keyValue[0].equals("username")) {
+//                    parsedUsername = keyValue[1];
+//                } else if (keyValue[0].equals("password")) {
+//                    parsedPassword = keyValue[1];
+//                }
+//            }
+//            System.out.println("Username: " + parsedUsername);
+//            System.out.println("Password: " + parsedPassword);
+            String parsedUsername = request.getParameter("username");
+            String parsedPassword = request.getParameter("password");
+            System.out.println(parsedUsername);
+            System.out.println(parsedPassword);
+
             UsernamePasswordAuthenticationToken authenticationToken =
                     new UsernamePasswordAuthenticationToken(parsedUsername, parsedPassword);
             Authentication authentication = authenticationManager.authenticate(authenticationToken);
@@ -82,8 +85,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             }catch (ServletException e3){
                 System.out.println("next2");
             }
-        }catch (IOException e1){
-            System.out.println("next3");
         }
         return null;
     }

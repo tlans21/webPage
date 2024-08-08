@@ -62,13 +62,10 @@ public class JdbcTemplateReviewBoardRepository implements BoardRepository<Review
         return true;
     }
 
+
     @Override
-    public boolean deleteByWriter(String writer) {
-        int isDelete = jdbcTemplate.update("DELETE FROM security.reviewBoard WHERE writer = ?", writer);
-        if (isDelete == 0 || isDelete > 1){
-            return false;
-        }
-        return true;
+    public boolean deleteById(Long id) {
+        return false;
     }
 
     @Override

@@ -1,12 +1,10 @@
 package HomePage.controller.board;
 
-import HomePage.config.auth.PrincipalDetails;
 import HomePage.domain.model.CommunityBoard;
 import HomePage.domain.model.CommunityComment;
 import HomePage.domain.model.Page;
 import HomePage.service.CommunityBoardService;
 import HomePage.service.CommunityCommentService;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -97,34 +95,5 @@ public class CommunityBoardController {
         return "/board/boardViewDetail";
     }
 
-    @GetMapping("/{id}/edit")
-    public String showEditForm(@PathVariable Long id, Model model, Authentication authentication){
-        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        String currentUsername = principalDetails.getUsername();
 
-        CommunityBoard board = boardService.getBoardById(id); // 게시판 정보 불러오기
-
-        // 게시판이 없는 경우 리턴
-        if (board == null){
-            return "error/404";
-        }
-
-        // 해당 유저의 게시글이 맞는지 권한 체크
-        if (!hasEditPermission(board, principalDetails)){
-            return "error/403";
-        }
-
-        model.addAttribute("board", board);
-
-        return "/board/boardEditView";
-    }
-
-    private boolean hasEditPermission(CommunityBoard board, PrincipalDetails principalDetails) {
-          String currentUsername = principalDetails.getUsername();
-          return board.getWriter().equals(currentUsername) || isAdmin(principalDetails);
-    }
-
-    private boolean isAdmin(PrincipalDetails principalDetails){
-        return principalDetails.getUser().getRoles().contains("ADMIN");
-    }
 }

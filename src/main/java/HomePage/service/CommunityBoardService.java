@@ -1,9 +1,10 @@
 package HomePage.service;
 
 import HomePage.domain.model.CommunityBoard;
+import HomePage.domain.model.CommunityComment;
 import HomePage.domain.model.Page;
 import HomePage.repository.BoardRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import HomePage.repository.CommentRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.Errors;
@@ -21,14 +22,13 @@ public class CommunityBoardService implements BoardService<CommunityBoard>{
     int pageSize;
 
     private final BoardRepository<CommunityBoard> communityBoardRepository;
+    private final CommentRepository<CommunityComment> communityCommentRepository;
 
 
-
-    @Autowired
-    public CommunityBoardService(BoardRepository<CommunityBoard> communityBoardRepository) {
+    public CommunityBoardService(BoardRepository<CommunityBoard> communityBoardRepository, CommentRepository<CommunityComment> communityCommentRepository) {
         this.communityBoardRepository = communityBoardRepository;
+        this.communityCommentRepository = communityCommentRepository;
     }
-
 
     @Transactional(readOnly = true)
     public Map<String, String> validateCommunityForm(Errors errors){
@@ -72,11 +72,15 @@ public class CommunityBoardService implements BoardService<CommunityBoard>{
         }
     }
 
+
     @Override
+    @Transactional
     public void deleteBoard(Long id) {
-        CommunityBoard board = getBoardById(id);
-        if (!communityBoardRepository.deleteByWriter(board.getWriter())) {
-            throw new RuntimeException("Failed to delete board with id: " + id);
+        if(!communityCommentRepository.deleteByBoardId(id)){
+            throw new RuntimeException("Failed to delete comment with board_id: " + id);
+        }
+        if (!communityBoardRepository.deleteById(id)) {
+            throw new RuntimeException("Failed to delete board with board_id: " + id);
         }
     }
 

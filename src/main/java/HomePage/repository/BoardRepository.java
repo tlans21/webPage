@@ -11,7 +11,7 @@ public interface BoardRepository<T extends Board>{
     T save(T board);
 
     boolean update(T board);
-    boolean deleteByWriter(String writer);
+    boolean deleteById(Long id);
 
     Optional<T> selectById(Long id);
     Optional<T> selectByTitle(String title);

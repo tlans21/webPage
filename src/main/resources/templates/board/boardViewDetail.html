@@ -27,8 +27,13 @@
             </div>
             <div th:with="loggedInUsername=${#authentication.principal instanceof T(HomePage.config.auth.PrincipalDetails) ? #authentication.principal.username : 'anonymousUser'}">
                 <div th:if="${loggedInUsername == article.writer}" class="article-setting">
-                    <button type="button" class="editBtn">수정</button>
-                    <button type="button" class="deleteBtn">삭제</button>
+                    <form th:action="@{/api/v1/community/{id}/editForm(id=${article.id})}">
+                        <button type="submit" class="editBtn">수정</button>
+                    </form>
+                    <form th:action="@{/api/v1/community/{id}/delete(id=${article.id})}" method="post">
+                        <input type="hidden" name="_method" value="delete" />
+                        <button type="sumbit" class="deleteBtn">삭제</button>
+                    </form>
                 </div>
             </div>
             </div>

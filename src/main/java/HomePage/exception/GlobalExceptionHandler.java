@@ -2,8 +2,13 @@ package HomePage.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -22,5 +27,14 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(CustomBadCredentialsException.class)
     public ResponseEntity<String> handleCustomBadCredentialsException(CustomBadCredentialsException ex) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("자격 증명 실패");
+    }
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public String handleValidationExceptions(MethodArgumentNotValidException ex, Model model) {
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getFieldErrors().forEach(error ->
+            errors.put("valid_" + error.getField(), error.getDefaultMessage())
+        );
+        model.addAllAttributes(errors);
+        return "board/boardEditView";  // 에러가 있을 경우 폼 페이지로 다시 이동
     }
 }
