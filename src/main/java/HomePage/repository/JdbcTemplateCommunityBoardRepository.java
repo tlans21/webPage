@@ -62,12 +62,9 @@ public class JdbcTemplateCommunityBoardRepository implements BoardRepository<Com
     }
 
     @Override
-    public boolean deleteByWriter(String writer) {
-        int isDelete = jdbcTemplate.update("DELETE FROM security.communityboard WHERE writer = ?", writer);
-        if (isDelete == 0 || isDelete > 1){
-            return false;
-        }
-        return true;
+    public boolean deleteById(Long id) {
+        int isDelete = jdbcTemplate.update("DELETE FROM security.communityboard WHERE board_id = ?", id);
+        return isDelete == 1;
     }
 
     @Override

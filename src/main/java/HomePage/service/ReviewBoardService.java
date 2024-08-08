@@ -51,7 +51,7 @@ public class ReviewBoardService implements BoardService<ReviewBoard>{
     @Override
     public void deleteBoard(Long id) {
         ReviewBoard reviewBoard = getBoardById(id);
-        if (!reviewBoardRepository.deleteByWriter(reviewBoard.getWriter())) {
+        if (!reviewBoardRepository.deleteById(reviewBoard.getId())) {
             throw new RuntimeException("Failed to delete board with id: " + id);
         }
     }

@@ -25,9 +25,11 @@ public class CommunityCommentApiController {
         comment.setContent(content);
         comment.setWriter(principalDetails.getUsername());
         comment.setBoard_id(articleId);
-        System.out.println(principalDetails.getUsername());
+
         commentService.saveComment(comment);
 
         return "redirect:/articles/" + articleId;
     }
+
+
 }

@@ -76,11 +76,21 @@ public class JdbcTemplateCommunityCommentRepository implements CommentRepository
     @Override
     public boolean deleteByWriter(String writer) {
         int isDelete = jdbcTemplate.update("DELETE FROM security.communitycomment WHERE writer = ?", writer);
-        if (isDelete == 0 || isDelete > 1){
-            return false;
-        }
-        return true;
+        return isDelete == 1;
     }
+
+    @Override
+    public boolean deleteByCommentId(Long id) {
+        int isDelete = jdbcTemplate.update("DELETE FROM security.communitycomment WHERE id = ?", id);
+        return isDelete == 1;
+    }
+
+    @Override
+    public boolean deleteByBoardId(Long id) {
+        int isDelete = jdbcTemplate.update("DELETE FROM security.communitycomment WHERE board_id = ?", id);
+        return isDelete >= 1;
+    }
+
     private RowMapper<CommunityComment> communityCommentRowMapper(){
        return (rs, rowNum) -> {
            CommunityComment communityComment = new CommunityComment();
