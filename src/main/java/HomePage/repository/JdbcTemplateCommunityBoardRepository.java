@@ -32,6 +32,7 @@ public class JdbcTemplateCommunityBoardRepository implements BoardRepository<Com
         parameters.put("title", communityBoard.getTitle());
         parameters.put("content", communityBoard.getContent());
         parameters.put("regdate", communityBoard.getRegisterDate());
+        parameters.put("viewCnt", communityBoard.getViewCnt());
 
         Number key = jdbcInsert.executeAndReturnKey(new MapSqlParameterSource(parameters));
         communityBoard.setId(key.longValue());
@@ -42,6 +43,17 @@ public class JdbcTemplateCommunityBoardRepository implements BoardRepository<Com
     public List<CommunityBoard> findPage(int offset, int limit) {
         String sql = "SELECT * FROM security.communityboard WHERE deleteDate IS NULL ORDER BY regdate DESC LIMIT ? OFFSET ?";
         return jdbcTemplate.query(sql, communityBoardRowMapper(), limit, offset); // offset은 건너띄려는 행, limit는 조회하려는 갯수
+    }
+    @Override
+    public List<CommunityBoard> findPageOrderByTopView(int offset, int limit) {
+        String sql = "SELECT * FROM security.communityboard ORDER BY viewCnt DESC LIMIT ? OFFSET ?";
+        return jdbcTemplate.query(sql, communityBoardRowMapper(), limit, offset);
+    }
+
+    @Override
+    public List<CommunityBoard> findPageOrderByTopCommentCnt(int offset, int limit) {
+        String sql = "SELECT * FROM security.communityboard ORDER BY commentCnt DESC LIMIT ? OFFSET ?";
+        return jdbcTemplate.query(sql, communityBoardRowMapper(), limit, offset);
     }
 
     @Override
@@ -89,6 +101,13 @@ public class JdbcTemplateCommunityBoardRepository implements BoardRepository<Com
     public List<CommunityBoard> selectAll() {
         return jdbcTemplate.query("select * from security.communityboard", communityBoardRowMapper());
     }
+    @Override
+    public int incrementViews(Long id){
+        return jdbcTemplate.update("UPDATE security.communityboard SET viewCnt = viewCnt + 1 where board_id = ?", id);
+    }
+    public int updateCommentCnt(Long id, int commentCnt){
+        return jdbcTemplate.update("UPDATE security.communityboard SET commentCnt = ? where board_id = ?", commentCnt, id);
+    }
 
     private RowMapper<CommunityBoard> communityBoardRowMapper(){
         return (rs, rowNum) -> {
@@ -101,6 +120,7 @@ public class JdbcTemplateCommunityBoardRepository implements BoardRepository<Com
             communityBoard.setRegisterDate(rs.getTimestamp("regdate"));
             communityBoard.setUpdateDate(rs.getTimestamp("updateDate"));
             communityBoard.setDeleteDate(rs.getTimestamp("deleteDate"));
+            communityBoard.setCommentCnt(rs.getInt("commentCnt"));
             return communityBoard;
         };
     }

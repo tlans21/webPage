@@ -28,6 +28,16 @@ public class JdbcTemplateReviewBoardRepository implements BoardRepository<Review
     }
 
     @Override
+    public List<ReviewBoard> findPageOrderByTopView(int offset, int limit) {
+        return null;
+    }
+
+    @Override
+    public List<ReviewBoard> findPageOrderByTopCommentCnt(int offset, int limit) {
+        return null;
+    }
+
+    @Override
     public int count() {
         String sql = "SELECT COUNT(*) FROM security.reviewBoard WHERE deleteDate IS NULL";
         return jdbcTemplate.queryForObject(sql, Integer.class);
@@ -90,6 +100,15 @@ public class JdbcTemplateReviewBoardRepository implements BoardRepository<Review
     public List<ReviewBoard> selectAll() {
         return jdbcTemplate.query("select * from security.reviewBoard", reviewBoardRowMapper());
     }
+    @Override
+    public int incrementViews(Long id) {
+        return 0;
+    }
+
+    @Override
+    public int updateCommentCnt(Long id, int commentCnt) {
+        return 0;
+    }
 
     private RowMapper<ReviewBoard> reviewBoardRowMapper(){
         return (rs, rowNum) -> {
@@ -105,4 +124,6 @@ public class JdbcTemplateReviewBoardRepository implements BoardRepository<Review
             return reviewBoard;
         };
     }
+
+
 }

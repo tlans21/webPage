@@ -12,6 +12,7 @@ public abstract class Board {
     Timestamp deleteDate;
 
     int viewCnt;
+    int commentCnt;
 
 
     public Long getId() {
@@ -76,5 +77,13 @@ public abstract class Board {
 
     public void setViewCnt(int viewCnt) {
         this.viewCnt = viewCnt;
+    }
+
+    public int getCommentCnt() {
+        return commentCnt;
+    }
+
+    public void setCommentCnt(int commentCnt) {
+        this.commentCnt = commentCnt;
     }
 }

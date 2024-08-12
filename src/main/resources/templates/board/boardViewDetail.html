@@ -20,7 +20,7 @@
             <div class="article-meta">
                 <span th:text="${article.writer}">작성자</span> |
                 <span th:if="${article.registerDate == null}">날짜 정보 없음</span> |
-                조회 <span th:text="${article.viewCnt}">0</span>
+                조회 <span th:text="${article.viewCnt}"></span>
             </div>
             <div class="article-content" th:utext="${article.content}">
                 게시글 내용
@@ -47,8 +47,9 @@
                 </div>
                 <div sec:authorize="isAuthenticated()" class="comment-form">
                     <div class="comment-input-wrapper">
-                        <form th:action="@{/api/v1/comments/create/{id}(id=${article.id})}" method="post">
+                        <form th:action="@{/api/v1/comments/create/{id}(id=${article.id}, topic='community')}" method="post">
                             <textarea name="content" placeholder="댓글을 입력하세요" required></textarea>
+                            <input type="hidden" name="page" th:value="${boardPage.currentPage}">
                             <button type="submit" class="btn">작성</button>
                         </form>
                     </div>
@@ -80,8 +81,10 @@
                         <div class="post-item">
                             <div class="post-title" th:inline="text"><a th:href="@{/community/{id}(id=${board.id}, topic='community', page=${boardPage.currentPage})}">[[${board.title}]]</a></div>
                             <div class="post-meta">
+                                <span th:inline="text">[[${board.commentCnt}]]개의 댓글</span>
                                 <span class="author" th:text="${board.writer}">작성자</span>
                                 <span class="board-time" th:attr="data-timestamp=${board.registerDate}">시간</span>
+
                                 <!-- <span class="likes">
                                     <i class="fas fa-thumbs-up"></i>
                                     <span th:text="${post.likeCount}">0</span>

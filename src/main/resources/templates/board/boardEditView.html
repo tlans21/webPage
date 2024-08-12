@@ -9,24 +9,28 @@
 </head>
 <body>
     <header th:replace="~{fragments/navBar :: navBar}"></header>
-    <div class="write-form">
-        <div class="form-header">
-            <h2>게시글 수정</h2>
-            <button class="btn btn-secondary">국 최신순</button>
+    <div class="content-wrapper">
+        <div class="ad-space">
+                광고 영역 (추후 구현 예정)
         </div>
-        <form th:action="@{/api/v1/community/{id}/edit(id=${article.id})}" method="post">
-            <input type="hidden" name="_method" value="put" />
-            
-            <input type="text" name="title" placeholder="제목을 입력하세요" th:value="${article.title}">
-            <div class="error-message" th:if="${valid_title != null}" th:text="${valid_title}"></div>
-            
-            <textarea name="content" placeholder="내용을 입력하세요" th:text="${article.content}"></textarea>
-            <div class="error-message" th:if="${valid_content != null}" th:text="${valid_content}"></div>
-            
-            <div class="submit-button">
-                <button type="submit" class="btn btn-primary">수정하기</button>
+        <div class="write-form">
+            <div class="form-header">
+                <h2>게시글 수정</h2>
             </div>
-        </form>
-    </div>  
+            <form th:action="@{/api/v1/community/{id}/edit(id=${article.id})}" method="post">
+                <input type="hidden" name="_method" value="put" />
+                
+                <input type="text" name="title" placeholder="제목을 입력하세요" th:value="${article.title}">
+                <div class="error-message" th:if="${valid_title != null}" th:text="${valid_title}"></div>
+                
+                <textarea name="content" placeholder="내용을 입력하세요" th:text="${article.content}"></textarea>
+                <div class="error-message" th:if="${valid_content != null}" th:text="${valid_content}"></div>
+                
+                <div class="submit-button">
+                    <button type="submit" class="btn btn-primary">수정하기</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </body>
 </html>

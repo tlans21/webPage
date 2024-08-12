@@ -4,33 +4,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>글 작성</title>
-    <link rel="stylesheet" type="text/css" th:href="@{/css/navBarStyle.css}">
     <link rel="stylesheet" type="text/css" th:href="@{/css/communityBoardWriteFormStyle.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/navBarStyle.css}">
 </head>
 <body>
     <header th:replace="~{fragments/navBar :: navBar}"></header>
-    <div class="write-form">
-        <div class="form-header">
-            <h2>게시글 작성</h2>
-            <button class="btn btn-secondary">국 최신순</button>
+    <div class="content-wrapper">
+        <div class="ad-space">
+                광고 영역 (추후 구현 예정)
         </div>
-        <form th:action="@{/api/v1/community/submit}" th:object="${communityBoardWriteForm}" method="post">
-            <input type="text" name="title" placeholder="제목을 입력하세요">
-            <div class="error-message" th:if="${valid_title != null}" th:text="${valid_title}"></div>
-            
-            <div class="tag-input">
-                <span class="tag">태그1</span>
-                <span class="tag">태그2</span>
-                <input type="text" placeholder="태그를 입력하세요">
+        <div class="write-form">
+            <div class="form-header">
+                <h2>게시글 작성</h2>
             </div>
-            
-            <textarea name="content" placeholder="내용을 입력하세요"></textarea>
-            <div class="error-message" th:if="${valid_content != null}" th:text="${valid_content}"></div>
-            
-            <div class="submit-button">
-                <button type="submit" class="btn btn-primary">작성하기</button>
-            </div>
-        </form>
-    </div>
+            <form th:action="@{/api/v1/community/submit}" th:object="${communityBoardWriteForm}" method="post">
+                <input type="text" name="title" placeholder="제목을 입력하세요">
+                <div class="error-message" th:if="${valid_title != null}" th:text="${valid_title}"></div>
+                
+                <div class="tag-input">
+                    <span class="tag">태그1</span>
+                    <span class="tag">태그2</span>
+                    <input type="text" placeholder="태그를 입력하세요">
+                </div>
+                
+                <textarea name="content" placeholder="내용을 입력하세요"></textarea>
+                <div class="error-message" th:if="${valid_content != null}" th:text="${valid_content}"></div>
+                
+                <div class="submit-button">
+                    <button type="submit" class="btn btn-primary">작성하기</button>
+                </div>
+            </form>
+        </div>
+    </div>  
 </body>
 </html>

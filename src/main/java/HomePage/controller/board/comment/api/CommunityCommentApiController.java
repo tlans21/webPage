@@ -5,7 +5,10 @@ import HomePage.domain.model.CommunityComment;
 import HomePage.service.CommunityCommentService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/api/v1/comments")
@@ -16,19 +19,20 @@ public class CommunityCommentApiController {
         this.commentService = commentService;
     }
 
-    @PostMapping("/create/{articleId}")
-    public String createComment(@PathVariable Long articleId,
+    @PostMapping("/create/{id}")
+    public String createComment(@PathVariable Long id,
                                 @RequestParam String content,
+                                @RequestParam(defaultValue = "1") int page,
                                 @AuthenticationPrincipal PrincipalDetails principalDetails) {
         // 댓글 생성 로직
         CommunityComment comment = new CommunityComment();
         comment.setContent(content);
         comment.setWriter(principalDetails.getUsername());
-        comment.setBoard_id(articleId);
+        comment.setBoard_id(id);
 
-        commentService.saveComment(comment);
+        commentService.saveCommentAndIncrementCommentCnt(comment);
 
-        return "redirect:/articles/" + articleId;
+        return "redirect:/community/" + id + "?topic=community&page=" + page;
     }
 
 

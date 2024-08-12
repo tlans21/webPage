@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <title>커뮤니티 게시판</title>
     <link rel="stylesheet" type="text/css" th:href="@{/css/communityBoardStyle.css}">
-    <link rel="stylesheet" type="text/css" th:href="@{/css/navBarStyle.css}">
     <link rel="stylesheet" type="text/css" th:href="@{/css/paginationStyle.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/navBarStyle.css}">
+    <script th:src="@{/js/dropDown.js}"></script>
     <script th:src="@{/js/elapsedTime.js}"></script>
 </head>
 <body>
@@ -19,12 +20,17 @@
                 <form th:action="@{/api/v1/community/write}" method="get">
                     <button class="btn-primary">작성하기</button>
                 </form>
-                <nav>
-                    <a href="#">사는얘기</a>
-                    <a href="#">모임&스터디</a>
-                    <a href="#">전체</a>
-                </nav>
-                <button class="btn-secondary">국 최신순</button>
+                <div class="dropdown">
+                    <button class="dropdown-toggle" onclick="toggleDropdown()">
+                        <span id="currentSort" th:text="${sort == 'popular' ? '조회순' : (sort == 'comments' ? '댓글순' : '최신순')}">최신순</span>
+                        <span class="caret">▼</span>
+                    </button>
+                    <div id="sortDropdown" class="dropdown-menu">
+                        <a href="#" th:href="@{/community/list(page=${boardPage.currentPage}, sort='latest')}" onclick="return changeSort('latest', this.href)">최신순</a>
+                        <a href="#" th:href="@{/community/list(page=${boardPage.currentPage}, sort='popular')}" onclick="return changeSort('popular', this.href)">조회순</a>
+                        <a href="#" th:href="@{/community/list(page=${boardPage.currentPage}, sort='comments')}" onclick="return changeSort('comments', this.href)">댓글순</a>
+                    </div>
+                </div>
             </div>
 
             <div class="search-bar">
@@ -45,8 +51,8 @@
                         <span class="tag">국비컴집대</span>
                     </div>
                     <div class="post-stats">
-                        <span class="views" th:text="${board.viewCnt}"></span>
-                        <span class="comments">댓글 2</span>
+                        <span th:inline="text">[[${board.commentCnt}]]개의 댓글</span>
+                        <span class="views" th:inline="text">조회수 [[${board.viewCnt}]]</span>
                         <span class="likes">좋아요 3</span>
                     </div>
                 </div>

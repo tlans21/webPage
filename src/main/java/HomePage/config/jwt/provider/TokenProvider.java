@@ -6,6 +6,8 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -33,7 +35,6 @@ public class TokenProvider {
             verifier.verify(token);
             return true;
         } catch (JWTVerificationException exception) {
-            // Token is invalid
             return false;
         }
     }
@@ -55,5 +56,25 @@ public class TokenProvider {
         } catch (JWTVerificationException exception) {
             return true; // 예외가 발생하면 만료된 것으로 간주
         }
+    }
+
+    public String getAccessTokenFromRequest(HttpServletRequest request){
+        String accessToken = null;
+        Cookie[] cookies = request.getCookies();
+
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("access_token")) { // 쿠키의 이름에 맞게 수정
+                       accessToken = cookie.getValue();
+                       break;
+                }
+            }
+        }
+        return accessToken;
+    }
+
+    public String invalidateToken(String token){
+
+        return null;
     }
 }
