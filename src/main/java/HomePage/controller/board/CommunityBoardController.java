@@ -28,10 +28,28 @@ public class CommunityBoardController {
     }
 
     @GetMapping("/list")
-    public String showCommunityBoardList(@RequestParam(value="page", defaultValue="1") int page, Model model) {
-        Page<CommunityBoard> boardPage = boardService.getBoardPage(page);
+    public String showCommunityBoardList(@RequestParam(value="page", defaultValue = "1") int page,
+                                         @RequestParam(value="sort", defaultValue = "latest") String sort,
+                                         Model model) {
+        Page<CommunityBoard> boardPage;
+        switch (sort) {
+            case "popular":
+                boardPage = boardService.getTopViewedBoardPage(page);
+                break;
+            case "comment":
+                boardPage = boardService.getTopCommentCntBoardPage(page);
+                break;
+            case "latest":
+            default:
+                boardPage = boardService.getBoardPage(page);
+                break;
+        }
+        addPaginationAttributes(model, boardPage, sort);
 
+        return "/board/communityBoardList";
+    }
 
+    private void addPaginationAttributes(Model model, Page<CommunityBoard> boardPage, String sort){
         int totalPages = boardPage.getTotalPages();
         int currentPage = boardPage.getCurrentPage();
         int visiblePages = 5;
@@ -44,8 +62,7 @@ public class CommunityBoardController {
         model.addAttribute("boardPage", boardPage);
         model.addAttribute("start", start);
         model.addAttribute("end", end);
-
-        return "/board/communityBoardList";
+        model.addAttribute("sort", sort);
     }
 
     @GetMapping("/writeForm")
@@ -61,7 +78,7 @@ public class CommunityBoardController {
                               Model model) {
 
         // 게시글 상세 정보 조회 로직
-        CommunityBoard board = boardService.getBoardById(id);
+        CommunityBoard board = boardService.getBoardByIdAndIncrementViews(id);
         if (board == null){
             return "error/404";
         }
@@ -69,13 +86,14 @@ public class CommunityBoardController {
         List<CommunityComment> comments = commentService.getCommentByBoardId(id);// 게시글 id를 통해서 해당 게시글의 댓글들을 불러온다.
         int commentCnt = commentService.getCommentCntById(id); // 게시글 id를 통해서 해당 게시글의 댓글 수를 불러온다.
 
+
         Page<CommunityBoard> boardPage = boardService.getBoardPage(page); // 현재 board의 매핑되어 있는 page를 통해 boarPage를 불러온다.
         int totalPages = boardPage.getTotalPages();
         int currentPage = boardPage.getCurrentPage();
         int visiblePages = 5;
         int start = Math.max(1, currentPage - (visiblePages / 2));
         int end = Math.min(start + visiblePages - 1, totalPages);
-        Long currentId = id;
+
 
         if (end - start + 1 < visiblePages) {
             start = Math.max(1, end - visiblePages + 1);

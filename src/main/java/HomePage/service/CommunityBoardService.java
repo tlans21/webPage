@@ -13,7 +13,6 @@ import org.springframework.validation.FieldError;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 
 public class CommunityBoardService implements BoardService<CommunityBoard>{
@@ -43,12 +42,30 @@ public class CommunityBoardService implements BoardService<CommunityBoard>{
     @Override
     public Page<CommunityBoard> getBoardPage(int pageNumber) {
         int totalBoards = communityBoardRepository.count();
-        System.out.println("count()");
         int totalPages = (int) Math.ceil((double) totalBoards / pageSize);
         int offset = (pageNumber - 1) * pageSize;
-
         List<CommunityBoard> communityBoards = communityBoardRepository.findPage(offset, pageSize);
-        System.out.println("count()2");
+
+        return new Page<CommunityBoard>(communityBoards, pageNumber, totalPages, pageSize);
+    }
+
+    @Override
+    public Page<CommunityBoard> getTopViewedBoardPage(int pageNumber) {
+        int totalBoards = communityBoardRepository.count();
+        int totalPages = (int) Math.ceil((double) totalBoards / pageSize);
+        int offset = (pageNumber - 1) * pageSize;
+        List<CommunityBoard> communityBoards = communityBoardRepository.findPageOrderByTopView(offset, pageSize);
+
+        return new Page<CommunityBoard>(communityBoards, pageNumber, totalPages, pageSize);
+    }
+
+    @Override
+    public Page<CommunityBoard> getTopCommentCntBoardPage(int pageNumber) {
+        int totalBoards = communityBoardRepository.count();
+        int totalPages = (int) Math.ceil((double) totalBoards / pageSize);
+        int offset = (pageNumber - 1) * pageSize;
+        List<CommunityBoard> communityBoards = communityBoardRepository.findPageOrderByTopCommentCnt(offset, pageSize);
+
         return new Page<CommunityBoard>(communityBoards, pageNumber, totalPages, pageSize);
     }
 
@@ -103,19 +120,20 @@ public class CommunityBoardService implements BoardService<CommunityBoard>{
         return communityBoardRepository.selectAll();
     }
 
-    @Override
-    public void incrementViewCount(Long boardId) {
-        Optional<CommunityBoard> communityBoardOpt = communityBoardRepository.selectById(boardId);
-        if (communityBoardOpt.isPresent()) {
-            CommunityBoard communityBoard = communityBoardOpt.get();
-            communityBoard.setViewCnt(communityBoard.getViewCnt() + 1);
-            communityBoardRepository.update(communityBoard);
-        }
+
+    @Transactional
+    public CommunityBoard getBoardByIdAndIncrementViews(Long id){
+        incrementViews(id);
+        CommunityBoard board = getBoardById(id);
+        return board;
     }
 
     @Override
-    public List<CommunityBoard> getTopViewedBoards(int limit) {
-        throw new UnsupportedOperationException("Not implemented yet");
+    public void incrementViews(Long id){
+        int rowsAffected = communityBoardRepository.incrementViews(id);
+        if(rowsAffected != 1){
+            throw new IllegalStateException("Expected 1 row to be updated, but got " + rowsAffected);
+        }
     }
 
 }

@@ -7,6 +7,8 @@ import java.util.Optional;
 
 public interface BoardRepository<T extends Board>{
     List<T> findPage(int offset, int limit);
+    List<T> findPageOrderByTopView(int offset, int limit);
+    List<T> findPageOrderByTopCommentCnt(int offset, int limit);
     int count();
     T save(T board);
 
@@ -18,5 +20,8 @@ public interface BoardRepository<T extends Board>{
     Optional<T> selectByWriter(String writer);
 
     List<T> selectAll();
+
+    int incrementViews(Long id);
+    int updateCommentCnt(Long id, int commentCnt);
 
 }

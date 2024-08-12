@@ -245,6 +245,7 @@ body {
 .comment-input-wrapper {
     display: flex;
     flex-direction: column;
+    height: 200px;
     margin-bottom: 20px;
 }
 
@@ -274,11 +275,10 @@ body {
     border-radius: 5px;
     cursor: pointer;
     margin-top: 5px;
-    
 }
-.btn:hover {
+/* .btn:hover {
     background-color: #45a049;
-}
+} */
 .community-list {
     background-color: white;
     padding: 2px;

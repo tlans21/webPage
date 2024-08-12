@@ -4,6 +4,7 @@
     --accent-color: #feca57;
     --text-color: #2d3436;
     --background-color: #f9f9f9;
+    --card-bg-color: #ffffff;
 }
 body {
     margin: 0;
@@ -43,6 +44,7 @@ body {
 .nav-items li {
     margin-left: 30px;
 }
+
 .nav-items li a {
     color: var(--text-color);
     text-decoration: none;
@@ -64,11 +66,18 @@ body {
     cursor: pointer;
     transition: all 0.3s ease;
 }
+
+.auth-button a {
+    text-decoration-line: none;
+}
+
 .auth-button:hover {
     background-color: #ffd571;
     transform: translateY(-2px);
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
+
+
 .ad-space {
     height: 100px;
     background-color: #e0e0e0;

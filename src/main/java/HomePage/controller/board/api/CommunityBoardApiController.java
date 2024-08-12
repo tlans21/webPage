@@ -54,6 +54,7 @@ public class CommunityBoardApiController {
         System.out.println(principalDetails.getUsername());
         board.setWriter(principalDetails.getUsername());
         board.setViewCnt(0);
+        board.setCommentCnt(0);
         boardService.saveBoard(board);
         return "redirect:/community/list";
     }

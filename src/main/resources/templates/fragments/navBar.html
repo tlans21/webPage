@@ -8,14 +8,21 @@
 <body>
     <nav class="nav-menu"th:fragment="navBar">
         <div class="nav-container">
-            <a href="#" class="logo">Gourmet Code</a>
+            <a th:href="@{/index}" class="logo">Gourmet Code</a>
             <ul class="nav-items">
                 <li><a href="#">맛집 탐색</a></li>
                 <li><a href="#">리뷰 작성</a></li>
                 <li><a href="#">푸드 갤러리</a></li>
-                <li><a href="/community/list">커뮤니티</a></li>
+                <li><a th:href="@{/community/list}">커뮤니티</a></li>
             </ul>
-            <button class="auth-button" id="authButton"><a href="/loginForm">로그인</a></button>
+            <div sec:authorize="!isAuthenticated()">
+                <button class="auth-button" id="authButton"><a th:href="@{/loginForm}">로그인/회원가입</a></button>
+            </div>
+            <div sec:authorize="isAuthenticated()">
+                <form th:action="@{/api/logout}" method="post">
+                    <button type="submit" class="auth-button" id="logoutButton">로그아웃</button>
+                </form>
+            </div>
         </div>
     </nav>
 

@@ -59,7 +59,7 @@ public class SpringConfig {
 
     @Bean
     public CommunityCommentService communityCommentService(){
-        return new CommunityCommentService(communityCommentRepository());
+        return new CommunityCommentService(communityCommentRepository(), communityBoardRepository());
     }
 
 }

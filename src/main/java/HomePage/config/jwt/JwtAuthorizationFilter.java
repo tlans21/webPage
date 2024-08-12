@@ -6,7 +6,6 @@ import HomePage.domain.model.User;
 import HomePage.repository.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +32,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         System.out.println("인증이나 권한이 필요한 주소 요청이 됨");
 
-        String accessToken = getAccessTokenFromRequest(request);
+        String accessToken = tokenProvider.getAccessTokenFromRequest(request);
 
         System.out.println("accessToken : " + accessToken);
 
@@ -68,25 +67,9 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
             // 세션에 authentication 저장이 되어야지만 접근 제한이 있는 리소스에 접근이 가능함.
             SecurityContextHolder.getContext().setAuthentication(authentication);
-
-
         }
 
         chain.doFilter(request, response);
     }
 
-    private String getAccessTokenFromRequest(HttpServletRequest request){
-        String accessToken = null;
-        Cookie[] cookies = request.getCookies();
-
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("access_token")) { // 쿠키의 이름에 맞게 수정
-                       accessToken = cookie.getValue();
-                       break;
-                }
-            }
-        }
-        return accessToken;
-    }
 }

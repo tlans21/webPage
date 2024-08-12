@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.util.List;
-import java.util.Optional;
 
 
 public class ReviewBoardService implements BoardService<ReviewBoard>{
@@ -75,18 +74,33 @@ public class ReviewBoardService implements BoardService<ReviewBoard>{
         return reviewBoardRepository.selectAll();
     }
 
+//    @Override
+//    public void incrementViewCount(Long boardId) {
+//        Optional<ReviewBoard> reviewBoardOpt = reviewBoardRepository.selectById(boardId);
+//        if (reviewBoardOpt.isPresent()) {
+//            ReviewBoard reviewBoard = reviewBoardOpt.get();
+//            reviewBoard.setViewCnt(reviewBoard.getViewCnt() + 1);
+//            reviewBoardRepository.update(reviewBoard);
+//        }
+//    }
+
     @Override
-    public void incrementViewCount(Long boardId) {
-        Optional<ReviewBoard> reviewBoardOpt = reviewBoardRepository.selectById(boardId);
-        if (reviewBoardOpt.isPresent()) {
-            ReviewBoard reviewBoard = reviewBoardOpt.get();
-            reviewBoard.setViewCnt(reviewBoard.getViewCnt() + 1);
-            reviewBoardRepository.update(reviewBoard);
-        }
+    public Page<ReviewBoard> getTopViewedBoardPage(int pageNumber) {
+        return null;
+    }
+
+    public ReviewBoard getBoardByIdAndIncrementViews(Long id) {
+
+        return null;
     }
 
     @Override
-    public List<ReviewBoard> getTopViewedBoards(int limit) {
-        throw new UnsupportedOperationException("Not implemented yet");
+    public Page<ReviewBoard> getTopCommentCntBoardPage(int pageNumber) {
+        return null;
+    }
+
+    @Override
+    public void incrementViews(Long id) {
+
     }
 }
