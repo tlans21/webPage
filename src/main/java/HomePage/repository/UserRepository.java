@@ -12,6 +12,6 @@ public interface UserRepository {
     Optional<User> findByEmail(String email);
     Optional<User> findByPhoneNumber(String phoneNumber);
     List<User> findAll();
-
+    void setTableName(String tableName);
 
 }

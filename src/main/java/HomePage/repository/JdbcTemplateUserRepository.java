@@ -19,12 +19,12 @@ public class JdbcTemplateUserRepository implements UserRepository {
     public JdbcTemplateUserRepository(DataSource dataSource) {
         jdbcTemplate = new JdbcTemplate(dataSource);
     }
-
+    private String tableName = "security.user";
 
     @Override
     public User save(User user) {
         SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
-        jdbcInsert.withTableName("user").usingGeneratedKeyColumns("id");
+        jdbcInsert.withTableName(tableName).usingGeneratedKeyColumns("id");
         Timestamp createDate = new Timestamp(System.currentTimeMillis());
         Timestamp loginDate = new Timestamp(System.currentTimeMillis());
         user.setCreateDate(createDate);
@@ -49,7 +49,8 @@ public class JdbcTemplateUserRepository implements UserRepository {
 
     @Override
     public Optional<User> findById(Long id) {
-        List<User> result = jdbcTemplate.query("select * from security.user where id = ?", memberRowMapper(), id);
+        String sql = String.format("SELECT * FROM %s where id = ?", tableName);
+        List<User> result = jdbcTemplate.query(sql, memberRowMapper(), id);
         // 리스트의 병렬 검색을 위해서 stream()을 사용
         // Optional<>을 사용하는 이유로는 null 값이 오면 발생하는 Null Pointer Exception을 막기 위함이며. 결국 허용함에 따라 메모리를 필요로 하는데
         // 여러개의 null 객체를 생성하더라도 static 키워드를 통해서 빈 객체를 공유함으로써 메모리를 절약할 수 있도록 설계가 되어있음.
@@ -58,26 +59,30 @@ public class JdbcTemplateUserRepository implements UserRepository {
 
     @Override
     public Optional<User> findByUsername(String username) {
-        List<User> result = jdbcTemplate.query("select * from security.user where username = ?", memberRowMapper(), username);
+        String sql = String.format("SELECT * FROM %s where username = ?", tableName);
+        List<User> result = jdbcTemplate.query(sql, memberRowMapper(), username);
         System.out.println(result);
         return result.stream().findAny();
     }
 
     @Override
     public List<User> findAll() {
-        return jdbcTemplate.query("select * from security.user", memberRowMapper());
+        String sql = String.format("SELECT * FROM %s", tableName);
+        return jdbcTemplate.query(sql, memberRowMapper());
     }
 
     @Override
     public Optional<User> findByEmail(String email) {
-        List<User> result = jdbcTemplate.query("select * from security.user where email = ?", memberRowMapper(), email);
+        String sql = String.format("SELECT * FROM %s where email = ?", tableName);
+        List<User> result = jdbcTemplate.query(sql, memberRowMapper(), email);
         System.out.println(result);
         return result.stream().findAny();
     }
 
     @Override
     public Optional<User> findByPhoneNumber(String phoneNumber) {
-        List<User> result = jdbcTemplate.query("select * from security.user where phoneNumber = ?", memberRowMapper(), phoneNumber);
+        String sql = String.format("SELECT * FROM %s where phoneNumber = ?", tableName);
+        List<User> result = jdbcTemplate.query(sql, memberRowMapper(), phoneNumber);
         return result.stream().findAny();
     }
 
@@ -93,5 +98,9 @@ public class JdbcTemplateUserRepository implements UserRepository {
             user.setRoles(rs.getString("Role"));
             return user;
         };
+    }
+    @Override
+    public void setTableName(String tableName){
+        this.tableName = tableName;
     }
 }
