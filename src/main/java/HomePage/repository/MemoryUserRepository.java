@@ -46,6 +46,11 @@ public class MemoryUserRepository implements UserRepository {
                 .findAny();
     }
 
+    @Override
+    public void setTableName(String tableName) {
+
+    }
+
     public void clearStore() {
         store.clear();
     }
