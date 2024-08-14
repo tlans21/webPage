@@ -16,7 +16,7 @@ import java.util.Optional;
 public class JdbcTemplateReviewBoardRepository implements BoardRepository<ReviewBoard>{
 
     private final JdbcTemplate jdbcTemplate;
-
+    private String tableName = "security.reviewBoard"; // 기본 테이블 이름
     public JdbcTemplateReviewBoardRepository(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
@@ -108,6 +108,11 @@ public class JdbcTemplateReviewBoardRepository implements BoardRepository<Review
     @Override
     public int updateCommentCnt(Long id, int commentCnt) {
         return 0;
+    }
+
+    @Override
+    public void setTableName(String tableName) {
+        this.tableName = tableName;
     }
 
     private RowMapper<ReviewBoard> reviewBoardRowMapper(){

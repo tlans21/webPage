@@ -1,5 +1,6 @@
 package HomePage.service;
 
+import HomePage.controller.UserForm;
 import HomePage.domain.model.User;
 import HomePage.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,18 @@ public class UserService {
         userRepository.save(user);
         return user.getId();
     }
+
+
+    public User userFormDTO(UserForm userForm) {
+        User user = User.builder()
+                .email(userForm.getEmail())
+                .password(bCryptPasswordEncoder.encode(userForm.getPassword()))
+                .username(userForm.getUsername())
+                .role("ROLE_USER")
+                .build();
+        return user;
+    }
+
 
     public void validateDuplicateMember(User user) {
         userRepository.findByUsername(user.getUsername())

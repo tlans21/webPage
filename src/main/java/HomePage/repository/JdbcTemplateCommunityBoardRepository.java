@@ -15,7 +15,7 @@ import java.util.Optional;
 
 public class JdbcTemplateCommunityBoardRepository implements BoardRepository<CommunityBoard> {
     private final JdbcTemplate jdbcTemplate;
-
+    private String tableName = "security.communityboard"; // 기본 테이블 이름;
     public JdbcTemplateCommunityBoardRepository(DataSource dataSource) {
         jdbcTemplate = new JdbcTemplate(dataSource);
     }
@@ -107,6 +107,10 @@ public class JdbcTemplateCommunityBoardRepository implements BoardRepository<Com
     }
     public int updateCommentCnt(Long id, int commentCnt){
         return jdbcTemplate.update("UPDATE security.communityboard SET commentCnt = ? where board_id = ?", commentCnt, id);
+    }
+    @Override
+    public void setTableName(String tableName) {
+        this.tableName = tableName;
     }
 
     private RowMapper<CommunityBoard> communityBoardRowMapper(){

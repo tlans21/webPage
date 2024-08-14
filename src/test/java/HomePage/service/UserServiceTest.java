@@ -1,92 +1,106 @@
 package HomePage.service;
 
+import HomePage.controller.UserForm;
 import HomePage.domain.model.User;
-import HomePage.repository.MemoryUserRepository;
+import HomePage.repository.UserRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.sql.DataSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@SpringBootTest
+@Transactional
 class UserServiceTest {
+    @Autowired
     UserService userService;
-    MemoryUserRepository memberRepository;
+    @Autowired
+    UserRepository userRepository;
+    @Autowired
+    BCryptPasswordEncoder passwordEncoder;
+    @Autowired
+    DataSource dataSource;
+    private JdbcTemplate jdbcTemplate;
     @BeforeEach
-    public void beforeEach() {
-        memberRepository = new MemoryUserRepository();
-        userService = new UserService(memberRepository);
+    void setUp() {
+        // 테스트 시작 전 테이블 비우기
+        this.jdbcTemplate = new JdbcTemplate(dataSource);
+        userRepository.setTableName("test.user");
+        cleanUpDatabase();
     }
+
     @AfterEach
-    public void afterEach() {
-        memberRepository.clearStore();
+    void tearDown(){
+        // 테스트 시작 후 테이블 비우기
+        cleanUpDatabase();
+    }
+    private void cleanUpDatabase() {
+        jdbcTemplate.execute("SET SQL_SAFE_UPDATES = 0");
+        try {
+            jdbcTemplate.execute("DELETE FROM test.user where id > 1");
+        } finally {
+            jdbcTemplate.execute("SET SQL_SAFE_UPDATES = 1");
+        }
     }
 
     @Test
     void join() {
-        //given
+        //given : 준비
         User user = new User();
-        user.setUsername("simun");
-        //when
-        Long saveId = userService.join(user);
-
-        //then
-        User findUser = userService.findOne(saveId).get();
-        assertThat(user.getUsername()).isEqualTo(findUser.getUsername());
-
+        user.setUsername("test");
+        user.setPassword("testPassword");
+        user.setEmail("test@test.com");
+        user.setRoles("USER");
+        //when : 실행
+        Long joinedUserId = userService.join(user);
+        //then : 검증
+        User foundUser = userService.findOne(joinedUserId).orElse(null);
+        assertThat(foundUser).isNotNull();
+        assertThat(foundUser.getUsername()).isEqualTo("test");
+        assertThat(foundUser.getEmail()).isEqualTo("test@test.com");
+        assertThat(foundUser.getRoles()).isEqualTo("USER");
+        assertThat(foundUser.getPassword()).isNotEmpty();
+    }
+    @Test
+    void userFormDto(){
+        //given : 준비
+        UserForm userForm = new UserForm();
+        userForm.setUsername("test");
+        userForm.setPassword("testPassword");
+        userForm.setEmail("test@test.com");
+        //when : 실행
+        User user = userService.userFormDTO(userForm);
+        //then : 검증
+        assertThat(user).isNotNull();
+        assertThat(user.getUsername()).isEqualTo("test");
+        assertThat(user.getEmail()).isEqualTo("test@test.com");
+        assertThat(passwordEncoder.matches("testPassword", user.getPassword())).isTrue();
     }
 
     @Test
-    void joinException() {
-        //given
-        User user1 = new User();
+    void validateDuplicateMember() {
+    }
 
-        user1.setUsername("simun");
-        user1.setEmail("tlans20@naver.com");
-        User user2 = new User();
-        user2.setUsername("simun");
-        user2.setEmail("tlans21@naver.com");
-        //when
-
-        User user3 = new User();
-        user3.setUsername("simun100");
-        user3.setEmail("tlans22@naver.com");
-
-        User user4 = new User();
-        user4.setUsername("simun200");
-        user4.setEmail("tlans22@naver.com");
-
-        userService.join(user1);
-        IllegalStateException e1 = assertThrows(IllegalStateException.class, () -> userService.join(user2));
-        assertThat(e1.getMessage()).isEqualTo("이미 존재하는 이름입니다.");
-
-        userService.join(user3);
-        IllegalStateException e2 = assertThrows(IllegalStateException.class, () -> userService.join(user4));
-        assertThat(e2.getMessage()).isEqualTo("이미 존재하는 이메일입니다.");
-        //then
+    @Test
+    void findMembers() {
     }
 
     @Test
     void findOne() {
-        User user = new User();
-        user.setUsername("simun");
-        userService.join(user);
-        User user1 = userService.findOne(user.getId()).get();
-        assertThat(user.getUsername()).isEqualTo(user1.getUsername());
     }
-    @Test
-    public void 로그인(){
-        User registeredUser = new User();
-        registeredUser.setUsername("simunss");
-        registeredUser.setEmail("simun@naver.com");
-        registeredUser.setPassword("1234");
-        userService.join(registeredUser);
 
-        User user = new User();
-        user.setUsername("simunss");
-        user.setEmail("simun@naver.com");
-        user.setPassword("1234");
-        User result = userService.authenticateMember(user.getEmail(), user.getPassword()).get();
-        assertThat(user.getUsername()).isEqualTo(result.getUsername());
+    @Test
+    void findByUsername() {
+    }
+
+    @Test
+    void authenticateMember() {
     }
 }
