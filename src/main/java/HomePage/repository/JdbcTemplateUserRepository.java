@@ -15,11 +15,11 @@ import java.util.Optional;
 
 public class JdbcTemplateUserRepository implements UserRepository {
     private final JdbcTemplate jdbcTemplate;
-
+    private String tableName = "security.user"; // 기본 테이블 값
     public JdbcTemplateUserRepository(DataSource dataSource) {
         jdbcTemplate = new JdbcTemplate(dataSource);
     }
-    private String tableName = "security.user";
+
 
     @Override
     public User save(User user) {

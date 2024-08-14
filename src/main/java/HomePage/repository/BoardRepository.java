@@ -24,4 +24,5 @@ public interface BoardRepository<T extends Board>{
     int incrementViews(Long id);
     int updateCommentCnt(Long id, int commentCnt);
 
+    void setTableName(String tableName);
 }

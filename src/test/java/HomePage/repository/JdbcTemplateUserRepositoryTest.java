@@ -6,14 +6,18 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 
 @SpringBootTest
@@ -99,6 +103,40 @@ class JdbcTemplateUserRepositoryTest {
         assertThat(savedUser.getPassword()).isEqualTo("1234");
 
     }
+    @Test
+    void saveWithDuplicateUsername(){
+        //given : 준비
+        User user1 = new User();
+        user1.setUsername("duplicateUser");
+        user1.setEmail("user1@test.com");
+        user1.setPassword("password1");
+        user1.setRoles("USER");
+        userRepository.save(user1);
+
+        User user2 = new User();
+        user2.setUsername("duplicateUser");
+        user2.setEmail("user2@test.com");
+        user2.setPassword("password2");
+        user2.setRoles("USER");
+
+        // when & then : 실행 및 검증
+        assertThatThrownBy(() -> userRepository.save(user2))
+                .isInstanceOf(DuplicateKeyException.class); // 대부분의 데이터와 관련된 예외는 DataAccessException의 하위 클래스이다. 이를 통해 공식문서 참조
+
+    }
+    @Test
+    void saveWithNullPassword() {
+        //given : 준비
+        User user = new User();
+        user.setUsername("nullPasswordUser");
+        user.setEmail("null@test.com");
+        user.setPassword(null);
+        user.setRoles("USER");
+
+        //when & then : 실행 및 검증
+        assertThatThrownBy(() -> userRepository.save(user))
+            .isInstanceOf(DataIntegrityViolationException.class);
+    }
 
     @Test
     void findById() {
@@ -132,6 +170,14 @@ class JdbcTemplateUserRepositoryTest {
         assertThat(foundUser).isNotNull();
         assertThat(foundUser.getUsername()).isEqualTo(user.getUsername());
     }
+    @Test
+    void findByNonExistentUsername() {
+        //when : 실행
+        Optional<User> result = userRepository.findByUsername("nonExistentUser");
+
+        //then : 검증
+        assertThat(result).isEmpty();
+    }
 
     @Test
     void findByEmail() {
@@ -150,6 +196,14 @@ class JdbcTemplateUserRepositoryTest {
         //then : 검증
         assertThat(foundUser).isNotNull();
         assertThat(foundUser.getEmail()).isEqualTo("findByEmail@test.com");
+    }
+    @Test
+    void findByNonExistentEmail() {
+        //when : 실행
+        Optional<User> result = userRepository.findByUsername("nonExistentUser@test.com");
+
+        //then : 검증
+        assertThat(result).isEmpty();
     }
 
     @Test
