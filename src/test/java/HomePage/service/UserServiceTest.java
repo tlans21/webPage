@@ -229,7 +229,7 @@ class UserServiceTest {
             assertThat(expectedUsernames).contains(user.getUsername());
             assertThat(expectedEmails).contains(user.getEmail());
             assertThat(user.getRoles()).isEqualTo("ROLE_USER");
-        }
+        }   
     }
 
     @Test

@@ -16,13 +16,13 @@ public interface BoardRepository<T extends Board>{
     boolean deleteById(Long id);
 
     Optional<T> selectById(Long id);
-    Optional<T> selectByTitle(String title);
-    Optional<T> selectByWriter(String writer);
+    List<T> selectByTitle(String title);
+    List<T> selectByWriter(String writer);
 
     List<T> selectAll();
 
-    int incrementViews(Long id);
-    int updateCommentCnt(Long id, int commentCnt);
+    boolean incrementViews(Long id);
+    boolean updateCommentCnt(Long id, int commentCnt);
 
     void setTableName(String tableName);
 }

@@ -15,4 +15,5 @@ public interface CommentRepository <T extends Comment> {
     List<T> selectById(Long id);
     Optional<T> findCommentById(Long commentId);
     int countByBoardId(Long boardId);
+    void setTableName(String tableName);
 }

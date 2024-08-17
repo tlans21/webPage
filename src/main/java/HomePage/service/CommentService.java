@@ -17,5 +17,5 @@ public interface CommentService <T extends Comment> {
     List<T> getAllComments();
 
     int countByBoardId(Long id);
-    int incrementCommentCnt(Long id, int commentCnt);
+    boolean incrementCommentCnt(Long id, int commentCnt);
 }
