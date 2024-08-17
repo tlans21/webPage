@@ -23,7 +23,7 @@ public class JdbcTemplateCommunityBoardRepository implements BoardRepository<Com
     @Override
     public CommunityBoard save(CommunityBoard communityBoard) {
         SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
-        jdbcInsert.withTableName("communityboard").usingGeneratedKeyColumns("board_id");
+        jdbcInsert.withTableName(tableName).usingGeneratedKeyColumns("board_id");
         Timestamp regDate = new Timestamp(System.currentTimeMillis());
         communityBoard.setRegisterDate(regDate);
 
@@ -33,6 +33,7 @@ public class JdbcTemplateCommunityBoardRepository implements BoardRepository<Com
         parameters.put("content", communityBoard.getContent());
         parameters.put("regdate", communityBoard.getRegisterDate());
         parameters.put("viewCnt", communityBoard.getViewCnt());
+        parameters.put("commentCnt", communityBoard.getCommentCnt());
 
         Number key = jdbcInsert.executeAndReturnKey(new MapSqlParameterSource(parameters));
         communityBoard.setId(key.longValue());
@@ -41,30 +42,30 @@ public class JdbcTemplateCommunityBoardRepository implements BoardRepository<Com
 
     @Override
     public List<CommunityBoard> findPage(int offset, int limit) {
-        String sql = "SELECT * FROM security.communityboard WHERE deleteDate IS NULL ORDER BY regdate DESC LIMIT ? OFFSET ?";
+        String sql = String.format("SELECT * FROM %s WHERE deleteDate IS NULL ORDER BY board_id DESC LIMIT ? OFFSET ?", tableName);
         return jdbcTemplate.query(sql, communityBoardRowMapper(), limit, offset); // offset은 건너띄려는 행, limit는 조회하려는 갯수
     }
     @Override
     public List<CommunityBoard> findPageOrderByTopView(int offset, int limit) {
-        String sql = "SELECT * FROM security.communityboard ORDER BY viewCnt DESC LIMIT ? OFFSET ?";
+        String sql = String.format("SELECT * FROM %s ORDER BY viewCnt DESC LIMIT ? OFFSET ?", tableName);
         return jdbcTemplate.query(sql, communityBoardRowMapper(), limit, offset);
     }
 
     @Override
     public List<CommunityBoard> findPageOrderByTopCommentCnt(int offset, int limit) {
-        String sql = "SELECT * FROM security.communityboard ORDER BY commentCnt DESC LIMIT ? OFFSET ?";
+        String sql = String.format("SELECT * FROM %s ORDER BY commentCnt DESC LIMIT ? OFFSET ?", tableName);
         return jdbcTemplate.query(sql, communityBoardRowMapper(), limit, offset);
     }
 
     @Override
     public int count() {
-        String sql = "SELECT COUNT(*) FROM security.communityboard WHERE deleteDate IS NULL";
+        String sql = String.format("SELECT COUNT(*) FROM %s WHERE deleteDate IS NULL", tableName);
         return jdbcTemplate.queryForObject(sql, Integer.class);
     }
 
     @Override
     public boolean update(CommunityBoard communityBoard) {
-        String sql = "UPDATE security.communityboard SET title = ?, content = ?, updateDate = ? WHERE board_id = ?";
+        String sql = String.format("UPDATE %s SET title = ?, content = ?, updateDate = ? WHERE board_id = ?", tableName);
         Timestamp updateDate = new Timestamp(System.currentTimeMillis());
         int isUpdate = jdbcTemplate.update(sql, communityBoard.getTitle(), communityBoard.getContent(), updateDate, communityBoard.getId());
         if (isUpdate == 0 || isUpdate > 1){
@@ -75,38 +76,48 @@ public class JdbcTemplateCommunityBoardRepository implements BoardRepository<Com
 
     @Override
     public boolean deleteById(Long id) {
-        int isDelete = jdbcTemplate.update("DELETE FROM security.communityboard WHERE board_id = ?", id);
+        String sql = String.format("DELETE FROM %s WHERE board_id = ?", tableName);
+        int isDelete = jdbcTemplate.update(sql, id);
         return isDelete == 1;
     }
 
     @Override
     public Optional<CommunityBoard> selectById(Long id) {
-        List<CommunityBoard> result = jdbcTemplate.query("select * from security.communityboard where board_id = ?", communityBoardRowMapper(), id);
+        String sql = String.format("SELECT * FROM %s where board_id = ? ", tableName);
+        List<CommunityBoard> result = jdbcTemplate.query(sql, communityBoardRowMapper(), id);
         return result.stream().findAny();
     }
 
     @Override
-    public Optional<CommunityBoard> selectByTitle(String title) {
-        List<CommunityBoard> result = jdbcTemplate.query("select * from security.communityboard where title = ?", communityBoardRowMapper(), title);
-        return result.stream().findAny();
+    public List<CommunityBoard> selectByTitle(String title) {
+        String sql = String.format("SELECT * FROM %s WHERE title LIKE ?", tableName);
+        String searchPattern = "%" + title + "%";
+        List<CommunityBoard> result = jdbcTemplate.query(sql, communityBoardRowMapper(), searchPattern);
+        return result;
     }
 
     @Override
-    public Optional<CommunityBoard> selectByWriter(String writer) {
-        List<CommunityBoard> result = jdbcTemplate.query("select * from security.communityboard where writer = ?", communityBoardRowMapper(), writer);
-        return result.stream().findAny();
+    public List<CommunityBoard> selectByWriter(String writer) {
+        String sql = String.format("SELECT * FROM %s WHERE writer = ?", tableName);
+        List<CommunityBoard> result = jdbcTemplate.query(sql, communityBoardRowMapper(), writer);
+        return result;
     }
 
     @Override
     public List<CommunityBoard> selectAll() {
-        return jdbcTemplate.query("select * from security.communityboard", communityBoardRowMapper());
+        String sql = String.format("SELECT * FROM %s ", tableName);
+        return jdbcTemplate.query(sql, communityBoardRowMapper());
     }
     @Override
-    public int incrementViews(Long id){
-        return jdbcTemplate.update("UPDATE security.communityboard SET viewCnt = viewCnt + 1 where board_id = ?", id);
+    public boolean incrementViews(Long id){
+        String sql = String.format("UPDATE %s SET viewCnt = viewCnt + 1 where board_id = ?", tableName);
+        int update = jdbcTemplate.update(sql, id);
+        return update == 1;
     }
-    public int updateCommentCnt(Long id, int commentCnt){
-        return jdbcTemplate.update("UPDATE security.communityboard SET commentCnt = ? where board_id = ?", commentCnt, id);
+    public boolean updateCommentCnt(Long id, int commentCnt){
+        String sql = String.format("UPDATE %s SET commentCnt = ? where board_id = ?", tableName);
+        int update = jdbcTemplate.update(sql, commentCnt, id);
+        return update == 1;
     }
     @Override
     public void setTableName(String tableName) {

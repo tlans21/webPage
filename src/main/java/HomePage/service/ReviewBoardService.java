@@ -57,16 +57,13 @@ public class ReviewBoardService implements BoardService<ReviewBoard>{
 
     @Override
     public List<ReviewBoard> searchBoardsByTitle(String title) {
-        return reviewBoardRepository.selectByTitle(title)
-                        .map(List::of)
-                        .orElse(List.of());
+        return reviewBoardRepository.selectByTitle(title);
     }
 
     @Override
     public List<ReviewBoard> searchBoardsByWriter(String writer) {
-        return reviewBoardRepository.selectByWriter(writer)
-                        .map(List::of)
-                        .orElse(List.of());
+        return reviewBoardRepository.selectByWriter(writer);
+
     }
 
     @Override

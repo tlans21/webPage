@@ -41,7 +41,7 @@ public class CommunityCommentService implements CommentService<CommunityComment>
         return commentRepository.countByBoardId(BoardId);
     }
     @Override
-    public int incrementCommentCnt(Long id, int commentCnt){
+    public boolean incrementCommentCnt(Long id, int commentCnt){
         return boardRepository.updateCommentCnt(id, commentCnt);
     }
 

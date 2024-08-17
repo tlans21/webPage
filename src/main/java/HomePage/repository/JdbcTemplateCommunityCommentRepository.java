@@ -15,7 +15,7 @@ import java.util.Optional;
 
 public class JdbcTemplateCommunityCommentRepository implements CommentRepository<CommunityComment>{
     private final JdbcTemplate jdbcTemplate;
-
+    private String tableName = "security.communitycomment"; // 기본 테이블 값
     public JdbcTemplateCommunityCommentRepository(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
@@ -23,7 +23,7 @@ public class JdbcTemplateCommunityCommentRepository implements CommentRepository
     @Override
     public CommunityComment save(CommunityComment comment) {
         SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
-        jdbcInsert.withTableName("communitycomment").usingGeneratedKeyColumns("comment_id");
+        jdbcInsert.withTableName(tableName).usingGeneratedKeyColumns("comment_id");
         Timestamp regDate = new Timestamp(System.currentTimeMillis());
         comment.setRegisterDate(regDate);
 
@@ -40,54 +40,55 @@ public class JdbcTemplateCommunityCommentRepository implements CommentRepository
 
     @Override
     public int countByBoardId(Long boardId) {
-        String sql = "SELECT COUNT(*) FROM security.communitycomment WHERE board_id = ?";
+        String sql = String.format("SELECT COUNT(*) FROM %s WHERE board_id = ?", tableName);
         return jdbcTemplate.queryForObject(sql, Integer.class, boardId);
     }
 
     @Override
     public List<CommunityComment> selectAll() {
-        String sql = "select * from security.communitycomment";
+        String sql = String.format("SELECT * FROM %s", tableName);
         return jdbcTemplate.query(sql, communityCommentRowMapper());
     }
 
     @Override
     public boolean update(CommunityComment comment) {
-        String sql = "UPDATE * FROM security.communitycomment SET content = ?, updateDate = ?, WHERE comment_id = ?";
+        String sql = String.format("UPDATE %s SET content = ?, updateDate = ? WHERE comment_id = ?", tableName);
         Timestamp updateDate = new Timestamp(System.currentTimeMillis());
         int isUpdate = jdbcTemplate.update(sql, comment.getContent(), updateDate, comment.getId());
-        if (isUpdate == 0 || isUpdate > 1){
-           return false;
-        }
-        return true;
+        return isUpdate == 1;
     }
 
     @Override
     public Optional<CommunityComment> findCommentById(Long commentId) {
-        List<CommunityComment> result = jdbcTemplate.query("select * from security.communtiycomment where id = ?", communityCommentRowMapper(), commentId);
+        String sql = String.format("SELECT * FROM %s WHERE comment_id = ?", tableName);
+        List<CommunityComment> result = jdbcTemplate.query(sql, communityCommentRowMapper(), commentId);
         return result.stream().findAny();
     }
 
     @Override
     public List<CommunityComment> selectById(Long boardId) {
-        List<CommunityComment> result = jdbcTemplate.query("select * from security.communitycomment where board_id = ?", communityCommentRowMapper(), boardId);
-        return result;
+        String sql = String.format("SELECT * FROM %s WHERE board_id = ?", tableName);
+        return jdbcTemplate.query(sql, communityCommentRowMapper(), boardId);
     }
 
     @Override
     public boolean deleteByWriter(String writer) {
-        int isDelete = jdbcTemplate.update("DELETE FROM security.communitycomment WHERE writer = ?", writer);
-        return isDelete == 1;
+        String sql = String.format("DELETE FROM %s WHERE writer = ?", tableName);
+        int isDelete = jdbcTemplate.update(sql, writer);
+        return isDelete >= 1;
     }
 
     @Override
     public boolean deleteByCommentId(Long id) {
-        int isDelete = jdbcTemplate.update("DELETE FROM security.communitycomment WHERE id = ?", id);
+        String sql = String.format("DELETE FROM %s WHERE comment_id = ?", tableName);
+        int isDelete = jdbcTemplate.update(sql, id);
         return isDelete == 1;
     }
 
     @Override
     public boolean deleteByBoardId(Long id) {
-        int isDelete = jdbcTemplate.update("DELETE FROM security.communitycomment WHERE board_id = ?", id);
+        String sql = String.format("DELETE FROM %s WHERE board_id = ?", tableName);
+        int isDelete = jdbcTemplate.update(sql, id);
         return isDelete >= 1;
     }
 
@@ -104,4 +105,8 @@ public class JdbcTemplateCommunityCommentRepository implements CommentRepository
            return communityComment;
        };
    }
+   @Override
+    public void setTableName(String tableName) {
+        this.tableName = tableName;
+    }
 }

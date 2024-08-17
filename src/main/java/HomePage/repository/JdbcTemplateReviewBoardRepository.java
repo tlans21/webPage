@@ -85,15 +85,15 @@ public class JdbcTemplateReviewBoardRepository implements BoardRepository<Review
     }
 
     @Override
-    public Optional<ReviewBoard> selectByTitle(String title) {
+    public List<ReviewBoard> selectByTitle(String title) {
         List<ReviewBoard> result = jdbcTemplate.query("select * security.reviewBoard where title = ?", reviewBoardRowMapper(), title);
-        return result.stream().findAny();
+        return result;
     }
 
     @Override
-    public Optional<ReviewBoard> selectByWriter(String writer) {
+    public List<ReviewBoard> selectByWriter(String writer) {
         List<ReviewBoard> result = jdbcTemplate.query("select * security.reviewBoard where writer = ?", reviewBoardRowMapper(), writer);
-        return result.stream().findAny();
+        return result;
     }
 
     @Override
@@ -101,13 +101,13 @@ public class JdbcTemplateReviewBoardRepository implements BoardRepository<Review
         return jdbcTemplate.query("select * from security.reviewBoard", reviewBoardRowMapper());
     }
     @Override
-    public int incrementViews(Long id) {
-        return 0;
+    public boolean incrementViews(Long id) {
+        return false;
     }
 
     @Override
-    public int updateCommentCnt(Long id, int commentCnt) {
-        return 0;
+    public boolean updateCommentCnt(Long id, int commentCnt) {
+        return false;
     }
 
     @Override

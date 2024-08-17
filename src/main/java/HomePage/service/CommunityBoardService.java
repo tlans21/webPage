@@ -103,16 +103,12 @@ public class CommunityBoardService implements BoardService<CommunityBoard>{
 
     @Override
     public List<CommunityBoard> searchBoardsByTitle(String title) {
-        return communityBoardRepository.selectByTitle(title)
-                .map(List::of)
-                .orElse(List.of());
+        return communityBoardRepository.selectByTitle(title);
     }
 
     @Override
     public List<CommunityBoard> searchBoardsByWriter(String writer) {
-        return communityBoardRepository.selectByWriter(writer)
-                .map(List::of)
-                .orElse(List.of());
+        return communityBoardRepository.selectByWriter(writer);
     }
 
     @Override
@@ -130,9 +126,9 @@ public class CommunityBoardService implements BoardService<CommunityBoard>{
 
     @Override
     public void incrementViews(Long id){
-        int rowsAffected = communityBoardRepository.incrementViews(id);
-        if(rowsAffected != 1){
-            throw new IllegalStateException("Expected 1 row to be updated, but got " + rowsAffected);
+        boolean rowsAffected = communityBoardRepository.incrementViews(id);
+        if(rowsAffected != true){
+            throw new IllegalStateException("Expected 1 row to be updated, but got ");
         }
     }
 
