@@ -18,7 +18,7 @@ import java.util.Map;
 public class CommunityBoardService implements BoardService<CommunityBoard>{
 
     @Value("${communityBoard.page-size}")
-    int pageSize;
+    private int pageSize = 10;
 
     private final BoardRepository<CommunityBoard> communityBoardRepository;
     private final CommentRepository<CommunityComment> communityCommentRepository;
