@@ -89,7 +89,8 @@ public class JdbcTemplateCommunityCommentRepository implements CommentRepository
     public boolean deleteByBoardId(Long id) {
         String sql = String.format("DELETE FROM %s WHERE board_id = ?", tableName);
         int isDelete = jdbcTemplate.update(sql, id);
-        return isDelete >= 1;
+        System.out.println(isDelete);
+        return isDelete >= 0;
     }
 
     private RowMapper<CommunityComment> communityCommentRowMapper(){
