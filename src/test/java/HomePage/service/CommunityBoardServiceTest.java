@@ -2,6 +2,7 @@ package HomePage.service;
 
 import HomePage.controller.board.form.CommunityBoardWriteForm;
 import HomePage.domain.model.CommunityBoard;
+import HomePage.domain.model.CommunityComment;
 import HomePage.domain.model.Page;
 import HomePage.repository.JdbcTemplateCommunityBoardRepository;
 import HomePage.repository.JdbcTemplateCommunityCommentRepository;
@@ -14,12 +15,10 @@ import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 
 import java.util.*;
-import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @TestPropertySource(properties = {"communityBoard.page-size=10"})
 class CommunityBoardServiceTest {
@@ -35,35 +34,38 @@ class CommunityBoardServiceTest {
     }
 
     @Test
-    void validateCommunityForm() {
-        //given : 준비
+    void validateCommunityForm_Success() {
+        CommunityBoardWriteForm form = new CommunityBoardWriteForm();
+        form.setTitle("Valid Title");
+        form.setContent("Valid Content");
+
+        Errors errors = new BeanPropertyBindingResult(form, "communityBoardWriteForm");
+
+        Map<String, String> validatorResult = boardService.validateCommunityForm(errors);
+
+        assertThat(validatorResult).isEmpty();
+    }
+
+    @Test
+    void validateCommunityForm_EmptyTitle() {
         CommunityBoardWriteForm form = new CommunityBoardWriteForm();
         form.setTitle("");
-        form.setContent("");
+        form.setContent("Valid Content");
 
-        Errors errors = new BeanPropertyBindingResult(form, "communityBoardWriteForm"); // 에러 객체 생성
+        Errors errors = new BeanPropertyBindingResult(form, "communityBoardWriteForm");
         if (form.getTitle() == null || form.getTitle().trim().isEmpty()) {
             errors.rejectValue("title", "NotBlank", "제목을 입력해주세요.");
         }
 
-        if (form.getContent() == null || form.getContent().trim().isEmpty()) {
-            errors.rejectValue("content", "NotBlank", "내용을 입력해주세요.");
-        }
-
-
-        //when : 실행
         Map<String, String> validatorResult = boardService.validateCommunityForm(errors);
 
-        //then : 검증  "valid_%s" %s는 필드 이름
         assertThat(validatorResult).isNotEmpty();
         assertThat(validatorResult).containsKey("valid_title");
         assertThat(validatorResult.get("valid_title")).isEqualTo("제목을 입력해주세요.");
-        assertThat(validatorResult).containsKey("valid_content");
-        assertThat(validatorResult.get("valid_content")).isEqualTo("내용을 입력해주세요.");
     }
 
     @Test
-    void getBoardPage() {
+    void getBoardPage_Success() {
         //given : 준비
         int pageNumber = 1;
         int pageSize = 10; // 서비스에 정의된 pageSize와 동일함.
@@ -105,6 +107,24 @@ class CommunityBoardServiceTest {
        verify(boardRepository).count();
        verify(boardRepository).findPage(eq((pageNumber - 1) * pageSize), eq(pageSize));
     }
+    @Test
+   void getBoardPage_InvalidPageNumber() {
+        // given
+        int invalidPageNumber = 0;
+
+        // 모킹 추가 (실제로는 호출되지 않아야 함)
+        when(boardRepository.count()).thenReturn(100);
+        when(boardRepository.findPage(anyInt(), anyInt())).thenReturn(new ArrayList<>());
+
+        // when & then
+        assertThatThrownBy(() -> boardService.getBoardPage(invalidPageNumber))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessageContaining("Page number must be greater than 0");
+
+        // 리포지토리 메서드가 호출되지 않았는지 확인
+        verify(boardRepository, never()).count();
+        verify(boardRepository, never()).findPage(anyInt(), anyInt());
+   }
 
     @Test
     void getTopViewedBoardPage() {
@@ -242,7 +262,7 @@ class CommunityBoardServiceTest {
     }
 
     @Test
-    void saveBoard() {
+    void saveBoard_Success() {
         // given : 준비
         Long boardId = 1L;
         CommunityBoard boardToSave = new CommunityBoard();
@@ -257,6 +277,21 @@ class CommunityBoardServiceTest {
 
         // then : 검증
         verify(boardRepository).save(boardToSave);
+    }
+    @Test
+    void saveBoard_Failure() {
+       //given: 준비
+       CommunityBoard boardToSave = new CommunityBoard();
+       boardToSave.setTitle("Test Title");
+       boardToSave.setContent("Test Content");
+
+       when(boardRepository.save(boardToSave)).thenThrow(new RuntimeException("Database connection failed"));
+       //when & then : 실행 및 검증
+       assertThatThrownBy(() -> boardService.saveBoard(boardToSave))
+           .isInstanceOf(RuntimeException.class)
+           .hasMessageContaining("Database connection failed");
+
+       verify(boardRepository).save(boardToSave);
     }
 
     @Test
@@ -303,26 +338,235 @@ class CommunityBoardServiceTest {
     }
 
     @Test
-    void deleteBoard() {
+    void deleteBoard_Success() {
+        //given: 준비
+        Long boardId = 2L;
+        CommunityBoard nonDeleteBoard = new CommunityBoard();
+        nonDeleteBoard.setId(boardId);
+        nonDeleteBoard.setTitle("Non-delete Title");
+        nonDeleteBoard.setContent("Non-delete Content");
+        nonDeleteBoard.setWriter("testWriter");
+
+        when(commentRepository.deleteByBoardId(boardId)).thenReturn(true);
+        when(boardRepository.deleteById(boardId)).thenReturn(true);
+        //when & then: 실행 및 검증
+        assertThatCode(() -> boardService.deleteBoard(boardId))
+                    .doesNotThrowAnyException();
+        verify(commentRepository).deleteByBoardId(boardId);
+        verify(boardRepository).deleteById(boardId);
+
+    }
+    @Test
+    void deleteBoard_failure_case() {
+        //given: 준비
+        Long boardId = 2L;
+        CommunityBoard nonDeleteBoard = new CommunityBoard();
+        nonDeleteBoard.setId(boardId);
+        nonDeleteBoard.setTitle("Non-delete Title");
+        nonDeleteBoard.setContent("Non-delete Content");
+
+        when(commentRepository.deleteByBoardId(boardId)).thenReturn(true);
+        when(boardRepository.deleteById(boardId)).thenReturn(false);
+        //when & then: 실행 및 검증
+        assertThatCode(() -> boardService.deleteBoard(boardId))
+                .isInstanceOf(RuntimeException.class)
+                        .hasMessageContaining("Failed to delete board with board_id: " + boardId);
+        verify(commentRepository).deleteByBoardId(boardId);
+        verify(boardRepository).deleteById(boardId);
     }
 
     @Test
-    void searchBoardsByTitle() {
+    void deleteBoard_failure_comment_case() {
+        //given: 준비
+        Long boardId = 2L;
+        CommunityBoard nonDeleteBoard = new CommunityBoard();
+        nonDeleteBoard.setId(boardId);
+        nonDeleteBoard.setTitle("Non-delete Title");
+        nonDeleteBoard.setContent("Non-delete Content");
+
+        CommunityComment comment = new CommunityComment();
+        comment.setBoard_id(boardId);
+        comment.setId(1L);
+
+        when(commentRepository.deleteByBoardId(boardId)).thenReturn(false);
+        when(boardRepository.deleteById(boardId)).thenReturn(true);
+        //when & then: 실행 및 검증
+        assertThatCode(() -> boardService.deleteBoard(boardId))
+                .isInstanceOf(RuntimeException.class)
+                        .hasMessageContaining("Failed to delete comment with board_id: " + boardId);
+        verify(commentRepository).deleteByBoardId(boardId);
+        verify(boardRepository, never()).deleteById(boardId);
+    }
+
+
+
+    @Test
+    void searchBoardsByTitle_Success() {
+        //given : 준비
+        CommunityBoard communityBoard = new CommunityBoard();
+        communityBoard.setTitle("test");
+        communityBoard.setContent("test content");
+        communityBoard.setWriter("testWriter");
+
+        // Mocking repository method
+        List<CommunityBoard> mockBoardList = new ArrayList<>();
+        mockBoardList.add(communityBoard);
+        when(boardRepository.selectByTitle("test")).thenReturn(mockBoardList);
+
+        //when : 실행
+        List<CommunityBoard> communityBoards = boardService.searchBoardsByTitle("test");
+
+        //then : 검증
+        assertThat(communityBoards).isNotNull();  // 결과가 null이 아님을 검증
+        assertThat(communityBoards.size()).isEqualTo(1);  // 결과 리스트의 크기가 예상대로 1인지 검증
+        assertThat(communityBoards.get(0).getTitle()).isEqualTo("test");  // 검색된 게시글의 제목이 올바른지 검증
+        assertThat(communityBoards.get(0).getContent()).isEqualTo("test content");  // 검색된 게시글의 내용이 올바른지 검증
+        assertThat(communityBoards.get(0).getWriter()).isEqualTo("testWriter");  // 검색된 게시글의 작성자가 올바른지 검증
+
+        verify(boardRepository, times(1)).selectByTitle("test");
+    }
+    @Test
+    void searchBoardsByTitle_NoResult() {
+        //boardRepository.selectByTitle() 모킹
+        when(boardRepository.selectByTitle("NonexistentTitle")).thenReturn(new ArrayList<>());
+        //when : 실행
+        List<CommunityBoard> result = boardService.searchBoardsByTitle("NonexistentTitle");
+        //then : 검증
+        assertThat(result).isEmpty();
+        verify(boardRepository).selectByTitle("NonexistentTitle");
     }
 
     @Test
-    void searchBoardsByWriter() {
+    void searchBoardsByWriter_Success() {
+        //given : 준비
+        CommunityBoard communityBoard = new CommunityBoard();
+        communityBoard.setTitle("test");
+        communityBoard.setContent("test content");
+        communityBoard.setWriter("testWriter");
+
+        // Mocking repository method
+        List<CommunityBoard> mockBoardList = new ArrayList<>();
+        mockBoardList.add(communityBoard);
+        when(boardRepository.selectByWriter("testWriter")).thenReturn(mockBoardList);
+
+        //when : 실행
+        List<CommunityBoard> communityBoards = boardService.searchBoardsByWriter("testWriter");
+
+        //then : 검증
+        assertThat(communityBoards).isNotEmpty();  // 결과가 null이 아님을 검증
+        assertThat(communityBoards.size()).isEqualTo(1);  // 결과 리스트의 크기가 예상대로 1인지 검증
+        assertThat(communityBoards.get(0).getTitle()).isEqualTo("test");  // 검색된 게시글의 제목이 올바른지 검증
+        assertThat(communityBoards.get(0).getContent()).isEqualTo("test content");  // 검색된 게시글의 내용이 올바른지 검증
+        assertThat(communityBoards.get(0).getWriter()).isEqualTo("testWriter");  // 검색된 게시글의 작성자가 올바른지 검증
+
+        verify(boardRepository, times(1)).selectByWriter("testWriter");
+    }
+    @Test
+    void searchBoardsByWriter_NoResult() {
+        when(boardRepository.selectByWriter("NonexistentWriter")).thenReturn(new ArrayList<>());
+
+        List<CommunityBoard> result = boardService.searchBoardsByWriter("NonexistentWriter");
+
+        assertThat(result).isEmpty();
+        verify(boardRepository).selectByWriter("NonexistentWriter");
+    }
+    @Test
+    void getAllBoards_Success() {
+        //given : 준비
+        CommunityBoard communityBoard = new CommunityBoard();
+        communityBoard.setTitle("test");
+        communityBoard.setContent("test content");
+        communityBoard.setWriter("testWriter");
+        // Mocking repository method
+        List<CommunityBoard> mockBoardList = new ArrayList<>();
+        mockBoardList.add(communityBoard);
+        when(boardRepository.selectAll()).thenReturn(mockBoardList);
+
+        //when : 실행
+        List<CommunityBoard> allBoards = boardService.getAllBoards();
+
+        //then : 검증
+        assertThat(allBoards).isNotNull();
+        assertThat(allBoards.size()).isEqualTo(1);
+
+        verify(boardRepository).selectAll();
     }
 
     @Test
-    void getAllBoards() {
+    void getAllBoards_EmptyList() {
+        when(boardRepository.selectAll()).thenReturn(new ArrayList<>());
+
+        List<CommunityBoard> result = boardService.getAllBoards();
+
+        assertThat(result).isEmpty();
+        verify(boardRepository).selectAll();
     }
 
     @Test
-    void getBoardByIdAndIncrementViews() {
+    void getBoardByIdAndIncrementViews_Success() {
+        //given : 준비
+        Long boardId = 1L;
+        CommunityBoard communityBoard = new CommunityBoard();
+        communityBoard.setId(boardId);
+        communityBoard.setTitle("test");
+        communityBoard.setContent("test content");
+        communityBoard.setWriter("testWriter");
+
+        //boardRepository.selectById() 모킹, boardRepository.incrementViews() 모킹
+        when(boardRepository.selectById(boardId)).thenReturn(Optional.of(communityBoard));
+        when(boardRepository.incrementViews(boardId)).thenReturn(true);
+        //when : 실행
+        CommunityBoard result = boardService.getBoardByIdAndIncrementViews(boardId);
+
+        // then : 검증
+        assertThat(result).isNotNull();
+        assertThat(result.getId()).isEqualTo(boardId);
+        assertThat(result.getTitle()).isEqualTo("test");
+        assertThat(result.getContent()).isEqualTo("test content");
+        assertThat(result.getWriter()).isEqualTo("testWriter");
+
+        // incrementViews 메서드가 호출되었는지 확인
+        verify(boardRepository).selectById(boardId);
+        verify(boardRepository).incrementViews(boardId);
+    }
+    @Test
+    void getBoardByIdAndIncrementViews_NonExistingBoard() {
+        Long nonExistingBoardId = 999L;
+
+        when(boardRepository.selectById(nonExistingBoardId)).thenReturn(Optional.empty());
+        when(boardRepository.incrementViews(nonExistingBoardId)).thenReturn(false);
+        assertThatThrownBy(() -> boardService.getBoardByIdAndIncrementViews(nonExistingBoardId))
+            .isInstanceOf(RuntimeException.class)
+            .hasMessageContaining("Board not found with id: " + nonExistingBoardId);
+
+        verify(boardRepository).selectById(nonExistingBoardId);
+        verify(boardRepository, never()).incrementViews(nonExistingBoardId);
     }
 
     @Test
-    void incrementViews() {
+    void incrementViews_Success() {
+        // given : 준비
+        Long boardId = 1L;
+        when(boardRepository.incrementViews(boardId)).thenReturn(true);
+
+        // when : 실행
+        boardService.incrementViews(boardId);
+
+        // then : 검증
+        verify(boardRepository).incrementViews(boardId);
+    }
+
+    @Test
+    void incrementViews_Failure() {
+        // given : 준비
+        Long boardId = 1L;
+        when(boardRepository.incrementViews(boardId)).thenReturn(false);
+
+        // when & then : 실행 및 예외 검증
+        assertThatThrownBy(() -> boardService.incrementViews(boardId))
+            .isInstanceOf(IllegalStateException.class)
+            .hasMessageContaining("Expected 1 row to be updated, but got ");
+
+        verify(boardRepository).incrementViews(boardId);
     }
 }

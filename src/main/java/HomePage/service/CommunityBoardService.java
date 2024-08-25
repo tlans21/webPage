@@ -41,12 +41,21 @@ public class CommunityBoardService implements BoardService<CommunityBoard>{
     }
     @Override
     public Page<CommunityBoard> getBoardPage(int pageNumber) {
+        if (pageNumber <= 0) {
+            throw new IllegalArgumentException("Page number must be greater than 0");
+        }
+
         int totalBoards = communityBoardRepository.count();
         int totalPages = (int) Math.ceil((double) totalBoards / pageSize);
+
+        if (pageNumber > totalPages) {
+            pageNumber = totalPages; // or throw an exception if you prefer
+        }
+
         int offset = (pageNumber - 1) * pageSize;
         List<CommunityBoard> communityBoards = communityBoardRepository.findPage(offset, pageSize);
 
-        return new Page<CommunityBoard>(communityBoards, pageNumber, totalPages, pageSize);
+        return new Page<>(communityBoards, pageNumber, totalPages, pageSize);
     }
 
     @Override
@@ -78,7 +87,11 @@ public class CommunityBoardService implements BoardService<CommunityBoard>{
     @Override
     @Transactional
     public void saveBoard(CommunityBoard board) {
-        communityBoardRepository.save(board);
+        try {
+            communityBoardRepository.save(board);
+        } catch (Exception e) {
+            throw new RuntimeException("Database connection failed");
+        }
     }
 
     @Override
@@ -119,8 +132,8 @@ public class CommunityBoardService implements BoardService<CommunityBoard>{
 
     @Transactional
     public CommunityBoard getBoardByIdAndIncrementViews(Long id){
-        incrementViews(id);
         CommunityBoard board = getBoardById(id);
+        incrementViews(id);
         return board;
     }
 
