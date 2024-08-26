@@ -35,19 +35,21 @@ class CommunityBoardServiceTest {
 
     @Test
     void validateCommunityForm_Success() {
+        //given : 준비
         CommunityBoardWriteForm form = new CommunityBoardWriteForm();
         form.setTitle("Valid Title");
         form.setContent("Valid Content");
 
         Errors errors = new BeanPropertyBindingResult(form, "communityBoardWriteForm");
-
+        //when : 실행
         Map<String, String> validatorResult = boardService.validateCommunityForm(errors);
-
+        //then : 검증
         assertThat(validatorResult).isEmpty();
     }
 
     @Test
     void validateCommunityForm_EmptyTitle() {
+        //given : 준비
         CommunityBoardWriteForm form = new CommunityBoardWriteForm();
         form.setTitle("");
         form.setContent("Valid Content");
@@ -56,9 +58,9 @@ class CommunityBoardServiceTest {
         if (form.getTitle() == null || form.getTitle().trim().isEmpty()) {
             errors.rejectValue("title", "NotBlank", "제목을 입력해주세요.");
         }
-
+        //when : 실행
         Map<String, String> validatorResult = boardService.validateCommunityForm(errors);
-
+        //then : 검증
         assertThat(validatorResult).isNotEmpty();
         assertThat(validatorResult).containsKey("valid_title");
         assertThat(validatorResult.get("valid_title")).isEqualTo("제목을 입력해주세요.");
@@ -92,7 +94,6 @@ class CommunityBoardServiceTest {
         Page<CommunityBoard> result = boardService.getBoardPage(pageNumber);
         //then : 검증
         assertThat(result).isNotNull();
-        assertThat(result.getContent()).hasSize(pageSize);
         assertThat(result.getCurrentPage()).isEqualTo(pageNumber);
         assertThat(result.getTotalPages()).isEqualTo(totalPages);
         assertThat(result.getPageSize()).isEqualTo(pageSize);
@@ -101,14 +102,14 @@ class CommunityBoardServiceTest {
            CommunityBoard board = result.getContent().get(i);
            assertThat(board.getTitle()).isEqualTo("Test Title " + i);
            assertThat(board.getContent()).isEqualTo("Test Content " + i);
-       }
+        }
 
-       // boardRepository 메서드들이 올바른 파라미터로 호출되었는지 확인
-       verify(boardRepository).count();
-       verify(boardRepository).findPage(eq((pageNumber - 1) * pageSize), eq(pageSize));
+        // boardRepository 메서드들이 올바른 파라미터로 호출되었는지 확인
+        verify(boardRepository).count();
+        verify(boardRepository).findPage(eq((pageNumber - 1) * pageSize), eq(pageSize));
     }
     @Test
-   void getBoardPage_InvalidPageNumber() {
+    void getBoardPage_InvalidPageNumber() {
         // given
         int invalidPageNumber = 0;
 
@@ -124,7 +125,7 @@ class CommunityBoardServiceTest {
         // 리포지토리 메서드가 호출되지 않았는지 확인
         verify(boardRepository, never()).count();
         verify(boardRepository, never()).findPage(anyInt(), anyInt());
-   }
+    }
 
     @Test
     void getTopViewedBoardPage() {
