@@ -15,4 +15,3 @@ public class IndexController {
         return "index"; // 인덱스 페이지 뷰 이름
     }
 }
-

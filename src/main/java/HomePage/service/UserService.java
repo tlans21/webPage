@@ -24,6 +24,11 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
+    public UserService(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
+        this.userRepository = userRepository;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+    }
+
     public Long join(User user){
         validateUserFields(user);
         validateEmailFormat(user.getEmail());
@@ -42,7 +47,6 @@ public class UserService {
         if (user.getPassword() == null || user.getPassword().trim().isEmpty()) {
             throw new IllegalArgumentException("비밀번호가 필요합니다.");
         }
-        // 추가적인 필드 검증 로직을 여기에 구현할 수 있습니다.
     }
     private void validateEmailFormat(String email) {
        if (!isValidEmail(email)) {

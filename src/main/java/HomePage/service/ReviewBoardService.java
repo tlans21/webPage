@@ -36,8 +36,9 @@ public class ReviewBoardService implements BoardService<ReviewBoard>{
     }
 
     @Override
-    public void saveBoard(ReviewBoard board) {
-        reviewBoardRepository.save(board);
+    public Long saveBoard(ReviewBoard board) {
+        ReviewBoard savedBoard = reviewBoardRepository.save(board);
+        return savedBoard.getId();
     }
 
     @Override

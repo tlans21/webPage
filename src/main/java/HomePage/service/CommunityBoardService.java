@@ -86,11 +86,12 @@ public class CommunityBoardService implements BoardService<CommunityBoard>{
 
     @Override
     @Transactional
-    public void saveBoard(CommunityBoard board) {
+    public Long saveBoard(CommunityBoard board) {
         try {
-            communityBoardRepository.save(board);
+            CommunityBoard savedBoard = communityBoardRepository.save(board);
+            return savedBoard.getId();
         } catch (Exception e) {
-            throw new RuntimeException("Database connection failed");
+            throw new RuntimeException("Database connection failed", e);
         }
     }
 
@@ -132,8 +133,8 @@ public class CommunityBoardService implements BoardService<CommunityBoard>{
 
     @Transactional
     public CommunityBoard getBoardByIdAndIncrementViews(Long id){
-        CommunityBoard board = getBoardById(id);
         incrementViews(id);
+        CommunityBoard board = getBoardById(id);
         return board;
     }
 

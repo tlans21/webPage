@@ -61,7 +61,6 @@ public class JdbcTemplateUserRepository implements UserRepository {
     public Optional<User> findByUsername(String username) {
         String sql = String.format("SELECT * FROM %s where username = ?", tableName);
         List<User> result = jdbcTemplate.query(sql, memberRowMapper(), username);
-        System.out.println(result);
         return result.stream().findAny();
     }
 
@@ -75,7 +74,6 @@ public class JdbcTemplateUserRepository implements UserRepository {
     public Optional<User> findByEmail(String email) {
         String sql = String.format("SELECT * FROM %s where email = ?", tableName);
         List<User> result = jdbcTemplate.query(sql, memberRowMapper(), email);
-        System.out.println(result);
         return result.stream().findAny();
     }
 

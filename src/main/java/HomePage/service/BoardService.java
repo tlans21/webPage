@@ -10,7 +10,7 @@ public interface BoardService <T extends Board>{
     Page<T> getTopViewedBoardPage(int pageNumber);
     Page<T> getTopCommentCntBoardPage(int pageNumber);
     T getBoardById(Long id);
-    void saveBoard(T board);
+    Long saveBoard(T board);
     void updateBoard(T board);
     void deleteBoard(Long id);
     List<T> searchBoardsByTitle(String title);
