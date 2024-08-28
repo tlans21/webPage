@@ -4,52 +4,50 @@ import HomePage.domain.model.User;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 
 import javax.sql.DataSource;
-import java.sql.Timestamp;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 public class JdbcTemplateUserRepository implements UserRepository {
-    private final JdbcTemplate jdbcTemplate;
+    private JdbcTemplate jdbcTemplate;
     private String tableName = "security.user"; // 기본 테이블 값
     public JdbcTemplateUserRepository(DataSource dataSource) {
         jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
+    // UnitTest에 Mock JdbcTemplate을 한번에 주입 받기 위한 생성자
+    public JdbcTemplateUserRepository(JdbcTemplate jdbcTemplate) {
+           this.jdbcTemplate = jdbcTemplate;
+    }
+
 
     @Override
     public User save(User user) {
-        SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
-        jdbcInsert.withTableName(tableName).usingGeneratedKeyColumns("id");
-        Timestamp createDate = new Timestamp(System.currentTimeMillis());
-        Timestamp loginDate = new Timestamp(System.currentTimeMillis());
-        user.setCreateDate(createDate);
-        user.setLoginDate(loginDate);
+        String sql = "INSERT INTO " + tableName + " (username, email, password, role, phoneNumber, provider, providerId) " +
+                             "VALUES (:username, :email, :password, :role, :phoneNumber, :provider, :providerId)";
 
-        Map<String, Object> parameters = new HashMap<>();
-        parameters.put("username", user.getUsername());
-        parameters.put("password", user.getPassword());
-        parameters.put("email", user.getEmail());
-        parameters.put("phoneNumber", user.getPhoneNumber());
-        parameters.put("role", user.getRoles());
-        parameters.put("createDate",user.getCreateDate() );
-        parameters.put("loginDate", user.getLoginDate());
-        parameters.put("provider", user.getProvider());
-        parameters.put("providerId", user.getProviderId());
+        MapSqlParameterSource parameters = new MapSqlParameterSource()
+            .addValue("username", user.getUsername())
+            .addValue("password", user.getPassword())
+            .addValue("email", user.getEmail())
+            .addValue("phoneNumber", user.getPhoneNumber())
+            .addValue("role", user.getRoles())
+            .addValue("provider", user.getProvider())
+            .addValue("providerId", user.getProviderId());
 
-        Number key = jdbcInsert.executeAndReturnKey(new MapSqlParameterSource(parameters));
-        user.setId(key.longValue());
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(sql, parameters, keyHolder, new String[]{"id"});
 
+        user.setId(keyHolder.getKey().longValue());
         return user;
     }
 
     @Override
     public Optional<User> findById(Long id) {
-        String sql = String.format("SELECT * FROM %s where id = ?", tableName);
+        String sql = String.format("SELECT * FROM %s WHERE id = ?", tableName);
         List<User> result = jdbcTemplate.query(sql, memberRowMapper(), id);
         // 리스트의 병렬 검색을 위해서 stream()을 사용
         // Optional<>을 사용하는 이유로는 null 값이 오면 발생하는 Null Pointer Exception을 막기 위함이며. 결국 허용함에 따라 메모리를 필요로 하는데
@@ -59,7 +57,7 @@ public class JdbcTemplateUserRepository implements UserRepository {
 
     @Override
     public Optional<User> findByUsername(String username) {
-        String sql = String.format("SELECT * FROM %s where username = ?", tableName);
+        String sql = String.format("SELECT * FROM %s WHERE username = ?", tableName);
         List<User> result = jdbcTemplate.query(sql, memberRowMapper(), username);
         return result.stream().findAny();
     }
@@ -72,14 +70,14 @@ public class JdbcTemplateUserRepository implements UserRepository {
 
     @Override
     public Optional<User> findByEmail(String email) {
-        String sql = String.format("SELECT * FROM %s where email = ?", tableName);
+        String sql = String.format("SELECT * FROM %s WHERE email = ?", tableName);
         List<User> result = jdbcTemplate.query(sql, memberRowMapper(), email);
         return result.stream().findAny();
     }
 
     @Override
     public Optional<User> findByPhoneNumber(String phoneNumber) {
-        String sql = String.format("SELECT * FROM %s where phoneNumber = ?", tableName);
+        String sql = String.format("SELECT * FROM %s WHERE phoneNumber = ?", tableName);
         List<User> result = jdbcTemplate.query(sql, memberRowMapper(), phoneNumber);
         return result.stream().findAny();
     }
@@ -101,4 +99,14 @@ public class JdbcTemplateUserRepository implements UserRepository {
     public void setTableName(String tableName){
         this.tableName = tableName;
     }
+
+
+    public String getTableName(){
+        return this.tableName;
+    }
+
+    public void setJdbcTemplate(JdbcTemplate jdbcTemplate){
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
 }
