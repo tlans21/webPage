@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @Transactional
-class JdbcTemplateUserRepositoryTest {
+class JdbcTemplateUserRepositoryIntegrationTest {
     @Autowired
     UserRepository userRepository;
     @Autowired

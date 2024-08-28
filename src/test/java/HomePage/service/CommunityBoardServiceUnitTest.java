@@ -21,7 +21,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @TestPropertySource(properties = {"communityBoard.page-size=10"})
-class CommunityBoardServiceTest {
+class CommunityBoardServiceUnitTest {
     @Mock
     JdbcTemplateCommunityBoardRepository boardRepository;
     @Mock

@@ -18,7 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @Transactional
-class JdbcTemplateCommunityBoardRepositoryTest {
+class JdbcTemplateCommunityBoardRepositoryIntegrationTest {
     @Autowired
     BoardRepository<CommunityBoard> boardRepository;
     @Autowired
