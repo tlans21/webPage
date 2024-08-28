@@ -4,13 +4,12 @@ import HomePage.domain.model.CommunityComment;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 
 import javax.sql.DataSource;
 import java.sql.Timestamp;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 public class JdbcTemplateCommunityCommentRepository implements CommentRepository<CommunityComment>{
@@ -19,22 +18,29 @@ public class JdbcTemplateCommunityCommentRepository implements CommentRepository
     public JdbcTemplateCommunityCommentRepository(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
+    public JdbcTemplateCommunityCommentRepository(JdbcTemplate jdbcTemplate){
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     @Override
     public CommunityComment save(CommunityComment comment) {
-        SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
-        jdbcInsert.withTableName(tableName).usingGeneratedKeyColumns("comment_id");
+        String sql = "INSERT INTO " + tableName + " (writer, board_id, content, regDate, updateDate, deleteDate) " +
+                                     "VALUES (:writer, :board_id, :content, :regDate, :updateDate, :deleteDate)";
         Timestamp regDate = new Timestamp(System.currentTimeMillis());
         comment.setRegisterDate(regDate);
 
-        Map<String, Object> parameters = new HashMap<>();
-        parameters.put("board_id", comment.getBoard_id());
-        parameters.put("writer", comment.getWriter());
-        parameters.put("content", comment.getContent());
-        parameters.put("regdate", comment.getRegisterDate());
+        MapSqlParameterSource parameters = new MapSqlParameterSource()
+                .addValue("writer", comment.getWriter())
+                .addValue("board_id", comment.getBoard_id())
+                .addValue("content", comment.getContent())
+                .addValue("regDate", comment.getRegisterDate());
 
-        Number key = jdbcInsert.executeAndReturnKey(new MapSqlParameterSource(parameters));
-        comment.setId(key.longValue());
+
+
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(sql, parameters, keyHolder, new String[]{"comment_id"});
+
+        comment.setId(keyHolder.getKey().longValue());
         return comment;
     }
 
@@ -105,9 +111,13 @@ public class JdbcTemplateCommunityCommentRepository implements CommentRepository
            communityComment.setDeleteDate(rs.getTimestamp("deleteDate"));
            return communityComment;
        };
-   }
-   @Override
+    }
+    @Override
     public void setTableName(String tableName) {
         this.tableName = tableName;
+    }
+
+    public String getTableName(){
+        return this.tableName;
     }
 }
