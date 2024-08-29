@@ -3,11 +3,11 @@ package HomePage.repository;
 import HomePage.domain.model.CommunityComment;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
 import javax.sql.DataSource;
+import java.sql.PreparedStatement;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
@@ -24,21 +24,20 @@ public class JdbcTemplateCommunityCommentRepository implements CommentRepository
 
     @Override
     public CommunityComment save(CommunityComment comment) {
-        String sql = "INSERT INTO " + tableName + " (writer, board_id, content, regDate, updateDate, deleteDate) " +
-                                     "VALUES (:writer, :board_id, :content, :regDate, :updateDate, :deleteDate)";
-        Timestamp regDate = new Timestamp(System.currentTimeMillis());
-        comment.setRegisterDate(regDate);
-
-        MapSqlParameterSource parameters = new MapSqlParameterSource()
-                .addValue("writer", comment.getWriter())
-                .addValue("board_id", comment.getBoard_id())
-                .addValue("content", comment.getContent())
-                .addValue("regDate", comment.getRegisterDate());
-
-
-
+        String sql = "INSERT INTO " + tableName + " (writer, board_id, content, regdate, updateDate, deleteDate) " +
+                                        "VALUES (?, ?, ?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        jdbcTemplate.update(sql, parameters, keyHolder, new String[]{"comment_id"});
+        comment.setRegisterDate(new Timestamp(System.currentTimeMillis()));
+        jdbcTemplate.update(connection -> {
+                PreparedStatement ps = connection.prepareStatement(sql, new String[]{"comment_id"});
+                ps.setString(1, comment.getWriter());
+                ps.setLong(2, comment.getBoard_id());
+                ps.setString(3, comment.getContent());
+                ps.setTimestamp(4, comment.getRegisterDate());
+                ps.setTimestamp(5, comment.getUpdateDate());
+                ps.setTimestamp(6, comment.getDeleteDate());
+               return ps;
+        }, keyHolder);
 
         comment.setId(keyHolder.getKey().longValue());
         return comment;
@@ -72,7 +71,7 @@ public class JdbcTemplateCommunityCommentRepository implements CommentRepository
     }
 
     @Override
-    public List<CommunityComment> selectById(Long boardId) {
+    public List<CommunityComment> selectByBoardId(Long boardId) {
         String sql = String.format("SELECT * FROM %s WHERE board_id = ?", tableName);
         return jdbcTemplate.query(sql, communityCommentRowMapper(), boardId);
     }

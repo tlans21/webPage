@@ -47,10 +47,12 @@ class JdbcTemplateUserRepositoryIntegrationTest {
         cleanUpDatabase();
     }
     private void cleanUpDatabase() {
+        jdbcTemplate.execute("SET FOREIGN_KEY_CHECKS = 0");
         jdbcTemplate.execute("SET SQL_SAFE_UPDATES = 0");
         try {
-            jdbcTemplate.execute("DELETE FROM test.user where id > 1");
+            jdbcTemplate.execute("DELETE FROM test.user WHERE id > 1");
         } finally {
+            jdbcTemplate.execute("SET FOREIGN_KEY_CHECKS = 1");
             jdbcTemplate.execute("SET SQL_SAFE_UPDATES = 1");
         }
     }
@@ -62,7 +64,7 @@ class JdbcTemplateUserRepositoryIntegrationTest {
         user1.setUsername("user1");
         user1.setEmail("user1@test.com");
         user1.setPassword("password1");
-        user1.setRoles("USER");
+        user1.setRoles("ROLE_USER");
         userRepository.save(user1);
 
         User user2 = new User();
@@ -135,7 +137,7 @@ class JdbcTemplateUserRepositoryIntegrationTest {
 
         //when & then : 실행 및 검증
         assertThatThrownBy(() -> userRepository.save(user))
-            .isInstanceOf(DataIntegrityViolationException.class);
+                .isInstanceOf(DataIntegrityViolationException.class);
     }
 
     @Test

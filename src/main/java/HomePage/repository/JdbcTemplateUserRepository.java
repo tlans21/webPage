@@ -3,11 +3,11 @@ package HomePage.repository;
 import HomePage.domain.model.User;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
 import javax.sql.DataSource;
+import java.sql.PreparedStatement;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,20 +26,21 @@ public class JdbcTemplateUserRepository implements UserRepository {
 
     @Override
     public User save(User user) {
-        String sql = "INSERT INTO " + tableName + " (username, email, password, role, phoneNumber, provider, providerId) " +
-                             "VALUES (:username, :email, :password, :role, :phoneNumber, :provider, :providerId)";
-
-        MapSqlParameterSource parameters = new MapSqlParameterSource()
-            .addValue("username", user.getUsername())
-            .addValue("password", user.getPassword())
-            .addValue("email", user.getEmail())
-            .addValue("phoneNumber", user.getPhoneNumber())
-            .addValue("role", user.getRoles())
-            .addValue("provider", user.getProvider())
-            .addValue("providerId", user.getProviderId());
-
+        String sql = "INSERT INTO " + tableName + " (username, password, email, role, phoneNumber, provider, providerId) " +
+                                "VALUES (?, ?, ?, ?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        jdbcTemplate.update(sql, parameters, keyHolder, new String[]{"id"});
+
+        jdbcTemplate.update(connection -> {
+                PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
+                ps.setString(1, user.getUsername());
+                ps.setString(2, user.getPassword());
+                ps.setString(3, user.getEmail());
+                ps.setString(4, user.getRoles());
+                ps.setString(5, user.getPhoneNumber());
+                ps.setString(6, user.getProvider());
+                ps.setString(7, user.getProviderId());
+               return ps;
+        }, keyHolder);
 
         user.setId(keyHolder.getKey().longValue());
         return user;

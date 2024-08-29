@@ -535,7 +535,7 @@ class CommunityBoardServiceUnitTest {
         Long nonExistingBoardId = 999L;
 
         when(boardRepository.selectById(nonExistingBoardId)).thenReturn(Optional.empty());
-        when(boardRepository.incrementViews(nonExistingBoardId)).thenReturn(false);
+
         assertThatThrownBy(() -> boardService.getBoardByIdAndIncrementViews(nonExistingBoardId))
             .isInstanceOf(RuntimeException.class)
             .hasMessageContaining("Board not found with id: " + nonExistingBoardId);

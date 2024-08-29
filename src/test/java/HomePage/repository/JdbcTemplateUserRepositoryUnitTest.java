@@ -4,35 +4,38 @@ import HomePage.domain.model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class JdbcTemplateUserRepositoryUnitTest {
     @Mock
     private JdbcTemplate mockJdbcTemplate;
-    private JdbcTemplateUserRepository mockUserRepository;
+    private JdbcTemplateUserRepository userRepository;
     private User testUser;
 
     @BeforeEach
     void setUp() {
-        mockUserRepository = new JdbcTemplateUserRepository(mockJdbcTemplate);
-        ReflectionTestUtils.setField(mockUserRepository, "tableName", "test.user");
+        userRepository = new JdbcTemplateUserRepository(mockJdbcTemplate);
+        ReflectionTestUtils.setField(userRepository, "tableName", "test.user");
 
         testUser = new User();
         testUser.setId(1L);
@@ -43,65 +46,73 @@ class JdbcTemplateUserRepositoryUnitTest {
     }
 
     @Test
-    void save() {
-        when(mockJdbcTemplate.update(
-                anyString(),
-                any(MapSqlParameterSource.class),
-                any(KeyHolder.class),
-                eq(new String[]{"id"})
-        )).thenAnswer(invocation -> {
-            KeyHolder keyHolder = invocation.getArgument(2); // 첫 번째 인자 (인덱스 0): SQL 문자열, 두 번째 인자 (인덱스 1): MapSqlParameterSource 객체, 세 번째 인자 (인덱스 2): KeyHolder 객체, 네 번째 인자 (인덱스 3): 생성된 키의 컬럼 이름 배열
+    void save() throws SQLException {
+        // given
+        when(mockJdbcTemplate.update(any(), any(KeyHolder.class))).thenAnswer(invocation -> {
+            KeyHolder keyHolder = invocation.getArgument(1); // update의 두번째 인자인 keyHolder에 접근 (인덱스 1)
             Map<String, Object> keyMap = new HashMap<>();
             keyMap.put("id", 1L);
             ((GeneratedKeyHolder) keyHolder).getKeyList().add(keyMap);
             return 1;
         });
 
-        // when : 실행
-        User savedUser = mockUserRepository.save(testUser);
+        // when
+        User savedUser = userRepository.save(testUser);
 
-        // then : 검증
+        // then
         assertThat(savedUser).isNotNull();
         assertThat(savedUser.getId()).isEqualTo(1L);
 
-        verify(mockJdbcTemplate).update(
-                anyString(),
-                any(MapSqlParameterSource.class),
-                any(KeyHolder.class),
-                eq(new String[]{"id"})
-        );
+        ArgumentCaptor<PreparedStatementCreator> pscCaptor = ArgumentCaptor.forClass(PreparedStatementCreator.class);
+        verify(mockJdbcTemplate).update(pscCaptor.capture(), any(KeyHolder.class));
+
+        // PreparedStatementCreator 검증
+        Connection mockConnection = mock(Connection.class);
+        PreparedStatement mockPs = mock(PreparedStatement.class);
+        when(mockConnection.prepareStatement(anyString(), any(String[].class))).thenReturn(mockPs);
+
+        pscCaptor.getValue().createPreparedStatement(mockConnection);
+
+        verify(mockPs).setString(1, testUser.getUsername());
+        verify(mockPs).setString(2, testUser.getPassword());
+        verify(mockPs).setString(3, testUser.getEmail());
+        verify(mockPs).setString(4, testUser.getRoles());
+        verify(mockPs).setString(5, testUser.getPhoneNumber());
+        verify(mockPs).setString(6, testUser.getProvider());
+        verify(mockPs).setString(7, testUser.getProviderId());
+    }
+
+    @Test
+    void saveWithDuplicateUsername() {
+        // given
+        when(mockJdbcTemplate.update(any(PreparedStatementCreator.class), any(KeyHolder.class)))
+            .thenThrow(new DuplicateKeyException("Duplicate username"));
+
+        // when & then
+        assertThatThrownBy(() -> userRepository.save(testUser))
+                .isInstanceOf(DuplicateKeyException.class)
+                .hasMessageContaining("Duplicate username");
+
+        // verify that update method was called
+        verify(mockJdbcTemplate).update(any(PreparedStatementCreator.class), any(KeyHolder.class));
     }
 
     @Test
     void findAll() {
-        String sql = String.format("SELECT * FROM %s", mockUserRepository.getTableName());
+        String sql = String.format("SELECT * FROM %s", userRepository.getTableName());
         List<User> expectedUsers = Arrays.asList(testUser);
         when(mockJdbcTemplate.query(eq(sql), any(RowMapper.class)))
                 .thenReturn(expectedUsers);
 
-        List<User> actualUsers = mockUserRepository.findAll();
+        List<User> actualUsers = userRepository.findAll();
 
         assertThat(actualUsers).isEqualTo(expectedUsers);
     }
 
     @Test
-    void saveWithDuplicateUsername() {
-        when(mockJdbcTemplate.update(
-                anyString(),
-                any(MapSqlParameterSource.class),
-                any(KeyHolder.class),
-                eq(new String[]{"id"})
-        )).thenThrow(new DuplicateKeyException("Duplicate username"));
-
-        assertThatThrownBy(() -> mockUserRepository.save(testUser))
-                .isInstanceOf(DuplicateKeyException.class)
-                .hasMessageContaining("Duplicate username");
-    }
-
-    @Test
     void findById() {
         //given : 준비
-        String sql = String.format("SELECT * FROM %s WHERE id = ?", mockUserRepository.getTableName());
+        String sql = String.format("SELECT * FROM %s WHERE id = ?", userRepository.getTableName());
         when(mockJdbcTemplate.query(
                 eq(sql),
                 any(RowMapper.class),
@@ -109,7 +120,7 @@ class JdbcTemplateUserRepositoryUnitTest {
         )).thenReturn(Collections.singletonList(testUser));
 
         //when : 실행
-        Optional<User> foundUser = mockUserRepository.findById(1L);
+        Optional<User> foundUser = userRepository.findById(1L);
 
         //then : 검증
         assertThat(foundUser).isPresent();
@@ -120,14 +131,14 @@ class JdbcTemplateUserRepositoryUnitTest {
     @Test
     void findByIdNotFound() {
         //given : 준비
-        String sql = String.format("SELECT * FROM %s WHERE id = ?", mockUserRepository.getTableName());
+        String sql = String.format("SELECT * FROM %s WHERE id = ?", userRepository.getTableName());
         when(mockJdbcTemplate.query(
                 eq(sql),
                 any(RowMapper.class),
                 eq(9999L) // 9999는 없는 USER id라고 가정
         )).thenReturn(Collections.emptyList());
         //when : 실행
-        Optional<User> foundUser = mockUserRepository.findById(9999L);
+        Optional<User> foundUser = userRepository.findById(9999L);
         //then : 검증
         assertThat(foundUser).isEmpty();
         verify(mockJdbcTemplate).query(eq(sql), any(RowMapper.class), eq(9999L));
@@ -136,14 +147,14 @@ class JdbcTemplateUserRepositoryUnitTest {
     @Test
     void findByUsername() {
         //given : 준비
-        String sql = String.format("SELECT * FROM %s WHERE username = ?", mockUserRepository.getTableName());
+        String sql = String.format("SELECT * FROM %s WHERE username = ?", userRepository.getTableName());
         when(mockJdbcTemplate.query(
                 eq(sql),
                 any(RowMapper.class),
                 eq("testUser")
         )).thenReturn(Collections.singletonList(testUser));
         //when : 실행
-        Optional<User> foundUser = mockUserRepository.findByUsername("testUser");
+        Optional<User> foundUser = userRepository.findByUsername("testUser");
         //then : 검증
         assertThat(foundUser).isPresent();
         assertThat(foundUser.get()).isEqualTo(testUser);
@@ -153,14 +164,14 @@ class JdbcTemplateUserRepositoryUnitTest {
     @Test
     void findByUsernameNotFound() {
         //given : 준비
-        String sql = String.format("SELECT * FROM %s WHERE username = ?", mockUserRepository.getTableName());
+        String sql = String.format("SELECT * FROM %s WHERE username = ?", userRepository.getTableName());
         when(mockJdbcTemplate.query(
                 eq(sql),
                 any(RowMapper.class),
                 eq("nonExistentUser")
         )).thenReturn(Collections.emptyList());
         //when : 실행
-        Optional<User> foundUser = mockUserRepository.findByUsername("nonExistentUser");
+        Optional<User> foundUser = userRepository.findByUsername("nonExistentUser");
         //then : 검증
         assertThat(foundUser).isEmpty();
         verify(mockJdbcTemplate).query(eq(sql), any(RowMapper.class), eq("nonExistentUser"));
@@ -169,14 +180,14 @@ class JdbcTemplateUserRepositoryUnitTest {
     @Test
     void findByEmail() {
         //given : 준비
-        String sql = String.format("SELECT * FROM %s WHERE email = ?", mockUserRepository.getTableName());
+        String sql = String.format("SELECT * FROM %s WHERE email = ?", userRepository.getTableName());
         when(mockJdbcTemplate.query(
                 eq(sql),
                 any(RowMapper.class),
                 eq(testUser.getEmail())
         )).thenReturn(Collections.singletonList(testUser));
         //when : 실행
-        Optional<User> foundUser = mockUserRepository.findByEmail("test@test.com");
+        Optional<User> foundUser = userRepository.findByEmail("test@test.com");
         //then : 검증
         assertThat(foundUser).isPresent();
         assertThat(foundUser.get()).isEqualTo(testUser);
@@ -186,7 +197,7 @@ class JdbcTemplateUserRepositoryUnitTest {
     @Test
     void findByEmailNotFound() {
         //given : 준비
-        String sql = String.format("SELECT * FROM %s WHERE email = ?", mockUserRepository.getTableName());
+        String sql = String.format("SELECT * FROM %s WHERE email = ?", userRepository.getTableName());
         when(mockJdbcTemplate.query(
                 eq(sql),
                 any(RowMapper.class),
@@ -194,7 +205,7 @@ class JdbcTemplateUserRepositoryUnitTest {
         )).thenReturn(Collections.emptyList());
 
         //when : 실행
-        Optional<User> foundUser = mockUserRepository.findByEmail("nonexistent@test.com");
+        Optional<User> foundUser = userRepository.findByEmail("nonexistent@test.com");
         //검증
         assertThat(foundUser).isEmpty();
         verify(mockJdbcTemplate).query(eq(sql), any(RowMapper.class), eq("nonexistent@test.com"));
