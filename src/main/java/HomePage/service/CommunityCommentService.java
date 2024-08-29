@@ -90,7 +90,7 @@ public class CommunityCommentService implements CommentService<CommunityComment>
 
     @Override
     public List<CommunityComment> getCommentByBoardId(Long id) {
-        return commentRepository.selectById(id);
+        return commentRepository.selectByBoardId(id);
     }
 
     @Override

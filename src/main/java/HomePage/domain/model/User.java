@@ -1,5 +1,6 @@
 package HomePage.domain.model;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 
 import java.sql.Timestamp;
@@ -11,11 +12,11 @@ import java.util.List;
 public class User {
 
     private Long id;
-
+    @NotNull
     private String username;
-
+    @NotNull
     private String password;
-
+    @NotNull
     private String email;
     private String roles;
 

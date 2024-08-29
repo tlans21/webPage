@@ -4,22 +4,25 @@ import HomePage.domain.model.CommunityComment;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class JdbcTemplateCommunityCommentRepositoryUnitTest {
@@ -42,15 +45,13 @@ class JdbcTemplateCommunityCommentRepositoryUnitTest {
     }
 
     @Test
-    void save() {
+    void save() throws SQLException {
         //given : 준비
         when(mockJdbcTemplate.update(
-                anyString(),
-                any(MapSqlParameterSource.class),
-                any(KeyHolder.class),
-                eq(new String[]{"comment_id"})
+                any(),
+                any(KeyHolder.class)
         )).thenAnswer(invocation -> {
-            KeyHolder keyHolder = invocation.getArgument(2);
+            KeyHolder keyHolder = invocation.getArgument(1); // keyHolder 접근
             Map<String, Object> keyMap = new HashMap<>();
             keyMap.put("comment_id", 1L);
             ((GeneratedKeyHolder) keyHolder).getKeyList().add(keyMap);
@@ -60,16 +61,26 @@ class JdbcTemplateCommunityCommentRepositoryUnitTest {
         // when : 실행
         CommunityComment savedComment = communityCommentRepository.save(testComment);
 
-       // then : 검증
-       assertThat(savedComment).isNotNull();
-       assertThat(savedComment.getId()).isEqualTo(1L);
+        // then : 검증
+        assertThat(savedComment).isNotNull();
+        assertThat(savedComment.getId()).isEqualTo(1L);
 
-       verify(mockJdbcTemplate).update(
-               anyString(),
-               any(MapSqlParameterSource.class),
-               any(KeyHolder.class),
-               eq(new String[]{"comment_id"})
-       );
+        ArgumentCaptor<PreparedStatementCreator> pscCaptor = ArgumentCaptor.forClass(PreparedStatementCreator.class);
+        verify(mockJdbcTemplate).update(pscCaptor.capture(), any(KeyHolder.class));
+        // PreparedStatementCreator 검증
+        Connection mockConnection = mock(Connection.class);
+        PreparedStatement mockPs = mock(PreparedStatement.class);
+        when(mockConnection.prepareStatement(anyString(), any(String[].class))).thenReturn(mockPs);
+
+        pscCaptor.getValue().createPreparedStatement(mockConnection);
+
+        verify(mockPs).setString(1, testComment.getWriter());
+        verify(mockPs).setLong(2, testComment.getBoard_id());
+        verify(mockPs).setString(3, testComment.getContent());
+        verify(mockPs).setTimestamp(4, testComment.getRegisterDate());
+        verify(mockPs).setTimestamp(5, testComment.getUpdateDate());
+        verify(mockPs).setTimestamp(6, testComment.getDeleteDate());
+
 
     }
 
@@ -145,7 +156,7 @@ class JdbcTemplateCommunityCommentRepositoryUnitTest {
     }
 
     @Test
-    void selectById() {
+    void selectByBoardId() {
         //given : 준비
         String sql = String.format("SELECT * FROM %s WHERE board_id = ?", communityCommentRepository.getTableName());
         when(mockJdbcTemplate.query(
@@ -154,7 +165,7 @@ class JdbcTemplateCommunityCommentRepositoryUnitTest {
                 eq(testComment.getBoard_id())
         )).thenReturn(Arrays.asList(testComment));
         //when : 실행
-        List<CommunityComment> result = communityCommentRepository.selectById(testComment.getBoard_id());
+        List<CommunityComment> result = communityCommentRepository.selectByBoardId(testComment.getBoard_id());
         //then : 검증
         assertThat(result).hasSize(1);
         assertThat(result.get(0)).isEqualTo(testComment);

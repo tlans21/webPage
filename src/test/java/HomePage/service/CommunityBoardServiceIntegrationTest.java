@@ -656,7 +656,7 @@ class CommunityBoardServiceIntegrationTest {
         // when & then : 실행 및 검증
         assertThatThrownBy(() -> boardService.getBoardByIdAndIncrementViews(nonExistingBoardId))
                 .isInstanceOf(RuntimeException.class)
-                .hasMessageContaining("Expected 1 row to be updated, but got ");
+                .hasMessageContaining("Board not found with id: " + nonExistingBoardId);
     }
 
     @Test

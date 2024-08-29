@@ -133,8 +133,9 @@ public class CommunityBoardService implements BoardService<CommunityBoard>{
 
     @Transactional
     public CommunityBoard getBoardByIdAndIncrementViews(Long id){
-        incrementViews(id);
         CommunityBoard board = getBoardById(id);
+        incrementViews(id);
+        board.setViewCnt(board.getViewCnt() + 1);
         return board;
     }
 
