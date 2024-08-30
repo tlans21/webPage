@@ -50,9 +50,6 @@ public class JdbcTemplateUserRepository implements UserRepository {
     public Optional<User> findById(Long id) {
         String sql = String.format("SELECT * FROM %s WHERE id = ?", tableName);
         List<User> result = jdbcTemplate.query(sql, memberRowMapper(), id);
-        // 리스트의 병렬 검색을 위해서 stream()을 사용
-        // Optional<>을 사용하는 이유로는 null 값이 오면 발생하는 Null Pointer Exception을 막기 위함이며. 결국 허용함에 따라 메모리를 필요로 하는데
-        // 여러개의 null 객체를 생성하더라도 static 키워드를 통해서 빈 객체를 공유함으로써 메모리를 절약할 수 있도록 설계가 되어있음.
         return result.stream().findAny();
     }
 
