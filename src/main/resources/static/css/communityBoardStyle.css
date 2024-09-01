@@ -63,10 +63,31 @@ body {
 }
 .search-bar {
     width: 100%;
-    
 }
+.search-bar form {
+    display: flex;
+}
+.search-bar select {
+    width: 10%;
+    padding-top: 10px;
+    padding-left: 10px;
+    padding-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 20px;  
+}
+
 .search-bar input {
-    width: 100%;
+    width: 80%;
+    padding-top: 10px;
+    padding-left: 10px;
+    padding-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+.search-bar .searchButton {
+    width: 10%;
     padding-top: 10px;
     padding-left: 10px;
     padding-bottom: 10px;
@@ -87,8 +108,12 @@ body {
     align-items: center;
     margin-bottom: 5px;
 }
-.author {
+.post-title {
     font-weight: bold;
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+.author {
     margin-right: 10px;
 }
 .badge {
@@ -101,10 +126,6 @@ body {
     color: #888;
     font-size: 12px;
     margin-left: auto;
-}
-.post-title {
-    font-size: 16px;
-    margin-bottom: 5px;
 }
 .tag {
     background-color: #f0f0f0;

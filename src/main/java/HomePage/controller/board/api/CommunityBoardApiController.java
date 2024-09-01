@@ -19,6 +19,7 @@ import java.util.Map;
 @Controller
 @RequestMapping("/api/v1/community")
 public class CommunityBoardApiController {
+
     private final CommunityBoardService boardService;
     private final CommunityCommentService commentService;
 

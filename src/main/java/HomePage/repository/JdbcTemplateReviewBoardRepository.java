@@ -22,6 +22,26 @@ public class JdbcTemplateReviewBoardRepository implements BoardRepository<Review
     }
 
     @Override
+    public List<ReviewBoard> findPageByTitle(int offset, int limit, String title) {
+        return null;
+    }
+
+    @Override
+    public List<ReviewBoard> findPageByWriter(int offset, int limit, String title) {
+        return null;
+    }
+
+    @Override
+    public int countByTitle(String title) {
+        return 0;
+    }
+
+    @Override
+    public int countByWriter(String writer) {
+        return 0;
+    }
+
+    @Override
     public List<ReviewBoard> findPage(int offset, int limit) {
         String sql = "SELECT * FROM security.reviewBoard WHERE deleteDate IS NULL ORDER BY registerDate DESC LIMIT ? OFFSET ?";
         return jdbcTemplate.query(sql, reviewBoardRowMapper(), limit, offset);

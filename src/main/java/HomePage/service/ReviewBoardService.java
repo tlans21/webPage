@@ -14,6 +14,12 @@ public class ReviewBoardService implements BoardService<ReviewBoard>{
     int pageSize;
 
     private final BoardRepository<ReviewBoard> reviewBoardRepository;
+
+    @Override
+    public Page<ReviewBoard> getBoardPageBySearch(int pageNumber, String searchType, String searchKeyword){
+        return null;
+    }
+
     @Autowired
     public ReviewBoardService(BoardRepository<ReviewBoard> reviewBoardRepository) {
         this.reviewBoardRepository = reviewBoardRepository;

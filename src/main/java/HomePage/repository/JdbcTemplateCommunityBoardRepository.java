@@ -56,11 +56,30 @@ public class JdbcTemplateCommunityBoardRepository implements BoardRepository<Com
         String sql = String.format("SELECT * FROM %s ORDER BY commentCnt DESC LIMIT ? OFFSET ?", tableName);
         return jdbcTemplate.query(sql, communityBoardRowMapper(), limit, offset);
     }
-
+    @Override
+    public List<CommunityBoard> findPageByTitle(int offset, int limit, String title){
+        String sql = String.format("SELECT * FROM %s WHERE deleteDate IS NULL AND title LIKE ? ORDER BY regdate DESC LIMIT ? OFFSET ?", tableName);
+        return jdbcTemplate.query(sql, communityBoardRowMapper(), "%" + title + "%", limit, offset);
+    }
+    @Override
+    public List<CommunityBoard> findPageByWriter(int offset, int limit, String writer){
+        String sql = String.format("SELECT * FROM %s WHERE deleteDate IS NULL AND writer = ? ORDER BY regdate DESC LIMIT ? OFFSET ?", tableName);
+        return jdbcTemplate.query(sql, communityBoardRowMapper(), writer, limit, offset);
+    }
     @Override
     public int count() {
         String sql = String.format("SELECT COUNT(*) FROM %s WHERE deleteDate IS NULL", tableName);
         return jdbcTemplate.queryForObject(sql, Integer.class);
+    }
+    @Override
+    public int countByTitle(String title) {
+        String sql = String.format("SELECT COUNT(*) FROM %s WHERE title LIKE ?", tableName);
+        return jdbcTemplate.queryForObject(sql, Integer.class, "%" + title + "%");
+    }
+    @Override
+    public int countByWriter(String writer){
+        String sql = String.format("SELECT COUNT(*) FROM %s WHERE writer = ?", tableName);
+        return jdbcTemplate.queryForObject(sql, Integer.class, writer);
     }
 
     @Override
