@@ -30,26 +30,49 @@ public class CommunityBoardController {
     @GetMapping("/list")
     public String showCommunityBoardList(@RequestParam(value="page", defaultValue = "1") int page,
                                          @RequestParam(value="sort", defaultValue = "latest") String sort,
+                                         @RequestParam(value="searchType", required = false) String searchType,
+                                         @RequestParam(value="searchKeyword", required = false) String searchKeyword,
+
                                          Model model) {
         Page<CommunityBoard> boardPage;
-        switch (sort) {
-            case "popular":
-                boardPage = boardService.getTopViewedBoardPage(page);
-                break;
-            case "comment":
-                boardPage = boardService.getTopCommentCntBoardPage(page);
-                break;
-            case "latest":
-            default:
-                boardPage = boardService.getBoardPage(page);
-                break;
+        System.out.println(sort);
+        System.out.println(searchType);
+
+        String searchKeywordByTitle = null;
+        String searchKeywordByWriter = null;
+        if (searchKeyword != null && !searchKeyword.trim().isEmpty()) {
+            if(searchType.equals("writer")) {
+                searchKeywordByWriter = searchKeyword;
+                boardPage = boardService.getBoardPageBySearch(page, searchType, searchKeywordByWriter);
+                System.out.println("1");
+                System.out.println(searchKeywordByWriter);
+            } else {
+                searchKeywordByTitle = searchKeyword;
+                boardPage = boardService.getBoardPageBySearch(page, searchType, searchKeywordByTitle);
+                System.out.println("2");
+            }
+        } else {
+            switch (sort) {
+                case "popular":
+                    boardPage = boardService.getTopViewedBoardPage(page);
+                    break;
+                case "comments":
+                    boardPage = boardService.getTopCommentCntBoardPage(page);
+                    break;
+                case "latest":
+                default:
+                    boardPage = boardService.getBoardPage(page);
+                    break;
+            }
         }
-        addPaginationAttributes(model, boardPage, sort);
+
+        addPaginationAttributes(model, boardPage, sort, searchType, searchKeyword);
 
         return "/board/communityBoardList";
     }
 
-    private void addPaginationAttributes(Model model, Page<CommunityBoard> boardPage, String sort){
+
+    private void addPaginationAttributes(Model model, Page<CommunityBoard> boardPage, String sort, String searchType, String searchKeyword){
         int totalPages = boardPage.getTotalPages();
         int currentPage = boardPage.getCurrentPage();
         int visiblePages = 5;
@@ -63,6 +86,8 @@ public class CommunityBoardController {
         model.addAttribute("start", start);
         model.addAttribute("end", end);
         model.addAttribute("sort", sort);
+        model.addAttribute("searchType", searchType);
+        model.addAttribute("searchKeyword", searchKeyword);
     }
 
     @GetMapping("/writeForm")

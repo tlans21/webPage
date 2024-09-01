@@ -77,6 +77,36 @@ public class CommunityBoardService implements BoardService<CommunityBoard>{
 
         return new Page<CommunityBoard>(communityBoards, pageNumber, totalPages, pageSize);
     }
+    @Override
+    public Page<CommunityBoard> getBoardPageBySearch(int pageNumber, String searchType, String searchKeyword) {
+        List<CommunityBoard> communityBoards;
+        int offset = (pageNumber - 1) * pageSize;
+        if (searchType.equals("title") && isSearchByTitle(searchType)){
+            int totalBoards = communityBoardRepository.countByTitle(searchKeyword);
+            int totalPages = (int) Math.ceil((double) totalBoards / pageSize);
+            communityBoards = communityBoardRepository.findPageByTitle(offset, pageSize, searchKeyword);
+            return new Page<CommunityBoard>(communityBoards, pageNumber, totalPages, pageSize);
+        }else if(searchType.equals("writer") && isSearchByWriter(searchKeyword)){
+            int totalBoards = communityBoardRepository.countByWriter(searchKeyword);
+            int totalPages = (int) Math.ceil((double) totalBoards / pageSize);
+            communityBoards = communityBoardRepository.findPageByWriter(offset, pageSize, searchKeyword);
+            return new Page<CommunityBoard>(communityBoards, pageNumber, totalPages, pageSize);
+        }else {
+            return getBoardPage(pageNumber); // 실제로 수행되면 안되는 코드
+        }
+    }
+
+
+    private boolean isSearchByTitle(String title){
+        return !isNullOrEmpty(title);
+    }
+    private boolean isSearchByWriter(String writer){
+        return !isNullOrEmpty(writer);
+    }
+
+    private boolean isNullOrEmpty(String str){
+        return str == null || str.trim().isEmpty();
+    }
 
     @Override
     public CommunityBoard getBoardById(Long id) {
@@ -114,6 +144,7 @@ public class CommunityBoardService implements BoardService<CommunityBoard>{
             throw new RuntimeException("Failed to delete board with board_id: " + id);
         }
     }
+
 
     @Override
     public List<CommunityBoard> searchBoardsByTitle(String title) {

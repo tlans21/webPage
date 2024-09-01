@@ -9,7 +9,11 @@ public interface BoardRepository<T extends Board>{
     List<T> findPage(int offset, int limit);
     List<T> findPageOrderByTopView(int offset, int limit);
     List<T> findPageOrderByTopCommentCnt(int offset, int limit);
+    List<T> findPageByTitle(int offset, int limit, String title);
+    List<T> findPageByWriter(int offset, int limit, String title);
     int count();
+    int countByTitle(String title);
+    int countByWriter(String writer);
     T save(T board);
 
     boolean update(T board);
