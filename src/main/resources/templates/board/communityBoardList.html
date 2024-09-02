@@ -26,16 +26,16 @@
                         <span class="caret">▼</span>
                     </button>
                     <div id="sortDropdown" class="dropdown-menu">
-                        <a href="#" th:href="@{/community/list(page=${boardPage.currentPage}, sort='latest')}" onclick="return changeSort('latest', this.href)">최신순</a>
-                        <a href="#" th:href="@{/community/list(page=${boardPage.currentPage}, sort='popular')}" onclick="return changeSort('popular', this.href)">조회순</a>
-                        <a href="#" th:href="@{/community/list(page=${boardPage.currentPage}, sort='comments')}" onclick="return changeSort('comments', this.href)">댓글순</a>
+                        <a href="#" th:href="@{/community/list(page=1, sort='latest')}" onclick="return changeSort('latest', this.href)">최신순</a>
+                        <a href="#" th:href="@{/community/list(page=1, sort='popular')}" onclick="return changeSort('popular', this.href)">조회순</a>
+                        <a href="#" th:href="@{/community/list(page=1, sort='comments')}" onclick="return changeSort('comments', this.href)">댓글순</a>
                     </div>
                 </div>
             </div>
 
             <div class="search-bar">
                 <form th:action="@{/community/list}" method="get">
-                    <input type="hidden" name="page" th:value="${boardPage.currentPage}">
+                    <input type="hidden" name="page" th:value="1">
                     <input type="hidden" name="sort" th:value="${sort}">
                     
                     <select name="searchType">
@@ -88,8 +88,7 @@
                     <button th:each="pageNum : ${#numbers.sequence(start, end)}"
                             th:onclick="'window.location.href=\'' + @{/community/list(page=${pageNum}, sort=${sort}, searchType=${searchType}, searchKeyword=${searchKeyword})} + '\''"
                             th:text="${pageNum}"
-                            th:class="${pageNum == boardPage.currentPage} ? 'pagination-button active' : 'pagination-button'"></button>
-
+                            th:class="${pageNum == boardPage.currentPage} ? 'pagination-button active' : 'pagination-button'"></button>     
                     <span th:if="${end < boardPage.totalPages - 1}" class="pagination-ellipsis">...</span>
                     <button th:if="${end < boardPage.totalPages}"
                             th:onclick="'window.location.href=\'' + @{/community/list(page=${boardPage.totalPages}, sort=${sort}, searchType=${searchType}, searchKeyword=${searchKeyword})} + '\''"

@@ -81,19 +81,21 @@ public class CommunityBoardService implements BoardService<CommunityBoard>{
     public Page<CommunityBoard> getBoardPageBySearch(int pageNumber, String searchType, String searchKeyword) {
         List<CommunityBoard> communityBoards;
         int offset = (pageNumber - 1) * pageSize;
-        if (searchType.equals("title") && isSearchByTitle(searchType)){
-            int totalBoards = communityBoardRepository.countByTitle(searchKeyword);
-            int totalPages = (int) Math.ceil((double) totalBoards / pageSize);
+        int totalBoards;
+        int totalPages;
+
+        if (searchType.equals("title") && isSearchByTitle(searchType)) {
+            totalBoards = communityBoardRepository.countByTitle(searchKeyword);
             communityBoards = communityBoardRepository.findPageByTitle(offset, pageSize, searchKeyword);
-            return new Page<CommunityBoard>(communityBoards, pageNumber, totalPages, pageSize);
-        }else if(searchType.equals("writer") && isSearchByWriter(searchKeyword)){
-            int totalBoards = communityBoardRepository.countByWriter(searchKeyword);
-            int totalPages = (int) Math.ceil((double) totalBoards / pageSize);
+        } else if (searchType.equals("writer") && isSearchByWriter(searchKeyword)) {
+            totalBoards = communityBoardRepository.countByWriter(searchKeyword);
             communityBoards = communityBoardRepository.findPageByWriter(offset, pageSize, searchKeyword);
-            return new Page<CommunityBoard>(communityBoards, pageNumber, totalPages, pageSize);
-        }else {
+        } else {
             return getBoardPage(pageNumber); // 실제로 수행되면 안되는 코드
         }
+
+        totalPages = Math.max(1, (int) Math.ceil((double) totalBoards / pageSize));
+        return new Page<CommunityBoard>(communityBoards, pageNumber, totalPages, pageSize);
     }
 
 
