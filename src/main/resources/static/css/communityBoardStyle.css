@@ -4,13 +4,24 @@ body {
     margin: 0;
     padding: 0px;
 }
-.container {
-    max-width: 800px;
-    margin: 0 auto;
+.mainContainer {
+    display: flex;
+    justify-content: space-between;
+    max-width: 100%; 
+    margin: 0 auto;     /* 중앙 정렬 */
+}
+.leftLayer, .rightLayer {
+    width: 250px;  /* 고정 너비 */
     background-color: white;
     padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+.boardList {
+    flex-grow: 0;  /* 크기가 늘어나지 않도록 설정 */
+    flex-shrink: 0;  /* 크기가 줄어들지 않도록 설정 */
+    width: 900px;  /* 고정 너비 설정 */
+    background-color: white;
+    padding: 20px;
+    margin: 0 auto;  /* 중앙 정렬 */
 }
 .header {
     display: flex;

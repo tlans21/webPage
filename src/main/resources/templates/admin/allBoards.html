@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>커뮤니티 게시판</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/communityBoardStyle.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/paginationStyle.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/navBarStyle.css}">
+    <script th:src="@{/js/dropDown.js}"></script>
+    <script th:src="@{/js/elapsedTime.js}"></script>
+</head>
+<body>
+    <div class="post-list" th:each="board : ${allBoards}">
+        <div class="post-item" th:text="${board.id}"></div>
+    </div>
+</body>
+</html>

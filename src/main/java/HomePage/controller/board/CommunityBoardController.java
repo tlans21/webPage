@@ -32,11 +32,8 @@ public class CommunityBoardController {
                                          @RequestParam(value="sort", defaultValue = "latest") String sort,
                                          @RequestParam(value="searchType", required = false) String searchType,
                                          @RequestParam(value="searchKeyword", required = false) String searchKeyword,
-
                                          Model model) {
         Page<CommunityBoard> boardPage;
-        System.out.println(sort);
-        System.out.println(searchType);
 
         String searchKeywordByTitle = null;
         String searchKeywordByWriter = null;
