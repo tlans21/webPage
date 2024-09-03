@@ -15,49 +15,60 @@
         <div class="ad-space">
                 광고 영역 (추후 구현 예정)
         </div>
-        <div class="container">
-            <div class="header">
-                <form th:action="@{/api/v1/community/write}" method="get">
-                    <button class="btn-primary">작성하기</button>
-                </form>
-                <div class="dropdown">
-                    <button class="dropdown-toggle" onclick="toggleDropdown()">
-                        <span id="currentSort" th:text="${sort == 'popular' ? '조회순' : (sort == 'comments' ? '댓글순' : '최신순')}">최신순</span>
-                        <span class="caret">▼</span>
-                    </button>
-                    <div id="sortDropdown" class="dropdown-menu">
-                        <a href="#" th:href="@{/community/list(page=${boardPage.currentPage}, sort='latest')}" onclick="return changeSort('latest', this.href)">최신순</a>
-                        <a href="#" th:href="@{/community/list(page=${boardPage.currentPage}, sort='popular')}" onclick="return changeSort('popular', this.href)">조회순</a>
-                        <a href="#" th:href="@{/community/list(page=${boardPage.currentPage}, sort='comments')}" onclick="return changeSort('comments', this.href)">댓글순</a>
+        <div class="mainContainer">
+            <div class="leftLayer">
+                
+            </div>
+            <div class="boardList">
+                <div class="header">
+                    <form th:action="@{/api/v1/community/write}" method="get">
+                        <button class="btn-primary">작성하기</button>
+                    </form>
+                    <div class="dropdown">
+                        <button class="dropdown-toggle" onclick="toggleDropdown()">
+                            <span id="currentSort" th:text="${sort == 'popular' ? '조회순' : (sort == 'comments' ? '댓글순' : '최신순')}">최신순</span>
+                            <span class="caret">▼</span>
+                        </button>
+                        <div id="sortDropdown" class="dropdown-menu">
+                            <a href="#" th:href="@{/community/list(page=1, sort='latest')}" onclick="return changeSort('latest', this.href)">최신순</a>
+                            <a href="#" th:href="@{/community/list(page=1, sort='popular')}" onclick="return changeSort('popular', this.href)">조회순</a>
+                            <a href="#" th:href="@{/community/list(page=1, sort='comments')}" onclick="return changeSort('comments', this.href)">댓글순</a>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="search-bar">
-                <input type="text" placeholder="커뮤니티 내에서 검색">
-            </div>
-
-            <div class="post-list" th:each="board : ${boardPage.content}">
-                <div class="post-item">
-                    <div class="post-header">
+                <div class="search-bar">
+                    <form th:action="@{/community/list}" method="get">
+                        <input type="hidden" name="page" th:value="1">
+                        <input type="hidden" name="sort" th:value="${sort}">
+                        
+                        <select name="searchType">
+                            <option value="title" th:selected="${searchType == 'title'}">제목</option>
+                            <option value="writer" th:selected="${searchType == 'writer'}">작성자</option>      
+                        </select>
+                        <input type="text" name="searchKeyword" th:value="${searchKeyword}" placeholder="커뮤니티 내에서 검색">
+                        <input class="searchButton" type="submit" value="검색"/>
+                    </form>
+                </div>
+                
+                <div class="post-list" th:each="board : ${boardPage.content}">
+                    <div class="post-item">
+                        <div class="post-header">
+                            <a th:href="@{/community/{id}(id=${board.id}, topic='community', page=${boardPage.currentPage})}"><div class="post-title" th:text="${board.title}"></div></a>
+                            <span class="board-time" th:attr="data-timestamp=${board.registerDate}">시간</span>
+                        </div>
                         <span class="author" th:text="${board.writer}"></span>
-                        <span class="board-time" th:attr="data-timestamp=${board.registerDate}">시간</span>
-                    </div>
-                    <a th:href="@{/community/{id}(id=${board.id}, topic='community', page=${boardPage.currentPage})}"><div class="post-title" th:text="${board.title}"></div></a>
-                    <div class="post-tags">
-                        <span class="tag">공지사항</span>
-                        <span class="tag">국비지원교육</span>
-                        <span class="tag">취준컴집대</span>
-                        <span class="tag">국비컴집대</span>
-                    </div>
-                    <div class="post-stats">
-                        <span th:inline="text">[[${board.commentCnt}]]개의 댓글</span>
-                        <span class="views" th:inline="text">조회수 [[${board.viewCnt}]]</span>
-                        <span class="likes">좋아요 3</span>
+                        <div class="post-stats">
+                            <span th:inline="text">[[${board.commentCnt}]]개의 댓글</span>
+                            <span class="views" th:inline="text">조회수 [[${board.viewCnt}]]</span>
+                            <span class="likes">좋아요 3</span>
+                        </div>
                     </div>
                 </div>
             </div>
-
+            <div class="rightLayer"></div>
+        </div>
+        <div class="container">
             <div>
                 총 페이지: <span th:text="${boardPage.totalPages}"></span>
                 현재 페이지: <span th:text="${boardPage.currentPage}"></span>
@@ -67,27 +78,26 @@
             <nav class="pagination-container">
                 <div class="pagination">
                     <button th:if="${boardPage.currentPage > 1}"
-                            th:onclick="'window.location.href=\'' + @{/community/list(page=${boardPage.currentPage - 1})} + '\''"
+                            th:onclick="'window.location.href=\'' + @{/community/list(page=${boardPage.currentPage - 1}, sort=${sort}, searchType=${searchType}, searchKeyword=${searchKeyword})} + '\''"
                             class="pagination-button">Previous</button>
 
                     <button th:if="${start > 1}"
-                            th:onclick="'window.location.href=\'' + @{/community/list(page=1)} + '\''"
+                            th:onclick="'window.location.href=\'' + @{/community/list(page=1, sort=${sort}, searchType=${searchType}, searchKeyword=${searchKeyword})} + '\''"
                             class="pagination-button">1</button>
                     <span th:if="${start > 2}" class="pagination-ellipsis">...</span>
 
                     <button th:each="pageNum : ${#numbers.sequence(start, end)}"
-                            th:onclick="'window.location.href=\'' + @{/community/list(page=${pageNum})} + '\''"
+                            th:onclick="'window.location.href=\'' + @{/community/list(page=${pageNum}, sort=${sort}, searchType=${searchType}, searchKeyword=${searchKeyword})} + '\''"
                             th:text="${pageNum}"
-                            th:class="${pageNum == boardPage.currentPage} ? 'pagination-button active' : 'pagination-button'"></button>
-
+                            th:class="${pageNum == boardPage.currentPage} ? 'pagination-button active' : 'pagination-button'"></button>     
                     <span th:if="${end < boardPage.totalPages - 1}" class="pagination-ellipsis">...</span>
                     <button th:if="${end < boardPage.totalPages}"
-                            th:onclick="'window.location.href=\'' + @{/community/list(page=${boardPage.totalPages})} + '\''"
+                            th:onclick="'window.location.href=\'' + @{/community/list(page=${boardPage.totalPages}, sort=${sort}, searchType=${searchType}, searchKeyword=${searchKeyword})} + '\''"
                             th:text="${boardPage.totalPages}"
                             class="pagination-button"></button>
 
                     <button th:if="${boardPage.currentPage < boardPage.totalPages}"
-                            th:onclick="'window.location.href=\'' + @{/community/list(page=${boardPage.currentPage + 1})} + '\''"
+                            th:onclick="'window.location.href=\'' + @{/community/list(page=${boardPage.currentPage + 1}, sort=${sort}, searchType=${searchType}, searchKeyword=${searchKeyword})} + '\''"
                             class="pagination-button">Next</button>
                 </div>
             </nav>

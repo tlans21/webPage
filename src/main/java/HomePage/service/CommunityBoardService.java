@@ -77,6 +77,38 @@ public class CommunityBoardService implements BoardService<CommunityBoard>{
 
         return new Page<CommunityBoard>(communityBoards, pageNumber, totalPages, pageSize);
     }
+    @Override
+    public Page<CommunityBoard> getBoardPageBySearch(int pageNumber, String searchType, String searchKeyword) {
+        List<CommunityBoard> communityBoards;
+        int offset = (pageNumber - 1) * pageSize;
+        int totalBoards;
+        int totalPages;
+
+        if (searchType.equals("title") && isSearchByTitle(searchType)) {
+            totalBoards = communityBoardRepository.countByTitle(searchKeyword);
+            communityBoards = communityBoardRepository.findPageByTitle(offset, pageSize, searchKeyword);
+        } else if (searchType.equals("writer") && isSearchByWriter(searchKeyword)) {
+            totalBoards = communityBoardRepository.countByWriter(searchKeyword);
+            communityBoards = communityBoardRepository.findPageByWriter(offset, pageSize, searchKeyword);
+        } else {
+            return getBoardPage(pageNumber); // 실제로 수행되면 안되는 코드
+        }
+
+        totalPages = Math.max(1, (int) Math.ceil((double) totalBoards / pageSize));
+        return new Page<CommunityBoard>(communityBoards, pageNumber, totalPages, pageSize);
+    }
+
+
+    private boolean isSearchByTitle(String title){
+        return !isNullOrEmpty(title);
+    }
+    private boolean isSearchByWriter(String writer){
+        return !isNullOrEmpty(writer);
+    }
+
+    private boolean isNullOrEmpty(String str){
+        return str == null || str.trim().isEmpty();
+    }
 
     @Override
     public CommunityBoard getBoardById(Long id) {
@@ -114,6 +146,7 @@ public class CommunityBoardService implements BoardService<CommunityBoard>{
             throw new RuntimeException("Failed to delete board with board_id: " + id);
         }
     }
+
 
     @Override
     public List<CommunityBoard> searchBoardsByTitle(String title) {
