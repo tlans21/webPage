@@ -40,6 +40,7 @@ public class CommunityBoardService implements BoardService<CommunityBoard>{
         return validatorResult;
     }
     @Override
+    @Transactional
     public Page<CommunityBoard> getBoardPage(int pageNumber) {
         if (pageNumber <= 0) {
             throw new IllegalArgumentException("Page number must be greater than 0");
@@ -59,6 +60,7 @@ public class CommunityBoardService implements BoardService<CommunityBoard>{
     }
 
     @Override
+    @Transactional
     public Page<CommunityBoard> getTopViewedBoardPage(int pageNumber) {
         int totalBoards = communityBoardRepository.count();
         int totalPages = (int) Math.ceil((double) totalBoards / pageSize);
@@ -69,6 +71,7 @@ public class CommunityBoardService implements BoardService<CommunityBoard>{
     }
 
     @Override
+    @Transactional
     public Page<CommunityBoard> getTopCommentCntBoardPage(int pageNumber) {
         int totalBoards = communityBoardRepository.count();
         int totalPages = (int) Math.ceil((double) totalBoards / pageSize);
@@ -78,6 +81,7 @@ public class CommunityBoardService implements BoardService<CommunityBoard>{
         return new Page<CommunityBoard>(communityBoards, pageNumber, totalPages, pageSize);
     }
     @Override
+    @Transactional
     public Page<CommunityBoard> getBoardPageBySearch(int pageNumber, String searchType, String searchKeyword) {
         List<CommunityBoard> communityBoards;
         int offset = (pageNumber - 1) * pageSize;
@@ -111,6 +115,7 @@ public class CommunityBoardService implements BoardService<CommunityBoard>{
     }
 
     @Override
+    @Transactional
     public CommunityBoard getBoardById(Long id) {
         return communityBoardRepository.selectById(id)
                        .orElseThrow(() -> new RuntimeException("Board not found with id: " + id));

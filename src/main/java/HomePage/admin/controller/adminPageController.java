@@ -1,15 +1,15 @@
 package HomePage.admin.controller;
 
 import HomePage.admin.service.AdminBoardService;
+import HomePage.config.auth.PrincipalDetails;
 import HomePage.domain.model.CommunityBoard;
 import HomePage.domain.model.Page;
 import HomePage.service.CommunityBoardService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -32,33 +32,26 @@ public class adminPageController {
                                 @RequestParam(value="searchType", required = false) String searchType,
                                 @RequestParam(value="searchKeyword", required = false) String searchKeyword,
                                 Model model){
-        Page<CommunityBoard> boardPage = boardService.getBoardPage(page);
+        Page<CommunityBoard> boardPage;
         String searchKeywordByTitle = null;
         String searchKeywordByWriter = null;
         if (searchKeyword != null && !searchKeyword.trim().isEmpty()) {
             if(searchType.equals("writer")) {
                 searchKeywordByWriter = searchKeyword;
-                boardPage = boardService.getBoardPageBySearch(page, searchType, searchKeywordByWriter);
+                boardPage = adminBoardService.getBoardPageBySearch(page, searchType, searchKeywordByWriter);
             } else {
                 searchKeywordByTitle = searchKeyword;
-                boardPage = boardService.getBoardPageBySearch(page, searchType, searchKeywordByTitle);
+                boardPage = adminBoardService.getBoardPageBySearch(page, searchType, searchKeywordByTitle);
             }
         } else {
-            switch (sort) {
-                case "popular":
-                    boardPage = boardService.getTopViewedBoardPage(page);
-                    break;
-                case "comments":
-                    boardPage = boardService.getTopCommentCntBoardPage(page);
-                    break;
-                case "latest":
-                default:
-                    boardPage = boardService.getBoardPage(page);
-                    break;
-            }
+            boardPage = adminBoardService.getBoardPage(page);
         }
 
         addPaginationAttributes(model, boardPage, sort, searchType, searchKeyword);
+
+        for (CommunityBoard board : boardPage.getContent()){
+            System.out.println(board.getId());
+        }
 
         return "/admin/adminPage";
     }
@@ -89,9 +82,32 @@ public class adminPageController {
         for (CommunityBoard board : allBoards){
             System.out.println(board.getId());
         }
-
-
-
         return "/admin/allBoards";
+    }
+    @DeleteMapping("/{id}/delete")
+    public String deleteBoard(@PathVariable Long id, Authentication authentication){
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        String currentUsername = principalDetails.getUsername();
+
+        CommunityBoard board = adminBoardService.getBoardById(id);
+
+        if (board == null){
+            return "error/404";
+        }
+
+        if (!hasEditPermission(board, principalDetails)){
+            return "error/403";
+        }
+
+        adminBoardService.deleteBoard(id); // 게시글 삭제, 게시글 관련된 댓글들도 삭제
+
+        return "redirect:/community/list";
+    }
+    private boolean hasEditPermission(CommunityBoard board, PrincipalDetails principalDetails) {
+          String currentUsername = principalDetails.getUsername();
+          return board.getWriter().equals(currentUsername) || isAdmin(principalDetails);
+    }
+    private boolean isAdmin(PrincipalDetails principalDetails){
+        return principalDetails.getUser().getRoles().contains("ADMIN");
     }
 }
