@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="HomePage.admin.mapper.AdminCommentMapper">
+    <resultMap id="communityBoardResultMap" type="HomePage.domain.model.CommunityBoard">
+            <id property="id" column="comment_id"/>
+            <result property="writer" column="writer"/>
+            <result property="boardId" column="board_id"/>
+            <result property="content" column="content"/>
+            <result property="registerDate" column="regdate"/>
+            <result property="updateDate" column="updateDate"/>
+            <result property="deleteDate" column="deleteDate"/>
+    </resultMap>
+    <delete id="deleteAllByBoardId">
+        DELETE FROM security.communitycomment WHERE board_id = #{boardId}
+    </delete>
+</mapper>

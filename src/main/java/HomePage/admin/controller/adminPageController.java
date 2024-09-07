@@ -4,7 +4,6 @@ import HomePage.admin.service.AdminBoardService;
 import HomePage.config.auth.PrincipalDetails;
 import HomePage.domain.model.CommunityBoard;
 import HomePage.domain.model.Page;
-import HomePage.service.CommunityBoardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -17,8 +16,6 @@ import java.util.List;
 @Controller
 @RequestMapping("/api/v1/admin")
 public class adminPageController {
-    @Autowired
-    private CommunityBoardService boardService;
     @Autowired
     private final AdminBoardService adminBoardService;
 
@@ -38,9 +35,11 @@ public class adminPageController {
         if (searchKeyword != null && !searchKeyword.trim().isEmpty()) {
             if(searchType.equals("writer")) {
                 searchKeywordByWriter = searchKeyword;
+                System.out.println("test1");
                 boardPage = adminBoardService.getBoardPageBySearch(page, searchType, searchKeywordByWriter);
             } else {
                 searchKeywordByTitle = searchKeyword;
+                System.out.println("test2");
                 boardPage = adminBoardService.getBoardPageBySearch(page, searchType, searchKeywordByTitle);
             }
         } else {
@@ -48,10 +47,6 @@ public class adminPageController {
         }
 
         addPaginationAttributes(model, boardPage, sort, searchType, searchKeyword);
-
-        for (CommunityBoard board : boardPage.getContent()){
-            System.out.println(board.getId());
-        }
 
         return "/admin/adminPage";
     }
@@ -101,8 +96,31 @@ public class adminPageController {
 
         adminBoardService.deleteBoard(id); // 게시글 삭제, 게시글 관련된 댓글들도 삭제
 
-        return "redirect:/community/list";
+        return "redirect:/api/v1/admin/adminPage/boardList";
     }
+
+    @GetMapping("/{id}/editForm")
+    public String showBoardEditForm(@PathVariable Long id, Model model, Authentication authentication){
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        String currentUsername = principalDetails.getUsername();
+
+        CommunityBoard board = adminBoardService.getBoardById(id); // 게시판 정보 불러오기
+
+        // 게시판이 없는 경우 리턴
+        if (board == null){
+            return "error/404";
+        }
+
+        // 해당 유저의 게시글이 맞는지 권한 체크
+        if (!hasEditPermission(board, principalDetails)){
+            return "error/403";
+        }
+
+        model.addAttribute("article", board);
+
+        return "/board/boardEditView";
+    }
+
     private boolean hasEditPermission(CommunityBoard board, PrincipalDetails principalDetails) {
           String currentUsername = principalDetails.getUsername();
           return board.getWriter().equals(currentUsername) || isAdmin(principalDetails);

@@ -1,6 +1,7 @@
 package HomePage.admin.service;
 
 import HomePage.admin.mapper.AdminBoardMapper;
+import HomePage.admin.mapper.AdminCommentMapper;
 import HomePage.domain.model.CommunityBoard;
 import HomePage.domain.model.Page;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +15,11 @@ public class AdminBoardServiceImpl implements AdminBoardService{
     @Value("${communityBoard.page-size}")
     private int pageSize;
     private final AdminBoardMapper adminBoardMapper;
-
+    private final AdminCommentMapper adminCommentMapper;
     @Autowired
-    public AdminBoardServiceImpl(AdminBoardMapper adminBoardMapper) {
+    public AdminBoardServiceImpl(AdminBoardMapper adminBoardMapper, AdminCommentMapper adminCommentMapper) {
        this.adminBoardMapper = adminBoardMapper;
+       this.adminCommentMapper = adminCommentMapper;
     }
 
     @Override
@@ -55,7 +57,6 @@ public class AdminBoardServiceImpl implements AdminBoardService{
         } else {
             return getBoardPage(pageNumber); // 실제로 수행되면 안되는 코드
         }
-
         totalPages = Math.max(1, (int) Math.ceil((double) totalBoards / pageSize));
         return new Page<CommunityBoard>(communityBoards, pageNumber, totalPages, pageSize);
     }
@@ -80,6 +81,7 @@ public class AdminBoardServiceImpl implements AdminBoardService{
     @Override
     @Transactional
     public void deleteBoard(Long id) {
+        adminCommentMapper.deleteAllByBoardId(id);
         adminBoardMapper.deleteById(id);
     }
 

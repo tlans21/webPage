@@ -7,49 +7,85 @@
     <link rel="stylesheet" type="text/css" th:href="@{/css/adminPageStyle.css}">
     <link rel="stylesheet" type="text/css" th:href="@{/css/navBarStyle.css}">
     <link rel="stylesheet" type="text/css" th:href="@{/css/paginationStyle.css}">
+    
+    <style>
+        .search-container {
+            width: 300px;
+            margin: 20px auto;
+        }
+        .deleteBtn {
+            width: 60%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: 1px solid #4CAF50;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
     <header th:replace="~{fragments/navBar :: navBar}">
         <h1>관리자 대시보드</h1>
     </header>
-
     <main>
-        <section id="boardManagement">
-            <h2>게시판 관리</h2>
-            <div class="board-list">
-                <div class="board-header">
-                    <div>ID</div>
-                    <div>제목</div>
-                    <div>작성자</div>
-                    <div>작성일</div>
-                    <div>조회수</div>
-                    <div>관리</div>
+        <div class="content-wrapper">
+            <div class="mainContainer">
+                <div class="leftLayer">
+                    <div th:replace="~{admin/navAdmin :: navAdmin}"></div>
                 </div>
-                <div class="board-item" th:each="board : ${boardPage.content}">
-                    <div th:text="${board.id}"></div>
-                    <div>
-                        <a th:href="@{/community/{id}(id=${board.id}, topic='community', page=${boardPage.currentPage})}"><div th:text="${board.title}"></div></a>
+                <section id="boardManagement">
+                    <h2>게시판 관리</h2>
+                    <div class="board-list">
+                        <div class="search-bar">
+                            <form th:action="@{/api/v1/admin/adminPage/boardList}" method="get">
+                                <input type="hidden" name="page" th:value="1">
+                                <input type="hidden" name="sort" th:value="${sort}">
+                            
+                                
+                                <select name="searchType">
+                                    <option value="title" th:selected="${searchType == 'title'}">제목</option>
+                                    <option value="writer" th:selected="${searchType == 'writer'}">작성자</option>      
+                                </select>
+                                <input type="text" name="searchKeyword" th:value="${searchKeyword}" placeholder="검색어">
+                                <input class="searchButton" type="submit" value="검색"/>
+                            </form>
+                        </div>
+                        <div class="board-header">
+                            <div>ID</div>
+                            <div>제목</div>
+                            <div>작성자</div>
+                            <div>작성일</div>
+                            <div>조회수</div>
+                            <div>관리</div>
+                        </div>
+                        <div class="board-item" th:each="board : ${boardPage.content}">
+                            <div th:text="${board.id}"></div>
+                            <div>
+                                <a th:href="@{/community/{id}(id=${board.id}, topic='community', page=${boardPage.currentPage})}"><div th:text="${board.title}"></div></a>
+                            </div>
+                            <div th:text="${board.writer}"></div>
+                            <div th:text="${board.registerDate}"></div>
+                            <div th:text="${board.viewCnt}"></div>
+                            <div>
+                                <form th:action="@{/api/v1/admin/{id}/editForm(id=${board.id})}">
+                                    <button type="sumbit" class="editBtn">수정</button>
+                                </form>
+                                <form th:action="@{/api/v1/admin/{id}/delete(id=${board.id})}" method="post">
+                                    <input type="hidden" name="_method" value="delete" />
+                                    <button type="sumbit" class="deleteBtn">삭제</button>
+                                </form>
+                            </div>
+                        </div>
                     </div>
-                    <div th:text="${board.writer}"></div>
-                    <div th:text="${board.registerDate}"></div>
-                    <div th:text="${board.viewCnt}"></div>
-                    <div>
-                        <a href="#">수정</a>
-                        <form th:action="@{/api/v1/admin/{id}/delete(id=${board.id})}" method="post">
-                            <input type="hidden" name="_method" value="delete" />
-                            <button type="sumbit" class="deleteBtn">삭제</button>
-                        </form>
-                    </div>
+                </section>
+                
+                <div class="rightLayer">
+
                 </div>
             </div>
-        </section>
+        </div>
         <div class="container">
-            <div>
-                총 페이지: <span th:text="${boardPage.totalPages}"></span>
-                현재 페이지: <span th:text="${boardPage.currentPage}"></span>
-            </div>
-    
-    
             <nav class="pagination-container">
                 <div class="pagination">
                     <button th:if="${boardPage.currentPage > 1}"
