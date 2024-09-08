@@ -14,4 +14,17 @@ public interface UserRepository {
     List<User> findAll();
     void setTableName(String tableName);
 
+    int count();
+    int countById(Long id);
+    int countByUsername(String username);
+    int countByEmail(String email);
+    int countByRole(String role);
+    List<User> findUserPage(int offset, int limit);
+
+    List<User> findUserPageById(int offset, int limit, Long id);
+    List<User> findUserPageByUsername(int offset, int limit, String username);
+    List<User> findUserPageByEmail(int offset, int limit, String email);
+    List<User> findUserPageByRole(int offset, int limit, String role);
+
+
 }

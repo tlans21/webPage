@@ -16,8 +16,7 @@ body {
     padding: 20px;
 }
 .boardList {
-    flex-grow: 0;  /* 크기가 늘어나지 않도록 설정 */
-    flex-shrink: 0;  /* 크기가 줄어들지 않도록 설정 */
+    flex : 1;
     width: 900px;  /* 고정 너비 설정 */
     background-color: white;
     padding: 20px;
