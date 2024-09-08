@@ -1,9 +1,12 @@
 package HomePage.service;
 
 import HomePage.controller.UserForm;
+import HomePage.domain.model.CommunityBoard;
+import HomePage.domain.model.Page;
 import HomePage.domain.model.User;
 import HomePage.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Arrays;
@@ -12,6 +15,9 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 
 public class UserService {
+    @Value("${communityBoard.page-size}")
+    private int pageSize = 10;
+
     private final UserRepository userRepository;
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -115,4 +121,53 @@ public class UserService {
 
         return user.stream().findAny();
     }
+
+    public Page<User> getUsersPage(int pageNumber){
+        if (pageNumber <= 0) {
+            throw new IllegalArgumentException("Page number must be greater than 0");
+        }
+
+        int totalUsers = userRepository.count();
+        int totalUserPages = (int) Math.ceil((double) totalUsers / pageSize);
+
+        if (pageNumber > totalUserPages) {
+            pageNumber = totalUserPages; // or throw an exception if you prefer
+        }
+
+        int offset = (pageNumber - 1) * pageSize;
+        List<User> communityBoards = userRepository.findUserPage(offset, pageSize);
+
+        return new Page<>(communityBoards, pageNumber, totalUserPages, pageSize);
+    }
+    public Page<User> getUsersPageBySearch(int pageNumber, String searchType, String searchKeyword){
+        List<User> users;
+        int offset = (pageNumber - 1) * pageSize;
+        int totalUsers;
+        int totalUserPages;
+
+        if (searchType.equals("id") && isSearchByTitle(searchType)) {
+            totalUsers = userRepository.countById(searchKeyword);
+            users = userRepository.findUserPageById(offset, pageSize, searchKeyword);
+        } else if (searchType.equals("username") && isSearchByWriter(searchKeyword)) {
+            totalUsers = userRepository.countByUsername(searchKeyword);
+            users = userRepository.findUserPageByUsername(offset, pageSize, searchKeyword);
+        } else {
+            return getUsersPage(pageNumber); // 실제로 수행되면 안되는 코드
+        }
+
+        totalUserPages = Math.max(1, (int) Math.ceil((double) totalUsers / pageSize));
+        return new Page<User>(users, pageNumber, totalUserPages, pageSize);
+    }
+
+    private boolean isSearchByTitle(String title){
+            return !isNullOrEmpty(title);
+        }
+    private boolean isSearchByWriter(String writer){
+        return !isNullOrEmpty(writer);
+    }
+    private boolean isNullOrEmpty(String str){
+            return str == null || str.trim().isEmpty();
+        }
+
+
 }

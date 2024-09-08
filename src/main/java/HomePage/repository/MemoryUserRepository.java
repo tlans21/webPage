@@ -47,6 +47,16 @@ public class MemoryUserRepository implements UserRepository {
     }
 
     @Override
+    public int count() {
+        return 0;
+    }
+
+    @Override
+    public List<User> findUserPage(int offset, int limit) {
+        return null;
+    }
+
+    @Override
     public void setTableName(String tableName) {
 
     }

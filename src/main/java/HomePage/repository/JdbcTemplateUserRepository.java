@@ -80,6 +80,66 @@ public class JdbcTemplateUserRepository implements UserRepository {
         return result.stream().findAny();
     }
 
+    @Override
+    public int count() {
+        String sql = String.format("SELECT COUNT(*) FROM %s", tableName);
+        return jdbcTemplate.queryForObject(sql, Integer.class);
+    }
+
+    @Override
+    public int countById(Long id) {
+        String sql = String.format("SELECT COUNT(*) FROM %s WHERE id = ?", tableName);
+        return jdbcTemplate.queryForObject(sql, Integer.class, id);
+    }
+
+    @Override
+    public int countByUsername(String username) {
+        String sql = String.format("SELECT COUNT(*) FROM %s WHERE username = ?", tableName);
+        return jdbcTemplate.queryForObject(sql, Integer.class, username);
+    }
+
+    @Override
+    public int countByEmail(String email) {
+        String sql = String.format("SELECT COUNT(*) FROM %s WHERE email = ?", tableName);
+        return jdbcTemplate.queryForObject(sql, Integer.class, email);
+    }
+
+    @Override
+    public int countByRole(String role) {
+        String sql = String.format("SELECT COUNT(*) FROM %s WHERE role = ?", tableName);
+        return jdbcTemplate.queryForObject(sql, Integer.class, role);
+    }
+
+    @Override
+    public List<User> findUserPage(int offset, int limit) {
+        String sql = String.format("SELECT * FROM %s ORDER BY id DESC LIMIT ? OFFSET ?", tableName);
+        return jdbcTemplate.query(sql, memberRowMapper(), limit, offset);
+    }
+
+    @Override
+    public List<User> findUserPageById(int offset, int limit, Long id) {
+        String sql = String.format("SELECT * FROM %s WHERE id = ? ORDER BY id DESC LIMIT ? OFFSET ?", tableName);
+        return jdbcTemplate.query(sql, memberRowMapper(), id, limit, offset);
+    }
+
+    @Override
+    public List<User> findUserPageByUsername(int offset, int limit, String username) {
+        String sql = String.format("SELECT * FROM %s WHERE username = ? ORDER BY id DESC LIMIT ? OFFSET ?", tableName);
+        return jdbcTemplate.query(sql, memberRowMapper(), username, limit, offset);
+    }
+
+    @Override
+    public List<User> findUserPageByEmail(int offset, int limit, String email) {
+        String sql = String.format("SELECT * FROM %s WHERE username = ? ORDER BY id DESC LIMIT ? OFFSET ?", tableName);
+        return jdbcTemplate.query(sql, memberRowMapper(), email, limit, offset);
+    }
+
+    @Override
+    public List<User> findUserPageByRole(int offset, int limit, String role) {
+        String sql = String.format("SELECT * FROM %s WHERE username = ? ORDER BY id DESC LIMIT ? OFFSET ?", tableName);
+        return jdbcTemplate.query(sql, memberRowMapper(), role, limit, offset);
+    }
+
     private RowMapper<User> memberRowMapper(){
         return (rs, rowNum) -> {
             // 멤버 인스턴스 생성, 검색 용도로만 사용하고 이는 저장하려는 것이 아님.
