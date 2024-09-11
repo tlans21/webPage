@@ -1,7 +1,6 @@
 package HomePage.service;
 
 import HomePage.controller.UserForm;
-import HomePage.domain.model.CommunityBoard;
 import HomePage.domain.model.Page;
 import HomePage.domain.model.User;
 import HomePage.repository.UserRepository;
@@ -135,9 +134,9 @@ public class UserService {
         }
 
         int offset = (pageNumber - 1) * pageSize;
-        List<User> communityBoards = userRepository.findUserPage(offset, pageSize);
+        List<User> users = userRepository.findUserPage(offset, pageSize);
 
-        return new Page<>(communityBoards, pageNumber, totalUserPages, pageSize);
+        return new Page<User>(users, pageNumber, totalUserPages, pageSize);
     }
     public Page<User> getUsersPageBySearch(int pageNumber, String searchType, String searchKeyword){
         List<User> users;
@@ -145,29 +144,68 @@ public class UserService {
         int totalUsers;
         int totalUserPages;
 
-        if (searchType.equals("id") && isSearchByTitle(searchType)) {
-            totalUsers = userRepository.countById(searchKeyword);
-            users = userRepository.findUserPageById(offset, pageSize, searchKeyword);
-        } else if (searchType.equals("username") && isSearchByWriter(searchKeyword)) {
-            totalUsers = userRepository.countByUsername(searchKeyword);
-            users = userRepository.findUserPageByUsername(offset, pageSize, searchKeyword);
-        } else {
-            return getUsersPage(pageNumber); // 실제로 수행되면 안되는 코드
+        switch (searchType) {
+            case "id" -> {
+                if (isValidIdInput(searchKeyword)) {
+                    try {
+                        Long idKeyword = Long.parseLong(searchKeyword);
+                        totalUsers = userRepository.countById(idKeyword);
+                        users = userRepository.findUserPageById(offset, pageSize, idKeyword);
+
+                    } catch (NumberFormatException e) {
+                        // Long으로 담을수 없는 크기의 ID값이 올 시에 발생
+                        return getUsersPage(pageNumber);
+                    }
+                } else {
+                    return getUsersPage(pageNumber);
+                }
+            }
+            case "username" -> {
+                if (isSearchByUsername(searchKeyword)) {
+                    totalUsers = userRepository.countByUsername(searchKeyword);
+                    users = userRepository.findUserPageByUsername(offset, pageSize, searchKeyword);
+                } else {
+                    return getUsersPage(pageNumber);
+                }
+            }
+            case "email" -> {
+                if (isSearchByEmail(searchKeyword)) {
+                    totalUsers = userRepository.countByEmail(searchKeyword);
+                    users = userRepository.findUserPageByEmail(offset, pageSize, searchKeyword);
+                } else {
+                    return getUsersPage(pageNumber);
+                }
+            }
+            case "role" -> {
+                if (isSearchByRole(searchKeyword)) {
+                    totalUsers = userRepository.countByRole(searchKeyword);
+                    users = userRepository.findUserPageByRole(offset, pageSize, searchKeyword);
+                } else {
+                    return getUsersPage(pageNumber);
+                }
+            }
+            default -> {
+                return getUsersPage(pageNumber);
+            }
         }
 
         totalUserPages = Math.max(1, (int) Math.ceil((double) totalUsers / pageSize));
         return new Page<User>(users, pageNumber, totalUserPages, pageSize);
     }
 
-    private boolean isSearchByTitle(String title){
-            return !isNullOrEmpty(title);
-        }
-    private boolean isSearchByWriter(String writer){
+    private boolean isSearchByUsername(String writer){
         return !isNullOrEmpty(writer);
     }
+    private boolean isSearchByEmail(String username){
+        return !isNullOrEmpty(username);
+    }
+    private boolean isSearchByRole(String role){
+        return !isNullOrEmpty(role);
+    }
     private boolean isNullOrEmpty(String str){
-            return str == null || str.trim().isEmpty();
-        }
-
-
+        return str == null || str.trim().isEmpty();
+    }
+    private boolean isValidIdInput(String input){
+        return input != null && input.matches("\\d+");
+    }
 }

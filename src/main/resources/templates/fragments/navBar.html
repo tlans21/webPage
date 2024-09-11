@@ -14,7 +14,7 @@
                 <li><a href="#">리뷰 작성</a></li>
                 <li><a href="#">푸드 갤러리</a></li>
                 <li><a th:href="@{/community/list}">커뮤니티</a></li>
-                <li><a th:href="@{/api/v1/admin/adminPage/boardList}">관리자 페이지</a></li>
+                <li th:if="${isAdmin}"><a th:href="@{/api/v1/admin/adminPage/boardList}">관리자 페이지</a></li>
             </ul>
             <div sec:authorize="!isAuthenticated()">
                 <button class="auth-button" id="authButton"><a th:href="@{/loginForm}">로그인/회원가입</a></button>

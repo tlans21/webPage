@@ -64,4 +64,44 @@ public class MemoryUserRepository implements UserRepository {
     public void clearStore() {
         store.clear();
     }
+
+    @Override
+    public int countById(Long id) {
+        return 0;
+    }
+
+    @Override
+    public int countByUsername(String username) {
+        return 0;
+    }
+
+    @Override
+    public int countByEmail(String email) {
+        return 0;
+    }
+
+    @Override
+    public int countByRole(String role) {
+        return 0;
+    }
+
+    @Override
+    public List<User> findUserPageById(int offset, int limit, Long id) {
+        return null;
+    }
+
+    @Override
+    public List<User> findUserPageByUsername(int offset, int limit, String username) {
+        return null;
+    }
+
+    @Override
+    public List<User> findUserPageByEmail(int offset, int limit, String email) {
+        return null;
+    }
+
+    @Override
+    public List<User> findUserPageByRole(int offset, int limit, String role) {
+        return null;
+    }
 }

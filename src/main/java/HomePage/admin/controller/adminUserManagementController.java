@@ -20,32 +20,22 @@ public class adminUserManagementController {
 
     @GetMapping("/adminPage/user-management")
     public String showUserManagementPage(@RequestParam(value="page", defaultValue = "1") int page,
-                                         @RequestParam(value="searchType") String searchType,
-                                         @RequestParam(value="searchKeyword") String searchKeyword,
+                                         @RequestParam(value="searchType", required = false) String searchType,
+                                         @RequestParam(value="searchKeyword", required = false) String searchKeyword,
                                          Model model) {
-
         Page<User> usersPage;
-        String searchKeywordByTitle = null;
-        String searchKeywordByWriter = null;
-        if (searchKeyword != null && !searchKeyword.trim().isEmpty()) {
-            if(searchType.equals("writer")) {
-                searchKeywordByWriter = searchKeyword;
-                System.out.println("test1");
-                usersPage = userService.getUsersPageBySearch(page, searchType, searchKeywordByWriter);
-            } else {
-                searchKeywordByTitle = searchKeyword;
-                System.out.println("test2");
-                usersPage = userService.getUsersPageBySearch(page, searchType, searchKeywordByTitle);
-            }
+        if (isValidSearch(searchType, searchKeyword)) {
+            usersPage = userService.getUsersPageBySearch(page, searchType, searchKeyword);
         } else {
             usersPage = userService.getUsersPage(page);
         }
 
         addPaginationAttributes(model, usersPage, searchType, searchKeyword);
-
-        model.addAttribute("usersPage", usersPage);
-
         return "/admin/userManagementPage";
+    }
+
+    private boolean isValidSearch(String searchType, String searchKeyword){
+        return searchType != null && searchKeyword != null && !searchKeyword.trim().isEmpty();
     }
     private void addPaginationAttributes(Model model, Page<User> usersPage, String searchType, String searchKeyword){
         int totalPages = usersPage.getTotalPages();
@@ -57,7 +47,7 @@ public class adminUserManagementController {
         if (end - start + 1 < visiblePages) {
             start = Math.max(1, end - visiblePages + 1);
         }
-        model.addAttribute("boardPage", usersPage);
+        model.addAttribute("usersPage", usersPage);
         model.addAttribute("start", start);
         model.addAttribute("end", end);
         model.addAttribute("searchType", searchType);

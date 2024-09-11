@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>관리자 대시보드</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/adminPageStyle.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/navBarStyle.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/navAdminStyle.css}">
+    
+    <style>
+        body {
+            background-color: #f9fafb;
+            font-family: Arial, sans-serif;
+        }
+        .dashboard-container {
+            padding: 1.5rem;
+        }
+        .dashboard-title {
+            font-size: 1.875rem;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+            color: #1f2937;
+        }
+        .tab-container {
+            margin-bottom: 1rem;
+        }
+        .tab {
+            padding: 0.5rem 1rem;
+            font-size: 1.125rem;
+            font-weight: 600;
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            margin-right: 0.5rem;
+            cursor: pointer;
+        }
+        .tab-active {
+            color: #2563eb;
+        }
+        .tab-inactive {
+            color: #4b5563;
+        }
+        .stats-container {
+            display: grid;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .stat-card {
+            background-color: white;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        }
+        .stat-card-content {
+            padding: 1rem;
+        }
+        .stat-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .stat-card-title {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #4b5563;
+        }
+        .stat-card-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #111827;
+            margin-top: 0.5rem;
+        }
+        .stat-card-change {
+            display: flex;
+            align-items: center;
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+        }
+        .chart-container {
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            padding: 1rem;
+        }
+        .chart-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #1f2937;
+        }
+        @media (min-width: 768px) {
+            .stats-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media (min-width: 1024px) {
+            .stats-container {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header th:replace="~{fragments/navBar :: navBar}">
+        <h1 class="dashboard-title">관리자 대시보드</h1>
+    </header>
+    <main>
+        <div class="content-wrapper">
+            <div class="mainContainer">
+                <div class="leftLayer">
+                    <div th:replace="~{admin/navAdmin :: navAdmin}"></div>
+                </div>
+                <section id="dashBoardManagement">
+                    <div class="dashboard-container">
+                        <div class="tab-container">
+                            <button id="membersTab" class="tab tab-active">회원 관리</button>
+                            <button id="postsTab" class="tab tab-inactive">게시판 관리</button>
+                        </div>
+                
+                        <div id="membersContent">
+                            <div class="stats-container" id="memberStats">
+                                <!-- 회원 통계 카드가 여기에 동적으로 추가됩니다 -->
+                            </div>
+                
+                            <div class="chart-container">
+                                <h2 class="chart-title">회원 통계</h2>
+                                <canvas id="memberChart"></canvas>
+                            </div>
+                        </div>
+                
+                        <div id="postsContent" style="display: none;">
+                            <div class="stats-container" id="postStats">
+                                <!-- 게시판 통계 카드가 여기에 동적으로 추가됩니다 -->
+                            </div>
+                
+                            <div class="chart-container">
+                                <h2 class="chart-title">게시판 통계</h2>
+                                <canvas id="postChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <div class="rightLayer"></div>
+            </div>
+        </div>
+    </main>
+
+
+    <script>
+        // 예시 데이터
+        const memberStats = [
+            {title: "총 회원 수", value: 10245, change: 1.8, icon: "fas fa-users"},
+            {title: "신규 가입", value: 239, change: 20.1, icon: "fas fa-user-plus"},
+            {title: "활성 회원", value: 8734, change: 5.0, icon: "fas fa-user-check"},
+            {title: "탈퇴 회원", value: 380, change: -4.9, icon: "fas fa-user-minus"}
+        ];
+
+        const postStats = [
+            {title: "총 게시글 수", value: 23145, change: 5.6, icon: "fas fa-file-alt"},
+            {title: "새 게시글", value: 2390, change: 10.1, icon: "fas fa-file-medical"},
+            {title: "총 댓글 수", value: 98543, change: 18.7, icon: "fas fa-comments"},
+            {title: "새 댓글", value: 3800, change: 7.4, icon: "fas fa-comment-medical"}
+        ];
+
+        const memberData = [
+            {name: '1월', 신규가입: 100, 탈퇴: 20},
+            {name: '2월', 신규가입: 120, 탈퇴: 25},
+            {name: '3월', 신규가입: 140, 탈퇴: 30},
+            {name: '4월', 신규가입: 160, 탈퇴: 35},
+            {name: '5월', 신규가입: 180, 탈퇴: 40},
+            {name: '6월', 신규가입: 200, 탈퇴: 45}
+        ];
+
+        const postData = [
+            {name: '1월', 게시글: 500, 댓글: 1000},
+            {name: '2월', 게시글: 550, 댓글: 1100},
+            {name: '3월', 게시글: 600, 댓글: 1200},
+            {name: '4월', 게시글: 650, 댓글: 1300},
+            {name: '5월', 게시글: 700, 댓글: 1400},
+            {name: '6월', 게시글: 750, 댓글: 1500}
+        ];
+
+        // 통계 카드 생성 함수
+        function createStatCards(stats, containerId) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            stats.forEach(stat => {
+                const card = document.createElement('div');
+                card.className = 'stat-card';
+                card.innerHTML = `
+                    <div class="stat-card-content">
+                        <div class="stat-card-header">
+                            <h2 class="stat-card-title">${stat.title}</h2>
+                            <i class="${stat.icon} text-gray-400"></i>
+                        </div>
+                        <p class="stat-card-value">${stat.value.toLocaleString()}</p>
+                        <div class="stat-card-change">
+                            <i class="${stat.change >= 0 ? 'fas fa-arrow-up text-green-500' : 'fas fa-arrow-down text-red-500'}"></i>
+                            <span class="${stat.change >= 0 ? 'text-green-500' : 'text-red-500'}">
+                                ${Math.abs(stat.change).toFixed(1)}% from last month
+                            </span>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // 초기 카드 생성
+        createStatCards(memberStats, 'memberStats');
+        createStatCards(postStats, 'postStats');
+
+        // 탭 전환 로직
+        const membersTab = document.getElementById('membersTab');
+        const postsTab = document.getElementById('postsTab');
+        const membersContent = document.getElementById('membersContent');
+        const postsContent = document.getElementById('postsContent');
+
+        membersTab.addEventListener('click', () => {
+            membersTab.classList.add('tab-active');
+            membersTab.classList.remove('tab-inactive');
+            postsTab.classList.add('tab-inactive');
+            postsTab.classList.remove('tab-active');
+            membersContent.style.display = 'block';
+            postsContent.style.display = 'none';
+        });
+
+        postsTab.addEventListener('click', () => {
+            postsTab.classList.add('tab-active');
+            postsTab.classList.remove('tab-inactive');
+            membersTab.classList.add('tab-inactive');
+            membersTab.classList.remove('tab-active');
+            postsContent.style.display = 'block';
+            membersContent.style.display = 'none';
+        });
+
+        // 회원 차트
+        new Chart(document.getElementById('memberChart'), {
+            type: 'bar',
+            data: {
+                labels: memberData.map(d => d.name),
+                datasets: [
+                    {
+                        label: '신규가입',
+                        data: memberData.map(d => d.신규가입),
+                        backgroundColor: '#3b82f6'
+                    },
+                    {
+                        label: '탈퇴',
+                        data: memberData.map(d => d.탈퇴),
+                        backgroundColor: '#ef4444'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // 게시판 차트
+        new Chart(document.getElementById('postChart'), {
+            type: 'line',
+            data: {
+                labels: postData.map(d => d.name),
+                datasets: [
+                    {
+                        label: '게시글',
+                        data: postData.map(d => d.게시글),
+                        borderColor: '#3b82f6',
+                        tension: 0.1
+                    },
+                    {
+                        label: '댓글',
+                        data: postData.map(d => d.댓글),
+                        borderColor: '#10b981',
+                        tension: 0.1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
