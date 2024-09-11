@@ -94,19 +94,19 @@ public class JdbcTemplateUserRepository implements UserRepository {
 
     @Override
     public int countByUsername(String username) {
-        String sql = String.format("SELECT COUNT(*) FROM %s WHERE username = ?", tableName);
+        String sql = String.format("SELECT COUNT(*) FROM %s WHERE LOWER(username) LIKE LOWER(?)", tableName);
         return jdbcTemplate.queryForObject(sql, Integer.class, username);
     }
 
     @Override
     public int countByEmail(String email) {
-        String sql = String.format("SELECT COUNT(*) FROM %s WHERE email = ?", tableName);
+        String sql = String.format("SELECT COUNT(*) FROM %s WHERE LOWER(email) LIKE LOWER(?)", tableName);
         return jdbcTemplate.queryForObject(sql, Integer.class, email);
     }
 
     @Override
     public int countByRole(String role) {
-        String sql = String.format("SELECT COUNT(*) FROM %s WHERE role = ?", tableName);
+        String sql = String.format("SELECT COUNT(*) FROM %s WHERE LOWER(role) LIKE LOWER(?)", tableName);
         return jdbcTemplate.queryForObject(sql, Integer.class, role);
     }
 
@@ -124,20 +124,20 @@ public class JdbcTemplateUserRepository implements UserRepository {
 
     @Override
     public List<User> findUserPageByUsername(int offset, int limit, String username) {
-        String sql = String.format("SELECT * FROM %s WHERE username = ? ORDER BY id DESC LIMIT ? OFFSET ?", tableName);
-        return jdbcTemplate.query(sql, memberRowMapper(), username, limit, offset);
+        String sql = String.format("SELECT * FROM %s WHERE LOWER(username) LIKE LOWER(?) ORDER BY id DESC LIMIT ? OFFSET ?", tableName);
+        return jdbcTemplate.query(sql, memberRowMapper(), "%" + username + "%", limit, offset);
     }
 
     @Override
     public List<User> findUserPageByEmail(int offset, int limit, String email) {
-        String sql = String.format("SELECT * FROM %s WHERE username = ? ORDER BY id DESC LIMIT ? OFFSET ?", tableName);
-        return jdbcTemplate.query(sql, memberRowMapper(), email, limit, offset);
+        String sql = String.format("SELECT * FROM %s WHERE LOWER(email) LIKE LOWER(?) ORDER BY id DESC LIMIT ? OFFSET ?", tableName);
+        return jdbcTemplate.query(sql, memberRowMapper(),"%" + email + "%", limit, offset);
     }
 
     @Override
     public List<User> findUserPageByRole(int offset, int limit, String role) {
-        String sql = String.format("SELECT * FROM %s WHERE username = ? ORDER BY id DESC LIMIT ? OFFSET ?", tableName);
-        return jdbcTemplate.query(sql, memberRowMapper(), role, limit, offset);
+        String sql = String.format("SELECT * FROM %s WHERE LOWER(role) LIKE LOWER(?) ORDER BY id DESC LIMIT ? OFFSET ?", tableName);
+        return jdbcTemplate.query(sql, memberRowMapper(), "%" + role + "%", limit, offset);
     }
 
     private RowMapper<User> memberRowMapper(){
@@ -150,6 +150,8 @@ public class JdbcTemplateUserRepository implements UserRepository {
             user.setEmail(rs.getString("email"));
             user.setPhoneNumber(rs.getString("phoneNumber"));
             user.setRoles(rs.getString("Role"));
+            user.setProvider(rs.getString("provider"));
+            user.setProviderId("providerId");
             return user;
         };
     }

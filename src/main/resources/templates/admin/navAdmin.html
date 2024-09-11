@@ -11,7 +11,7 @@
     <nav class="admin-sidebar" th:fragment="navAdmin">
         <h1 class="sidebar-title">관리자 페이지</h1>
         <ul class="sidebar-menu">
-            <li><a href="#"><i class="fas fa-home"></i> 대시보드</a></li>
+            <li><a th:href="@{/api/v1/admin/adminPage/dashBoard}"><i class="fas fa-home"></i> 대시보드</a></li>
             <li><a th:href="@{/api/v1/admin/adminPage/boardList}"><i class="fas fa-clipboard-list"></i> 게시판 관리</a></li>
             <li><a th:href="@{/api/v1/admin/adminPage/user-management}"><i class="fas fa-users"></i> 회원 관리</a></li>
             <li><a href="#"><i class="fas fa-cog"></i> 설정</a></li>
