@@ -6,41 +6,41 @@
         <result property="writer" column="writer"/>
         <result property="title" column="title"/>
         <result property="content" column="content"/>
-        <result property="registerDate" column="regdate"/>
+        <result property="registerDate" column="createdAt"/>
         <result property="viewCnt" column="viewCnt"/>
         <result property="commentCnt" column="commentCnt"/>
-        <result property="updateDate" column="updateDate"/>
-        <result property="deleteDate" column="deleteDate"/>
+        <result property="updateDate" column="updatedAt"/>
+        <result property="deleteDate" column="deletedAt"/>
     </resultMap>
 
     <insert id="save" parameterType="HomePage.domain.model.CommunityBoard" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO security.communityboard (writer, title, content, regdate, viewCnt, commentCnt)
+        INSERT INTO security.communityboard (writer, title, content, createdAt, viewCnt, commentCnt)
         VALUES (#{writer}, #{title}, #{content}, #{registerDate}, #{viewCnt}, #{commentCnt})
     </insert>
 
     <select id="findPage" resultMap="communityBoardResultMap">
         SELECT * FROM security.communityboard
-        WHERE deleteDate IS NULL
+        WHERE deletedAt IS NULL
         ORDER BY board_id DESC
         LIMIT #{limit} OFFSET #{offset}
     </select>
 
     <select id="findPageByTitle" resultMap="communityBoardResultMap">
         SELECT * FROM security.communityboard
-        WHERE deleteDate IS NULL AND title LIKE CONCAT('%', #{title}, '%')
-        ORDER BY regdate DESC
+        WHERE deletedAt IS NULL AND title LIKE CONCAT('%', #{title}, '%')
+        ORDER BY createdAt DESC
         LIMIT #{limit} OFFSET #{offset}
     </select>
 
     <select id="findPageByWriter" resultMap="communityBoardResultMap">
         SELECT * FROM security.communityboard
-        WHERE deleteDate IS NULL AND writer LIKE CONCAT('%' #{writer}, '%')
-        ORDER BY regdate DESC
+        WHERE deletedAt IS NULL AND writer LIKE CONCAT('%' #{writer}, '%')
+        ORDER BY createdAt DESC
         LIMIT #{limit} OFFSET #{offset}
     </select>
 
     <select id="count" resultType="int">
-        SELECT COUNT(*) FROM security.communityboard WHERE deleteDate IS NULL
+        SELECT COUNT(*) FROM security.communityboard WHERE deletedAt IS NULL
     </select>
 
     <select id="countByTitle" resultType="int">
@@ -53,7 +53,7 @@
 
     <update id="update" parameterType="HomePage.domain.model.CommunityBoard">
         UPDATE security.communityboard
-        SET title = #{title}, content = #{content}, updateDate = #{updateDate}
+        SET title = #{title}, content = #{content}, updatedAt = #{updateDate}
         WHERE board_id = #{id}
     </update>
 

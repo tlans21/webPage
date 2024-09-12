@@ -2,6 +2,7 @@ package HomePage.repository;
 
 import HomePage.domain.model.User;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,5 +27,11 @@ public interface UserRepository {
     List<User> findUserPageByEmail(int offset, int limit, String email);
     List<User> findUserPageByRole(int offset, int limit, String role);
 
+    int countByCreatedAtAfter(LocalDateTime date);
+    int countByCreatedAtBefore(LocalDateTime date);
+    int countByLastLoginAfter(LocalDateTime date);
+    int countByDeletedAtAfter(LocalDateTime date);
+    int countByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
+    int countByDeletedAtBetween(LocalDateTime start, LocalDateTime end);
 
 }

@@ -8,6 +8,8 @@ import org.springframework.jdbc.support.KeyHolder;
 
 import javax.sql.DataSource;
 import java.sql.PreparedStatement;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,10 +28,10 @@ public class JdbcTemplateUserRepository implements UserRepository {
 
     @Override
     public User save(User user) {
-        String sql = "INSERT INTO " + tableName + " (username, password, email, role, phoneNumber, provider, providerId) " +
-                                "VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO " + tableName + " (username, password, email, role, phoneNumber, provider, providerId, createdAt) " +
+                                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
-
+        user.setCreateDate(new Timestamp(System.currentTimeMillis()));
         jdbcTemplate.update(connection -> {
                 PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
                 ps.setString(1, user.getUsername());
@@ -39,6 +41,7 @@ public class JdbcTemplateUserRepository implements UserRepository {
                 ps.setString(5, user.getPhoneNumber());
                 ps.setString(6, user.getProvider());
                 ps.setString(7, user.getProviderId());
+                ps.setTimestamp(8, user.getCreateDate());
                return ps;
         }, keyHolder);
 
@@ -140,6 +143,42 @@ public class JdbcTemplateUserRepository implements UserRepository {
         return jdbcTemplate.query(sql, memberRowMapper(), "%" + role + "%", limit, offset);
     }
 
+    @Override
+    public int countByCreatedAtAfter(LocalDateTime date) {
+        String sql = String.format("SELECT COUNT(*) FROM %s WHERE createdAt > ?", tableName);
+        return jdbcTemplate.queryForObject(sql, Integer.class, Timestamp.valueOf(date));
+    }
+
+    @Override
+    public int countByCreatedAtBefore(LocalDateTime date) {
+        String sql = String.format("SELECT COUNT(*) FROM %s WHERE createdAt < ?", tableName);
+        return jdbcTemplate.queryForObject(sql, Integer.class, Timestamp.valueOf(date));
+    }
+
+    @Override
+    public int countByLastLoginAfter(LocalDateTime date) {
+        String sql = String.format("SELECT COUNT(*) FROM %s WHERE lastLogin > ?", tableName);
+        return jdbcTemplate.queryForObject(sql, Integer.class, Timestamp.valueOf(date));
+    }
+
+    @Override
+    public int countByDeletedAtAfter(LocalDateTime date) {
+        String sql = String.format("SELECT COUNT(*) FROM %s WHERE deletedAt > ?", tableName);
+        return jdbcTemplate.queryForObject(sql, Integer.class, Timestamp.valueOf(date));
+    }
+
+    @Override
+    public int countByCreatedAtBetween(LocalDateTime start, LocalDateTime end) {
+        String sql = String.format("SELECT COUNT(*) FROM %s WHERE createdAt BETWEEN ? AND ?", tableName);
+        return jdbcTemplate.queryForObject(sql, Integer.class, Timestamp.valueOf(start), Timestamp.valueOf(end));
+    }
+
+    @Override
+    public int countByDeletedAtBetween(LocalDateTime start, LocalDateTime end) {
+        String sql = String.format("SELECT COUNT(*) FROM %s WHERE deletedAt BETWEEN ? AND ?", tableName);
+        return jdbcTemplate.queryForObject(sql, Integer.class, Timestamp.valueOf(start), Timestamp.valueOf(end));
+    }
+
     private RowMapper<User> memberRowMapper(){
         return (rs, rowNum) -> {
             // 멤버 인스턴스 생성, 검색 용도로만 사용하고 이는 저장하려는 것이 아님.
@@ -151,7 +190,10 @@ public class JdbcTemplateUserRepository implements UserRepository {
             user.setPhoneNumber(rs.getString("phoneNumber"));
             user.setRoles(rs.getString("Role"));
             user.setProvider(rs.getString("provider"));
-            user.setProviderId("providerId");
+            user.setProviderId(rs.getString("providerId"));
+            user.setCreateDate(rs.getTimestamp("createdAt"));
+            user.setLoginDate(rs.getTimestamp("lastLogin"));
+            user.setDeleteDate(rs.getTimestamp("deletedAt"));
             return user;
         };
     }

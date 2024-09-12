@@ -117,18 +117,18 @@
                 <section id="dashBoardManagement">
                     <div class="dashboard-container">
                         <div class="tab-container">
-                            <button id="membersTab" class="tab tab-active">회원 관리</button>
+                            <button id="usersTab" class="tab tab-active">회원 관리</button>
                             <button id="postsTab" class="tab tab-inactive">게시판 관리</button>
                         </div>
                 
-                        <div id="membersContent">
-                            <div class="stats-container" id="memberStats">
+                        <div id="usersContent">
+                            <div class="stats-container" id="userStats">
                                 <!-- 회원 통계 카드가 여기에 동적으로 추가됩니다 -->
                             </div>
                 
                             <div class="chart-container">
                                 <h2 class="chart-title">회원 통계</h2>
-                                <canvas id="memberChart"></canvas>
+                                <canvas id="userChart"></canvas>
                             </div>
                         </div>
                 
@@ -149,40 +149,12 @@
         </div>
     </main>
 
-
-    <script>
-        // 예시 데이터
-        const memberStats = [
-            {title: "총 회원 수", value: 10245, change: 1.8, icon: "fas fa-users"},
-            {title: "신규 가입", value: 239, change: 20.1, icon: "fas fa-user-plus"},
-            {title: "활성 회원", value: 8734, change: 5.0, icon: "fas fa-user-check"},
-            {title: "탈퇴 회원", value: 380, change: -4.9, icon: "fas fa-user-minus"}
-        ];
-
-        const postStats = [
-            {title: "총 게시글 수", value: 23145, change: 5.6, icon: "fas fa-file-alt"},
-            {title: "새 게시글", value: 2390, change: 10.1, icon: "fas fa-file-medical"},
-            {title: "총 댓글 수", value: 98543, change: 18.7, icon: "fas fa-comments"},
-            {title: "새 댓글", value: 3800, change: 7.4, icon: "fas fa-comment-medical"}
-        ];
-
-        const memberData = [
-            {name: '1월', 신규가입: 100, 탈퇴: 20},
-            {name: '2월', 신규가입: 120, 탈퇴: 25},
-            {name: '3월', 신규가입: 140, 탈퇴: 30},
-            {name: '4월', 신규가입: 160, 탈퇴: 35},
-            {name: '5월', 신규가입: 180, 탈퇴: 40},
-            {name: '6월', 신규가입: 200, 탈퇴: 45}
-        ];
-
-        const postData = [
-            {name: '1월', 게시글: 500, 댓글: 1000},
-            {name: '2월', 게시글: 550, 댓글: 1100},
-            {name: '3월', 게시글: 600, 댓글: 1200},
-            {name: '4월', 게시글: 650, 댓글: 1300},
-            {name: '5월', 게시글: 700, 댓글: 1400},
-            {name: '6월', 게시글: 750, 댓글: 1500}
-        ];
+    <script th:inline="javascript">
+        // 서버에서 받아온 데이터
+        const userStats = /*[[${userStats}]]*/ [];
+        const postStats = /*[[${postStats}]]*/ [];
+        const userData = /*[[${userChartData}]]*/ [];
+        const postData = /*[[${postChartData}]]*/ [];
 
         // 통계 카드 생성 함수
         function createStatCards(stats, containerId) {
@@ -195,7 +167,7 @@
                     <div class="stat-card-content">
                         <div class="stat-card-header">
                             <h2 class="stat-card-title">${stat.title}</h2>
-                            <i class="${stat.icon} text-gray-400"></i>
+                            <i class="${stat.icon}"></i>
                         </div>
                         <p class="stat-card-value">${stat.value.toLocaleString()}</p>
                         <div class="stat-card-change">
@@ -211,47 +183,47 @@
         }
 
         // 초기 카드 생성
-        createStatCards(memberStats, 'memberStats');
+        createStatCards(userStats, 'userStats');
         createStatCards(postStats, 'postStats');
 
         // 탭 전환 로직
-        const membersTab = document.getElementById('membersTab');
+        const usersTab = document.getElementById('usersTab');
         const postsTab = document.getElementById('postsTab');
-        const membersContent = document.getElementById('membersContent');
+        const usersContent = document.getElementById('usersContent');
         const postsContent = document.getElementById('postsContent');
 
-        membersTab.addEventListener('click', () => {
-            membersTab.classList.add('tab-active');
-            membersTab.classList.remove('tab-inactive');
+        usersTab.addEventListener('click', () => {
+            usersTab.classList.add('tab-active');
+            usersTab.classList.remove('tab-inactive');
             postsTab.classList.add('tab-inactive');
             postsTab.classList.remove('tab-active');
-            membersContent.style.display = 'block';
+            usersContent.style.display = 'block';
             postsContent.style.display = 'none';
         });
 
         postsTab.addEventListener('click', () => {
             postsTab.classList.add('tab-active');
             postsTab.classList.remove('tab-inactive');
-            membersTab.classList.add('tab-inactive');
-            membersTab.classList.remove('tab-active');
+            usersTab.classList.add('tab-inactive');
+            usersTab.classList.remove('tab-active');
             postsContent.style.display = 'block';
-            membersContent.style.display = 'none';
+            usersContent.style.display = 'none';
         });
 
         // 회원 차트
-        new Chart(document.getElementById('memberChart'), {
+        new Chart(document.getElementById('userChart'), {
             type: 'bar',
             data: {
-                labels: memberData.map(d => d.name),
+                labels: userData.map(d => d.name),
                 datasets: [
                     {
                         label: '신규가입',
-                        data: memberData.map(d => d.신규가입),
+                        data: userData.map(d => d.value1),
                         backgroundColor: '#3b82f6'
                     },
                     {
                         label: '탈퇴',
-                        data: memberData.map(d => d.탈퇴),
+                        data: userData.map(d => d.value2),
                         backgroundColor: '#ef4444'
                     }
                 ]
@@ -274,13 +246,13 @@
                 datasets: [
                     {
                         label: '게시글',
-                        data: postData.map(d => d.게시글),
+                        data: postData.map(d => d.value1),
                         borderColor: '#3b82f6',
                         tension: 0.1
                     },
                     {
                         label: '댓글',
-                        data: postData.map(d => d.댓글),
+                        data: postData.map(d => d.value2),
                         borderColor: '#10b981',
                         tension: 0.1
                     }

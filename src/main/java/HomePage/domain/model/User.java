@@ -25,9 +25,8 @@ public class User {
     private Timestamp createDate;
 
     private Timestamp loginDate;
-
+    private Timestamp deleteDate;
     private String provider;
-
     private String providerId;
 
     public User(){
@@ -114,6 +113,14 @@ public class User {
 
     public void setLoginDate(Timestamp loginDate) {
         this.loginDate = loginDate;
+    }
+
+    public Timestamp getDeleteDate() {
+        return deleteDate;
+    }
+
+    public void setDeleteDate(Timestamp deleteDate) {
+        this.deleteDate = deleteDate;
     }
 
     public String getProvider() {
