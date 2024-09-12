@@ -9,6 +9,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import javax.sql.DataSource;
 import java.sql.PreparedStatement;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,7 +25,7 @@ public class JdbcTemplateCommunityCommentRepository implements CommentRepository
 
     @Override
     public CommunityComment save(CommunityComment comment) {
-        String sql = "INSERT INTO " + tableName + " (writer, board_id, content, regdate, updateDate, deleteDate) " +
+        String sql = "INSERT INTO " + tableName + " (writer, board_id, content, createdAt, updatedAt, deleteAt) " +
                                         "VALUES (?, ?, ?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         comment.setRegisterDate(new Timestamp(System.currentTimeMillis()));
@@ -44,9 +45,28 @@ public class JdbcTemplateCommunityCommentRepository implements CommentRepository
     }
 
     @Override
+    public int count() {
+        String sql = String.format("SELECT COUNT(*) FROM %s", tableName);
+        return jdbcTemplate.queryForObject(sql, Integer.class);
+    }
+
+    @Override
+    public int countByCreatedAtAfter(LocalDateTime date) {
+        String sql = String.format("SELECT COUNT(*) FROM %s WHERE createdAt > ?", tableName);
+        return jdbcTemplate.queryForObject(sql, Integer.class, Timestamp.valueOf(date));
+    }
+
+
+    @Override
     public int countByBoardId(Long boardId) {
         String sql = String.format("SELECT COUNT(*) FROM %s WHERE board_id = ?", tableName);
         return jdbcTemplate.queryForObject(sql, Integer.class, boardId);
+    }
+
+    @Override
+    public int countByCreatedAtBetween(LocalDateTime start, LocalDateTime end) {
+        String sql = String.format("SELECT COUNT(*) FROM %s WHERE createdAt BETWEEN ? AND ?", tableName);
+        return jdbcTemplate.queryForObject(sql, Integer.class, start, end);
     }
 
     @Override
@@ -98,6 +118,7 @@ public class JdbcTemplateCommunityCommentRepository implements CommentRepository
         return isDelete >= 0;
     }
 
+
     private RowMapper<CommunityComment> communityCommentRowMapper(){
        return (rs, rowNum) -> {
            CommunityComment communityComment = new CommunityComment();
@@ -105,9 +126,9 @@ public class JdbcTemplateCommunityCommentRepository implements CommentRepository
            communityComment.setBoard_id(rs.getLong("board_id"));
            communityComment.setContent(rs.getString("content"));
            communityComment.setWriter(rs.getString("writer"));
-           communityComment.setRegisterDate(rs.getTimestamp("regdate"));
-           communityComment.setUpdateDate(rs.getTimestamp("updateDate"));
-           communityComment.setDeleteDate(rs.getTimestamp("deleteDate"));
+           communityComment.setRegisterDate(rs.getTimestamp("createdAt"));
+           communityComment.setUpdateDate(rs.getTimestamp("updatedAt"));
+           communityComment.setDeleteDate(rs.getTimestamp("deletedAt"));
            return communityComment;
        };
     }

@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
 import javax.sql.DataSource;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +39,21 @@ public class JdbcTemplateReviewBoardRepository implements BoardRepository<Review
 
     @Override
     public int countByWriter(String writer) {
+        return 0;
+    }
+
+    @Override
+    public int countByCreatedAtAfter(LocalDateTime date) {
+        return 0;
+    }
+
+    @Override
+    public int countByCreatedAtBefore(LocalDateTime date) {
+        return 0;
+    }
+
+    @Override
+    public int countByCreatedAtBetween(LocalDateTime start, LocalDateTime end) {
         return 0;
     }
 

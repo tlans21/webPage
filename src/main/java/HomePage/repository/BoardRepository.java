@@ -2,6 +2,7 @@ package HomePage.repository;
 
 import HomePage.domain.model.Board;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,6 +15,10 @@ public interface BoardRepository<T extends Board>{
     int count();
     int countByTitle(String title);
     int countByWriter(String writer);
+    int countByCreatedAtAfter(LocalDateTime date);
+
+    int countByCreatedAtBefore(LocalDateTime date);
+    int countByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
     T save(T board);
 
     boolean update(T board);

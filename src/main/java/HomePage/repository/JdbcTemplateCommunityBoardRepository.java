@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
 import javax.sql.DataSource;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +43,7 @@ public class JdbcTemplateCommunityBoardRepository implements BoardRepository<Com
 
     @Override
     public List<CommunityBoard> findPage(int offset, int limit) {
-        String sql = String.format("SELECT * FROM %s WHERE deleteDate IS NULL ORDER BY board_id DESC LIMIT ? OFFSET ?", tableName);
+        String sql = String.format("SELECT * FROM %s WHERE deletedAt IS NULL ORDER BY board_id DESC LIMIT ? OFFSET ?", tableName);
         return jdbcTemplate.query(sql, communityBoardRowMapper(), limit, offset); // offset은 건너띄려는 행, limit는 조회하려는 갯수
     }
     @Override
@@ -58,17 +59,17 @@ public class JdbcTemplateCommunityBoardRepository implements BoardRepository<Com
     }
     @Override
     public List<CommunityBoard> findPageByTitle(int offset, int limit, String title){
-        String sql = String.format("SELECT * FROM %s WHERE deleteDate IS NULL AND title LIKE ? ORDER BY regdate DESC LIMIT ? OFFSET ?", tableName);
+        String sql = String.format("SELECT * FROM %s WHERE deletedAt IS NULL AND title LIKE ? ORDER BY regdate DESC LIMIT ? OFFSET ?", tableName);
         return jdbcTemplate.query(sql, communityBoardRowMapper(), "%" + title + "%", limit, offset);
     }
     @Override
     public List<CommunityBoard> findPageByWriter(int offset, int limit, String writer){
-        String sql = String.format("SELECT * FROM %s WHERE deleteDate IS NULL AND writer = ? ORDER BY regdate DESC LIMIT ? OFFSET ?", tableName);
+        String sql = String.format("SELECT * FROM %s WHERE deletedAt IS NULL AND writer = ? ORDER BY regdate DESC LIMIT ? OFFSET ?", tableName);
         return jdbcTemplate.query(sql, communityBoardRowMapper(), writer, limit, offset);
     }
     @Override
     public int count() {
-        String sql = String.format("SELECT COUNT(*) FROM %s WHERE deleteDate IS NULL", tableName);
+        String sql = String.format("SELECT COUNT(*) FROM %s WHERE deletedAt IS NULL", tableName);
         return jdbcTemplate.queryForObject(sql, Integer.class);
     }
     @Override
@@ -83,8 +84,26 @@ public class JdbcTemplateCommunityBoardRepository implements BoardRepository<Com
     }
 
     @Override
+    public int countByCreatedAtAfter(LocalDateTime date) {
+        String sql = String.format("SELECT COUNT(*) FROM %s WHERE createdAt > ?", tableName);
+        return jdbcTemplate.queryForObject(sql, Integer.class, date);
+    }
+
+    @Override
+    public int countByCreatedAtBefore(LocalDateTime date) {
+        String sql = String.format("SELECT COUNT(*) FROM %s WHERE createdAt < ?", tableName);
+        return jdbcTemplate.queryForObject(sql, Integer.class, date);
+    }
+
+    @Override
+    public int countByCreatedAtBetween(LocalDateTime start, LocalDateTime end) {
+        String sql = String.format("SELECT COUNT(*) FROM %s WHERE createdAt BETWEEN ? AND ?", tableName);
+        return jdbcTemplate.queryForObject(sql, Integer.class, start, end);
+    }
+
+    @Override
     public boolean update(CommunityBoard communityBoard) {
-        String sql = String.format("UPDATE %s SET title = ?, content = ?, updateDate = ? WHERE board_id = ?", tableName);
+        String sql = String.format("UPDATE %s SET title = ?, content = ?, updatedAt = ? WHERE board_id = ?", tableName);
         Timestamp updateDate = new Timestamp(System.currentTimeMillis());
         int isUpdate = jdbcTemplate.update(sql, communityBoard.getTitle(), communityBoard.getContent(), updateDate, communityBoard.getId());
         if (isUpdate == 0 || isUpdate > 1){
@@ -151,9 +170,9 @@ public class JdbcTemplateCommunityBoardRepository implements BoardRepository<Com
             communityBoard.setContent(rs.getString("content"));
             communityBoard.setWriter(rs.getString("writer"));
             communityBoard.setViewCnt(rs.getInt("viewCnt"));
-            communityBoard.setRegisterDate(rs.getTimestamp("regdate"));
-            communityBoard.setUpdateDate(rs.getTimestamp("updateDate"));
-            communityBoard.setDeleteDate(rs.getTimestamp("deleteDate"));
+            communityBoard.setRegisterDate(rs.getTimestamp("createdAt"));
+            communityBoard.setUpdateDate(rs.getTimestamp("updatedAt"));
+            communityBoard.setDeleteDate(rs.getTimestamp("deletedAt"));
             communityBoard.setCommentCnt(rs.getInt("commentCnt"));
             return communityBoard;
         };

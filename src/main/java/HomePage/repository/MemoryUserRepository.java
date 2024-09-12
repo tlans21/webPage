@@ -2,6 +2,7 @@ package HomePage.repository;
 
 import HomePage.domain.model.User;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class MemoryUserRepository implements UserRepository {
@@ -48,6 +49,36 @@ public class MemoryUserRepository implements UserRepository {
 
     @Override
     public int count() {
+        return 0;
+    }
+
+    @Override
+    public int countByCreatedAtAfter(LocalDateTime date) {
+        return 0;
+    }
+
+    @Override
+    public int countByCreatedAtBefore(LocalDateTime date) {
+        return 0;
+    }
+
+    @Override
+    public int countByLastLoginAfter(LocalDateTime date) {
+        return 0;
+    }
+
+    @Override
+    public int countByDeletedAtAfter(LocalDateTime date) {
+        return 0;
+    }
+
+    @Override
+    public int countByCreatedAtBetween(LocalDateTime start, LocalDateTime end) {
+        return 0;
+    }
+
+    @Override
+    public int countByDeletedAtBetween(LocalDateTime start, LocalDateTime end) {
         return 0;
     }
 
