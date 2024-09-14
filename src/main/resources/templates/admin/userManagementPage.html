@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>관리자 페이지</title>
-
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
@@ -25,17 +24,17 @@
                     <div th:replace="~{admin/navAdmin :: navAdmin}"></div>
                 </div>
                 <section id="boardManagement">
-                    <h2>게시판 관리</h2>
+                    <h2>회원 관리</h2>
                     <div class="board-list">
                         <div class="search-bar">
-                            <form th:action="@{/api/v1/admin/adminPage/boardList}" method="get">
+                            <form th:action="@{/api/v1/admin/adminPage/user-management}" method="get">
                                 <input type="hidden" name="page" th:value="1">
-                                <input type="hidden" name="sort" th:value="${sort}">
-                            
-                                
+
                                 <select name="searchType">
-                                    <option value="title" th:selected="${searchType == 'title'}">제목</option>
-                                    <option value="writer" th:selected="${searchType == 'writer'}">작성자</option>      
+                                    <option value="id" th:selected="${searchType == 'id'}">ID</option>
+                                    <option value="username" th:selected="${searchType == 'username'}">Username</option>
+                                    <option value="email" th:selected="${searchType == 'email'}">이메일</option>
+                                    <option value="role" th:selected="${searchType == 'role'}">권한</option>      
                                 </select>
                                 <input type="text" name="searchKeyword" th:value="${searchKeyword}" placeholder="검색어">
                                 <input class="searchButton" type="submit" value="검색"/>
@@ -44,66 +43,64 @@
                         <div class="board-table">
                             <div class="board-header">
                                 <div>ID</div>
-                                <div>제목</div>
-                                <div>작성자</div>
-                                <div>작성일</div>
-                                <div>조회수</div>
+                                <div>Username</div>
+                                <div>Email</div>
+                                <div>권한</div>
                                 <div>관리</div>
+                                <div>소셜 로그인</div>
                             </div>
-                            <div class="board-item" th:each="board : ${boardPage.content}">
-                                <div th:text="${board.id}"></div>
+                            <div class="board-item" th:each="user : ${usersPage.content}">
+                                <div th:text="${user.id}"></div>
                                 <div>
-                                    <a th:href="@{/community/{id}(id=${board.id}, topic='community', page=${boardPage.currentPage})}"><div th:text="${board.title}"></div></a>
+                                    <a th:href="@{/community/{id}(id=${user.id}, topic='community', page=${usersPage.currentPage})}"><div th:text="${user.username}"></div></a>
                                 </div>
-                                <div th:text="${board.writer}"></div>
-                                <div th:text="${board.registerDate}"></div>
-                                <div th:text="${board.viewCnt}"></div>
+                                <div th:text="${user.email}"></div>
+                                <div th:text="${user.roles}"></div>
                                 <div class="userManagement-cell">
                                     <div class="cell-flex">
-                                        <form th:action="@{/api/v1/admin/{id}/editForm(id=${board.id})}">
+                                        <form th:action="@{/api/v1/admin/{id}/editForm(id=${user.id})}">
                                             <button type="sumbit" class="editBtn">수정</button>
                                         </form>
-                                        <form th:action="@{/api/v1/admin/{id}/delete(id=${board.id})}" method="post">
+                                        <form th:action="@{/api/v1/admin/{id}/delete(id=${user.id})}" method="post">
                                             <input type="hidden" name="_method" value="delete" />
                                             <button type="sumbit" class="deleteBtn">삭제</button>
                                         </form>
                                     </div>
                                 </div>
+                                <div th:text="${user.provider != null ? 'O' : 'X'}"></div>
                             </div>
                         </div>
                     </div>
                     <div class="container">
                         <nav class="pagination-container">
                             <div class="pagination">
-                                <button th:if="${boardPage.currentPage > 1}"
-                                        th:onclick="'window.location.href=\'' + @{/api/v1/admin/adminPage/boardList(page=${boardPage.currentPage - 1}, sort=${sort}, searchType=${searchType}, searchKeyword=${searchKeyword})} + '\''"
+                                <button th:if="${usersPage.currentPage > 1}"
+                                        th:onclick="'window.location.href=\'' + @{/api/v1/admin/adminPage/user-management(page=${usersPage.currentPage - 1}, searchType=${searchType}, searchKeyword=${searchKeyword})} + '\''"
                                         class="pagination-button">Previous</button>
                 
                                 <button th:if="${start > 1}"
-                                        th:onclick="'window.location.href=\'' + @{/api/v1/admin/adminPage/boardList(page=1, sort=${sort}, searchType=${searchType}, searchKeyword=${searchKeyword})} + '\''"
+                                        th:onclick="'window.location.href=\'' + @{/api/v1/admin/adminPage/user-management(page=1, searchType=${searchType}, searchKeyword=${searchKeyword})} + '\''"
                                         class="pagination-button">1</button>
                                 <span th:if="${start > 2}" class="pagination-ellipsis">...</span>
                 
                                 <button th:each="pageNum : ${#numbers.sequence(start, end)}"
-                                        th:onclick="'window.location.href=\'' + @{/api/v1/admin/adminPage/boardList(page=${pageNum}, sort=${sort}, searchType=${searchType}, searchKeyword=${searchKeyword})} + '\''"
+                                        th:onclick="'window.location.href=\'' + @{/api/v1/admin/adminPage/user-management(page=${pageNum}, searchType=${searchType}, searchKeyword=${searchKeyword})} + '\''"
                                         th:text="${pageNum}"
-                                        th:class="${pageNum == boardPage.currentPage} ? 'pagination-button active' : 'pagination-button'"></button>     
-                                <span th:if="${end < boardPage.totalPages - 1}" class="pagination-ellipsis">...</span>
-                                <button th:if="${end < boardPage.totalPages}"
-                                        th:onclick="'window.location.href=\'' + @{/api/v1/admin/adminPage/boardList(page=${boardPage.totalPages}, sort=${sort}, searchType=${searchType}, searchKeyword=${searchKeyword})} + '\''"
-                                        th:text="${boardPage.totalPages}"
+                                        th:class="${pageNum == usersPage.currentPage} ? 'pagination-button active' : 'pagination-button'"></button>     
+                                <span th:if="${end < usersPage.totalPages - 1}" class="pagination-ellipsis">...</span>
+                                <button th:if="${end < usersPage.totalPages}"
+                                        th:onclick="'window.location.href=\'' + @{/api/v1/admin/adminPage/user-management(page=${usersPage.totalPages}, searchType=${searchType}, searchKeyword=${searchKeyword})} + '\''"
+                                        th:text="${usersPage.totalPages}"
                                         class="pagination-button"></button>
                 
-                                <button th:if="${boardPage.currentPage < boardPage.totalPages}"
-                                        th:onclick="'window.location.href=\'' + @{/api/v1/admin/adminPage/boardList(page=${boardPage.currentPage + 1}, sort=${sort}, searchType=${searchType}, searchKeyword=${searchKeyword})} + '\''"
+                                <button th:if="${usersPage.currentPage < usersPage.totalPages}"
+                                        th:onclick="'window.location.href=\'' + @{/api/v1/admin/adminPage/user-management(page=${usersPage.currentPage + 1}, searchType=${searchType}, searchKeyword=${searchKeyword})} + '\''"
                                         class="pagination-button">Next</button>
                             </div>
                         </nav>
                     </div>
                 </section>
-                
                 <div class="rightLayer">
-
                 </div>
             </div>
         </div>

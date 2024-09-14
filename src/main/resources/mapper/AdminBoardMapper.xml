@@ -1,31 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="HomePage.admin.mapper.AdminBoardMapper">
-    <select id="getAllBoards" resultType="HomePage.domain.model.CommunityBoard">
-        SELECT
-            board_id as id,
-            title,
-            content,
-            writer
+    <resultMap id="communityBoardResultMap" type="HomePage.domain.model.CommunityBoard">
+        <id property="id" column="board_id"/>
+        <result property="writer" column="writer"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="registerDate" column="createdAt"/>
+        <result property="viewCnt" column="viewCnt"/>
+        <result property="commentCnt" column="commentCnt"/>
+        <result property="updateDate" column="updatedAt"/>
+        <result property="deleteDate" column="deletedAt"/>
+    </resultMap>
 
-        FROM security.communityboard
+    <insert id="save" parameterType="HomePage.domain.model.CommunityBoard" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO security.communityboard (writer, title, content, createdAt, viewCnt, commentCnt)
+        VALUES (#{writer}, #{title}, #{content}, #{registerDate}, #{viewCnt}, #{commentCnt})
+    </insert>
+
+    <select id="findPage" resultMap="communityBoardResultMap">
+        SELECT * FROM security.communityboard
+        WHERE deletedAt IS NULL
         ORDER BY board_id DESC
+        LIMIT #{limit} OFFSET #{offset}
     </select>
 
-    <select id="getBoardById" parameterType="Long" resultType="HomePage.domain.model.CommunityBoard">
+    <select id="findPageByTitle" resultMap="communityBoardResultMap">
+        SELECT * FROM security.communityboard
+        WHERE deletedAt IS NULL AND title LIKE CONCAT('%', #{title}, '%')
+        ORDER BY createdAt DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="findPageByWriter" resultMap="communityBoardResultMap">
+        SELECT * FROM security.communityboard
+        WHERE deletedAt IS NULL AND writer LIKE CONCAT('%' #{writer}, '%')
+        ORDER BY createdAt DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="count" resultType="int">
+        SELECT COUNT(*) FROM security.communityboard WHERE deletedAt IS NULL
+    </select>
+
+    <select id="countByTitle" resultType="int">
+        SELECT COUNT(*) FROM security.communityboard WHERE title LIKE CONCAT('%', #{title}, '%')
+    </select>
+
+    <select id="countByWriter" resultType="int">
+        SELECT COUNT(*) FROM security.communityboard WHERE writer LIKE CONCAT('%', #{writer}, '%')
+    </select>
+
+    <update id="update" parameterType="HomePage.domain.model.CommunityBoard">
+        UPDATE security.communityboard
+        SET title = #{title}, content = #{content}, updatedAt = #{updateDate}
+        WHERE board_id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM security.communityboard WHERE board_id = #{id}
+    </delete>
+
+    <select id="selectById" resultMap="communityBoardResultMap">
         SELECT * FROM security.communityboard WHERE board_id = #{id}
     </select>
 
-    <update id="updateBoard" parameterType="HomePage.domain.model.CommunityBoard">
-        UPDATE security.communityboard
-        SET title = #{title}, content = #{content}, updatedDate = NOW()
-        WHERE board_id = #{id}
-        <selectKey keyProperty="id" resultType="Long" order="AFTER">
-            SELECT LAST_INSERT_ID()
-        </selectKey>
-    </update>
+    <select id="selectByTitle" resultMap="communityBoardResultMap">
+        SELECT * FROM security.communityboard WHERE title = #{title}
+    </select>
 
-    <delete id="deleteBoard" parameterType="Long">
-        DELETE FROM security.communityboard WHERE board_id = #{id}
-    </delete>
+    <select id="selectByWriter" resultMap="communityBoardResultMap">
+        SELECT * FROM security.communityboard WHERE writer = #{writer}
+    </select>
+
+    <select id="selectAll" resultMap="communityBoardResultMap">
+        SELECT * FROM security.communityboard
+    </select>
+
 </mapper>
-

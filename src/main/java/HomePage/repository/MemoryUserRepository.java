@@ -2,6 +2,7 @@ package HomePage.repository;
 
 import HomePage.domain.model.User;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class MemoryUserRepository implements UserRepository {
@@ -13,6 +14,16 @@ public class MemoryUserRepository implements UserRepository {
         user.setId(++sequence);
         store.put(user.getId(), user);
         return user;
+    }
+
+    @Override
+    public void softDeleteUser(Long userId) {
+
+    }
+
+    @Override
+    public void updateLastLoginDate(String username) {
+
     }
 
     @Override
@@ -47,11 +58,91 @@ public class MemoryUserRepository implements UserRepository {
     }
 
     @Override
+    public int count() {
+        return 0;
+    }
+
+    @Override
+    public int countByCreatedAtAfter(LocalDateTime date) {
+        return 0;
+    }
+
+    @Override
+    public int countByCreatedAtBefore(LocalDateTime date) {
+        return 0;
+    }
+
+    @Override
+    public int countByLastLoginAfter(LocalDateTime date) {
+        return 0;
+    }
+
+    @Override
+    public int countByDeletedAtAfter(LocalDateTime date) {
+        return 0;
+    }
+
+    @Override
+    public int countByCreatedAtBetween(LocalDateTime start, LocalDateTime end) {
+        return 0;
+    }
+
+    @Override
+    public int countByDeletedAtBetween(LocalDateTime start, LocalDateTime end) {
+        return 0;
+    }
+
+    @Override
+    public List<User> findUserPage(int offset, int limit) {
+        return null;
+    }
+
+    @Override
     public void setTableName(String tableName) {
 
     }
 
     public void clearStore() {
         store.clear();
+    }
+
+    @Override
+    public int countById(Long id) {
+        return 0;
+    }
+
+    @Override
+    public int countByUsername(String username) {
+        return 0;
+    }
+
+    @Override
+    public int countByEmail(String email) {
+        return 0;
+    }
+
+    @Override
+    public int countByRole(String role) {
+        return 0;
+    }
+
+    @Override
+    public List<User> findUserPageById(int offset, int limit, Long id) {
+        return null;
+    }
+
+    @Override
+    public List<User> findUserPageByUsername(int offset, int limit, String username) {
+        return null;
+    }
+
+    @Override
+    public List<User> findUserPageByEmail(int offset, int limit, String email) {
+        return null;
+    }
+
+    @Override
+    public List<User> findUserPageByRole(int offset, int limit, String role) {
+        return null;
     }
 }
