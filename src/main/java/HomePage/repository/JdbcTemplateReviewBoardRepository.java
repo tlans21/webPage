@@ -22,6 +22,7 @@ public class JdbcTemplateReviewBoardRepository implements BoardRepository<Review
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
+
     @Override
     public List<ReviewBoard> findPageByTitle(int offset, int limit, String title) {
         return null;

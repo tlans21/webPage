@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
 import java.sql.PreparedStatement;
@@ -47,6 +48,20 @@ public class JdbcTemplateUserRepository implements UserRepository {
 
         user.setId(keyHolder.getKey().longValue());
         return user;
+    }
+
+    @Override
+    @Transactional
+    public void updateLastLoginDate(String username) {
+        String sql = String.format("UPDATE %s SET LastLogin = ? WHERE username = ?", tableName);
+        jdbcTemplate.update(sql, new Timestamp(System.currentTimeMillis()), username);
+    }
+
+    @Override
+    @Transactional
+    public void softDeleteUser(Long userId) {
+        String sql = String.format("UPDATE %s SET deletedAt = ? WHERE id = ?", tableName);
+        jdbcTemplate.update(sql, new Timestamp(System.currentTimeMillis()), userId);
     }
 
     @Override

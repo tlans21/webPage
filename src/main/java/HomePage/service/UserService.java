@@ -7,6 +7,7 @@ import HomePage.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
@@ -42,6 +43,14 @@ public class UserService {
         userRepository.save(user);
         return user.getId();
     }
+    public void updateLastLoginDate(String username){
+        userRepository.updateLastLoginDate(username);
+    }
+    @Transactional
+    public void deleteUser(Long userId){
+        userRepository.softDeleteUser(userId);
+    }
+
     private void validateUserFields(User user) {
         if (user.getUsername() == null || user.getUsername().trim().isEmpty()) {
             throw new IllegalArgumentException("이름이 필요합니다.");

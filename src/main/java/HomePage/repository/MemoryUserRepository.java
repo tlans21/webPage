@@ -17,6 +17,16 @@ public class MemoryUserRepository implements UserRepository {
     }
 
     @Override
+    public void softDeleteUser(Long userId) {
+
+    }
+
+    @Override
+    public void updateLastLoginDate(String username) {
+
+    }
+
+    @Override
     public Optional<User> findById(Long id) {
         return Optional.ofNullable(store.get(id));
     }

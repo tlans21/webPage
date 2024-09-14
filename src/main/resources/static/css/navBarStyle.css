@@ -29,6 +29,37 @@ body {
     justify-content: space-between;
     align-items: center;
 }
+
+.nav-right {
+    display: flex;
+    align-items: center;
+}
+
+.nav-right > div {
+    margin-right: 15px;
+}
+
+#sidebarToggle {
+    border: 2px solid #ffffff;
+    background-color: transparent;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    transition: background-color 0.3s ease;
+}
+
+
+#sidebarToggle:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
 .logo {
     font-size: 28px;
     font-weight: bold;
@@ -92,6 +123,33 @@ body {
 .content-wrapper {
     padding-top: 70px; /* 네비게이션 바의 높이만큼 상단 패딩 추가 */
 }
+
+
+#sidebar {
+    position: fixed;
+    top: 0;
+    right: -250px;
+    height: 100vh;
+    width: 250px;
+    background-color: #343a40;
+    transition: 0.3s;
+    z-index: 1000;
+}
+#sidebar.active {
+    right: 0;
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: white;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
 @media (max-width: 768px) {
     .nav-items {
             display: none;

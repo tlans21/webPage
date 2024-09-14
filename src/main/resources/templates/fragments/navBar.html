@@ -3,29 +3,100 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.0/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/navBarStyle.css">
 </head>
 <body>
-    <nav class="nav-menu" th:fragment="navBar">
-        <div class="nav-container">
-            <a th:href="@{/index}" class="logo">Gourmet Code</a>
-            <ul class="nav-items">
-                <li><a href="#">맛집 탐색</a></li>
-                <li><a href="#">리뷰 작성</a></li>
-                <li><a href="#">푸드 갤러리</a></li>
-                <li><a th:href="@{/community/list}">커뮤니티</a></li>
-                <li th:if="${isAdmin}"><a th:href="@{/api/v1/admin/adminPage/boardList}">관리자 페이지</a></li>
-            </ul>
-            <div sec:authorize="!isAuthenticated()">
-                <button class="auth-button" id="authButton"><a th:href="@{/loginForm}">로그인/회원가입</a></button>
+    <th:block th:fragment="navBar">
+        <!-- Navgation Bar -->
+        <nav class="nav-menu">
+            <div class="nav-container">
+                <a th:href="@{/index}" class="logo">Gourmet Code</a>
+                <ul class="nav-items">
+                    <li><a href="#">맛집 탐색</a></li>
+                    <li><a href="#">리뷰 작성</a></li>
+                    <li><a href="#">푸드 갤러리</a></li>
+                    <li><a th:href="@{/community/list}">커뮤니티</a></li>
+                    <li th:if="${isAdmin}"><a th:href="@{/api/v1/admin/adminPage/boardList}">관리자 페이지</a></li>
+                </ul>
+                <div class="nav-right">
+                    <div sec:authorize="!isAuthenticated()">
+                        <button class="auth-button" id="authButton"><a th:href="@{/loginForm}">로그인/회원가입</a></button>
+                    </div>
+                    <div sec:authorize="isAuthenticated()">
+                        <form th:action="@{/api/logout}" method="post">
+                            <button type="submit" class="auth-button" id="logoutButton">로그아웃</button>
+                        </form>
+                    </div>
+                    <button id="sidebarToggle">☰</button>
+                </div>
             </div>
-            <div sec:authorize="isAuthenticated()">
-                <form th:action="@{/api/logout}" method="post">
-                    <button type="submit" class="auth-button" id="logoutButton">로그아웃</button>
-                </form>
+        </nav>
+
+        <!-- Side bar -->
+
+        <div id="sidebar">
+            <button class="close-btn" id="closeSidebar">&times;</button>
+            <div class="p-4">
+                <h4 class="text-white">Menu</h4>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <button id="myPageButton">마이 페이지</button>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" th:href="@{/settings}">
+                            ⚙️ 설정
+                        </a>
+                    </li>
+                    <!-- 추가 메뉴 항목들 -->
+                </ul>
             </div>
         </div>
-    </nav>
+        <!-- MyPage Modal -->
+        <div class="modal fade" id="myPageModal" tabindex="-1" aria-labelledby="myPageModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="myPageModalLabel">마이페이지</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" id="myPageContent">
+                        <!-- 마이페이지 내용이 여기에 동적으로 로드됩니다 -->
+                    </div>
+                </div>
+            </div>
+        </div>
 
+
+
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.0/js/bootstrap.bundle.min.js"></script>
+        <script>
+            function toggleSidebar() {
+                document.getElementById('sidebar').classList.toggle('active');
+                document.getElementById('content').classList.toggle('active');
+            }
+
+            document.getElementById('sidebarToggle').addEventListener('click', toggleSidebar);
+            document.getElementById('closeSidebar').addEventListener('click', toggleSidebar);
+        </script>
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const myPageButton = document.getElementById('myPageButton');
+            const myPageModal = new bootstrap.Modal(document.getElementById('myPageModal'));
+            const myPageContent = document.getElementById('myPageContent');
+
+            myPageButton.addEventListener('click', function() {
+                fetch('/api/v1/user/mypage-content')
+                    .then(response => response.text())
+                    .then(html => {
+                        myPageContent.innerHTML = html;
+                        myPageModal.show();
+                    })
+                    .catch(error => console.error('Error:', error));
+            });
+        });
+        </script>
+    </th:block>
 </body>
 </html>

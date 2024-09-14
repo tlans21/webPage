@@ -8,7 +8,9 @@ import java.util.Optional;
 
 public interface UserRepository {
     User save(User user);
-    Optional<User> findById(Long id);
+    void updateLastLoginDate(String username);
+    void softDeleteUser(Long userId);
+    Optional<User> findById(Long userId);
     Optional<User> findByUsername(String name);
     Optional<User> findByEmail(String email);
     Optional<User> findByPhoneNumber(String phoneNumber);
@@ -16,7 +18,7 @@ public interface UserRepository {
     void setTableName(String tableName);
 
     int count();
-    int countById(Long id);
+    int countById(Long userId);
     int countByUsername(String username);
     int countByEmail(String email);
     int countByRole(String role);
