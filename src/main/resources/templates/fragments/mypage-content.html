@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/navBarStyle.css">
+</head>
+<body>
+    <div th:fragment="myPageContent">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <!-- <img src="/img/default-profile.jpg" th:src="${user.profileImageUrl != null ? user.profileImageUrl : '/img/default-profile.jpg'}" alt="프로필 사진" class="profile-image mb-3"> -->
+                            <h3 th:text="${user.username}">사용자명</h3>
+                            <p class="text-muted" th:text="${user.email}">user@example.com</p>
+                            <button class="btn btn-primary mt-3">프로필 수정</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <!-- 개인 정보, 활동 요약, 최근 활동 카드들 -->
+                    <!-- (이전에 제공한 코드와 동일) -->
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
