@@ -99,12 +99,33 @@ form.sign-in-form {
     margin-left: 10px;
 }
 
+.input-field .check-email-btn {
+    position: absolute;
+    background-color: #5995fd;
+    color: white;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-size: 0.9rem;
+    height: 40px;
+
+    bottom: 7px;
+    right: 5px;
+    margin-left: 10px;
+}
+
 .input-field .check-id-btn:hover {
     background-color: #4d84e2;
 }
-
+.input-field .check-email-btn:hover {
+    background-color: #4d84e2;
+}
 /* 중복 확인 버튼이 없는 일반 입력 필드의 경우 */
 .input-field:not(:has(.check-id-btn)) input {
+    flex: 1;
+}
+.input-field:not(:has(.check-email-btn)) input {
     flex: 1;
 }
 
