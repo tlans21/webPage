@@ -43,4 +43,8 @@ public class MailSendService {
         return number;
     }
 
+    public int getStoredNumberForEmail(String email){
+        return number;
+    }
+
 }
