@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.0/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <th:block th:fragment="myPageContent">
+        <div class="mypage-container">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="profile-card">
+                        <h3 class="text-center mb-4">프로필 정보</h3>
+                        <div class="text-center">
+                            <!-- <img src="/img/default-profile.jpg" th:src="${userProfile.profileImageUrl != null ? userProfile.profileImageUrl : '/img/default-profile.jpg'}" alt="프로필 사진" class="profile-image mb-3"> -->
+                            <h4 th:text="${userProfile.username}">사용자명</h4>
+                            <p class="text-muted" th:text="${userProfile.email}">이메일</p>
+                            <p th:text="${userProfile.role}">역할</p>
+                            <button class="btn btn-primary mt-3">프로필 수정</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-8">
+                    <div class="recent-posts-card">
+                        <h3 class="mb-4">최근 게시글</h3>
+                        <div th:each="board: ${userActivities.recentCommunityBoards}" class="activity-item">
+                            <h5 th:text="${board.title}">게시글 제목</h5>
+                            <p th:text="${#strings.abbreviate(board.content, 100)}">게시글 내용 (최대 100자)</p>
+                            <!-- <small class="text-muted" th:text="${#dates.format(board.createdAt, 'yyyy-MM-dd HH:mm')}">작성일</small> -->
+                        </div>
+                    </div>
+                    <div class="recent-comments-card">
+                        <h3 class="mb-4">최근 댓글</h3>
+                        <div th:each="comment : ${userActivities.recentCommunityComments}" class="activity-item">
+                            <p th:text="${comment.relatedCommunityBoard.title}"></p>
+<!--                            <small class="text-muted" th:text="${#dates.format(comment.createdAt, 'yyyy-MM-dd HH:mm')}">작성일</small>-->
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </th:block>
+</body>
+</html>

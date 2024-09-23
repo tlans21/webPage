@@ -5,13 +5,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;900&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.0/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/navBarStyle.css">
+    <link rel="stylesheet" href="css/myPageModalStyle.css">
 </head>
 <body>
     <th:block th:fragment="navBar">
         <!-- Navgation Bar -->
         <nav class="nav-menu">
             <div class="nav-container">
-                <a th:href="@{/index}" class="logo">Gourmet Code</a>
+                <a th:href="@{/index}" class="logo">오늘 뭐 먹지?</a>
                 <ul class="nav-items">
                     <li><a href="#">맛집 탐색</a></li>
                     <li><a href="#">리뷰 작성</a></li>
@@ -28,7 +29,9 @@
                             <button type="submit" class="auth-button" id="logoutButton">로그아웃</button>
                         </form>
                     </div>
-                    <button id="sidebarToggle">☰</button>
+                    <div sec:authorize="isAuthenticated()">
+                        <button id="sidebarToggle">☰</button>
+                    </div>
                 </div>
             </div>
         </nav>
@@ -81,21 +84,28 @@
             document.getElementById('closeSidebar').addEventListener('click', toggleSidebar);
         </script>
         <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const myPageButton = document.getElementById('myPageButton');
-            const myPageModal = new bootstrap.Modal(document.getElementById('myPageModal'));
-            const myPageContent = document.getElementById('myPageContent');
+            document.addEventListener('DOMContentLoaded', function() {
+                const myPageButton = document.getElementById('myPageButton');
+                const myPageModal = new bootstrap.Modal(document.getElementById('myPageModal'));
+                const myPageContent = document.getElementById('myPageContent');
+            
 
-            myPageButton.addEventListener('click', function() {
-                fetch('/api/v1/user/mypage-content')
-                    .then(response => response.text())
-                    .then(html => {
-                        myPageContent.innerHTML = html;
-                        myPageModal.show();
-                    })
-                    .catch(error => console.error('Error:', error));
+
+                myPageButton.addEventListener('click', function() {
+                    fetch('/api/v1/user/mypage-content')
+                        .then(response => response.text())
+                        .then(html => {
+                            myPageContent.innerHTML = html;
+                            // 스타일시트 동적 추가
+                            const link = document.createElement('link');
+                            link.rel = 'stylesheet';
+                            link.href = 'css/myPageModalStyle.css';
+                            document.head.appendChild(link);
+                            myPageModal.show();
+                        })
+                        .catch(error => console.error('Error:', error));
+                });
             });
-        });
         </script>
     </th:block>
 </body>

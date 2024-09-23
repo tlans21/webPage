@@ -18,6 +18,8 @@ public interface CommentRepository <T extends Comment> {
     boolean deleteByCommentId(Long id);
     boolean deleteByBoardId(Long id);
     List<T> selectByBoardId(Long id);
+    List<T> selectByWriter(String writer);
+    List<T> selectRecentByWriter(String writer, int limit);
     Optional<T> findCommentById(Long commentId);
     int countByBoardId(Long boardId);
     void setTableName(String tableName);

@@ -4,7 +4,7 @@ import HomePage.repository.*;
 import HomePage.service.CommunityBoardService;
 import HomePage.service.CommunityCommentService;
 import HomePage.service.ReviewBoardService;
-import HomePage.service.UserService;
+import HomePage.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

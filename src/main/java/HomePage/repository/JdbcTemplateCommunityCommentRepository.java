@@ -95,6 +95,17 @@ public class JdbcTemplateCommunityCommentRepository implements CommentRepository
         String sql = String.format("SELECT * FROM %s WHERE board_id = ?", tableName);
         return jdbcTemplate.query(sql, communityCommentRowMapper(), boardId);
     }
+    @Override
+    public List<CommunityComment> selectByWriter(String writer){
+        String sql = String.format("SELECT * FROM %s WHERE writer = ?", tableName);
+        return jdbcTemplate.query(sql, communityCommentRowMapper(), writer);
+    }
+
+    @Override
+    public List<CommunityComment> selectRecentByWriter(String writer, int limit) {
+        String sql = String.format("SELECT * FROM %s WHERE writer = ? ORDER BY createdAt DESC LIMIT ?", tableName);
+        return jdbcTemplate.query(sql, communityCommentRowMapper(), writer, limit);
+    }
 
     @Override
     public boolean deleteByWriter(String writer) {

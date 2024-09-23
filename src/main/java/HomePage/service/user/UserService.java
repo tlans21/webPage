@@ -1,4 +1,4 @@
-package HomePage.service;
+package HomePage.service.user;
 
 import HomePage.controller.UserForm;
 import HomePage.domain.model.Page;
