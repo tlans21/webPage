@@ -142,6 +142,13 @@ public class JdbcTemplateCommunityBoardRepository implements BoardRepository<Com
     }
 
     @Override
+    public List<CommunityBoard> selectRecentByWriter(String writer, int limit) {
+        String sql = String.format("SELECT * FROM %s WHERE writer = ? ORDER BY createdAt DESC LIMIT ?", tableName);
+        List<CommunityBoard> result = jdbcTemplate.query(sql, communityBoardRowMapper(), writer, limit);
+        return result;
+    }
+
+    @Override
     public List<CommunityBoard> selectAll() {
         String sql = String.format("SELECT * FROM %s ", tableName);
         return jdbcTemplate.query(sql, communityBoardRowMapper());

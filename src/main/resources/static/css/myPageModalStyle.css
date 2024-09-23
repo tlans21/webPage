@@ -1,0 +1,30 @@
+body {
+    font-family: 'Noto Sans KR', sans-serif;
+}
+.mypage-container {
+    padding: 20px;
+    background-color: #f8f9fa;
+}
+.profile-card, .recent-posts-card, .recent-comments-card {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    padding: 20px;
+}
+.profile-image {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+.activity-item {
+    border-bottom: 1px solid #e0e0e0;
+    padding: 1px 0;
+}
+.activity-item p {
+    font-size: 12px;
+}
+.activity-item:last-child {
+    border-bottom: none;
+}

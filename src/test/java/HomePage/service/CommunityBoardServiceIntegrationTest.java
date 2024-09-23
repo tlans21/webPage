@@ -8,6 +8,7 @@ import HomePage.domain.model.User;
 import HomePage.repository.BoardRepository;
 import HomePage.repository.CommentRepository;
 import HomePage.repository.UserRepository;
+import HomePage.service.user.UserService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

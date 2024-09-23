@@ -2,7 +2,7 @@ package HomePage.config.jwt.handler;
 
 import HomePage.config.auth.PrincipalDetails;
 import HomePage.config.jwt.provider.TokenProvider;
-import HomePage.service.UserService;
+import HomePage.service.user.UserService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;

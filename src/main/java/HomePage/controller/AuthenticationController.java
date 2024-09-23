@@ -3,7 +3,7 @@ package HomePage.controller;
 import HomePage.config.auth.PrincipalDetails;
 import HomePage.config.jwt.provider.TokenProvider;
 import HomePage.repository.UserRepository;
-import HomePage.service.UserService;
+import HomePage.service.user.UserService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

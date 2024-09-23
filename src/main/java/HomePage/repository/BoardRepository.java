@@ -27,6 +27,7 @@ public interface BoardRepository<T extends Board>{
     Optional<T> selectById(Long id);
     List<T> selectByTitle(String title);
     List<T> selectByWriter(String writer);
+    List<T> selectRecentByWriter(String writer, int limit);
 
     List<T> selectAll();
 

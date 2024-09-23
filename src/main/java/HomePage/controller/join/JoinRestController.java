@@ -2,7 +2,7 @@ package HomePage.controller.join;
 
 import HomePage.domain.model.User;
 import HomePage.exception.JoinRequestProcessingTimeoutException;
-import HomePage.service.UserService;
+import HomePage.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

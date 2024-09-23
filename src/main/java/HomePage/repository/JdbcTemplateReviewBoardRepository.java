@@ -134,6 +134,11 @@ public class JdbcTemplateReviewBoardRepository implements BoardRepository<Review
     }
 
     @Override
+    public List<ReviewBoard> selectRecentByWriter(String writer, int limit) {
+        return null;
+    }
+
+    @Override
     public List<ReviewBoard> selectAll() {
         return jdbcTemplate.query("select * from security.reviewBoard", reviewBoardRowMapper());
     }

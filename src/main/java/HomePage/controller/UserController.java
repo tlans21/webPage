@@ -1,7 +1,7 @@
 package HomePage.controller;
 
 import HomePage.domain.model.User;
-import HomePage.service.UserService;
+import HomePage.service.user.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
