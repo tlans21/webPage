@@ -25,7 +25,7 @@ public class JdbcTemplateCommunityCommentRepository implements CommentRepository
 
     @Override
     public CommunityComment save(CommunityComment comment) {
-        String sql = "INSERT INTO " + tableName + " (writer, board_id, content, createdAt, updatedAt, deleteAt) " +
+        String sql = "INSERT INTO " + tableName + " (writer, board_id, content, createdAt, updatedAt, deletedAt) " +
                                         "VALUES (?, ?, ?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         comment.setRegisterDate(new Timestamp(System.currentTimeMillis()));

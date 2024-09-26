@@ -1,13 +1,11 @@
 :root {
-            --primary-color: #ff6b6b;
-            --secondary-color: #4ecdc4;
-            --accent-color: #feca57;
-            --text-color: #2d3436;
-            --background-color: #f9f9f9;
-            --card-bg-color: #ffffff;
+    --primary-color: #1a73e8;
+    --text-color: #202124;
+    --background-color: #ffffff;
+    --secondary-bg-color: #f8f9fa;
 }
 body {
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Inter', sans-serif;
     margin: 0;
     padding: 0;
     background-color: var(--background-color);
@@ -15,82 +13,115 @@ body {
     line-height: 1.6;
 }
 .container {
-    max-width: 1200px;
+    max-width: 1140px;
     margin: 0 auto;
     padding: 0 20px;
 }
+header {
+    background-color: var(--background-color);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+}
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0;
+}
+.logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+.nav-links {
+    list-style: none;
+    display: flex;
+}
+.nav-links li {
+    margin-left: 2rem;
+}
+.nav-links a {
+    color: var(--text-color);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+.nav-links a:hover {
+    color: var(--primary-color);
+}
 .hero {
-    text-align: center;
-    padding: 100px 0;
-    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 80vh;
+    padding: 4rem 0;
 }
-.hero h1 {
-    font-size: 48px;
-    margin-bottom: 20px;
-    color: #ffffff;
+h1 {
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    line-height: 1.2;
 }
-.hero p {
-    font-size: 20px;
-    margin-bottom: 30px;
-    color: #ffffff;
+.subtitle {
+    font-size: 1.25rem;
+    margin-bottom: 2rem;
     max-width: 600px;
-    margin-left: auto;
-    margin-right: auto;
 }
 .cta-button {
-    background-color: var(--accent-color);
-    color: var(--text-color);
-    padding: 12px 24px;
-    border: none;
-    border-radius: 25px;
-    font-size: 18px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.3s ease;
+    display: inline-block;
+    background-color: var(--primary-color);
+    color: #FFFFFF;
+    padding: 0.75rem 1.5rem;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: 500;
+    transition: background-color 0.3s, transform 0.3s;
 }
 .cta-button:hover {
-    background-color: #ffd571;
+    background-color: #1765cc;
     transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
 }
 .features {
-    padding: 80px 0;
+    background-color: var(--secondary-bg-color);
+    padding: 4rem 0;
 }
 .features-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 30px;
+    gap: 2rem;
 }
-.feature-card {
-    background-color: var(--card-bg-color);
-    border-radius: 10px;
-    padding: 30px;
+.feature {
+    background-color: var(--background-color);
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+.feature h3 {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+}
+.testimonials {
+    padding: 4rem 0;
+}
+.testimonial {
+    max-width: 600px;
+    margin: 0 auto;
     text-align: center;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
-.feature-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+.testimonial-text {
+    font-size: 1.25rem;
+    font-style: italic;
+    margin-bottom: 1rem;
 }
-.feature-card h3 {
-    font-size: 24px;
-    margin-bottom: 15px;
-    color: var(--primary-color);
-}
-.feature-card p {
-    font-size: 16px;
-    color: var(--text-color);
+.testimonial-author {
+    font-weight: 500;
 }
 footer {
-    background-color: var(--text-color);
-    color: #ffffff;
+    background-color: var(--secondary-bg-color);
+    padding: 2rem 0;
     text-align: center;
-    padding: 20px 0;
-    font-size: 14px;
-}
-@media (max-width: 768px) {
-    .hero h1 {
-        font-size: 36px;
-    }
 }

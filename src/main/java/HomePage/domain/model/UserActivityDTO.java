@@ -3,26 +3,26 @@ package HomePage.domain.model;
 import java.util.List;
 
 public class UserActivityDTO {
-    private List<CommunityBoard> recentCommunityBoards;
-    private List<CommunityCommentDTO> recentCommunityComments; // DTO 사용 이유 : 댓글에 연관된 게시글을 불러오기 위함이다. 데이터베이스 컬럼과 1대1 매칭을 할 수 없고 유연한 데이터 통신을 위해 사용
-    public UserActivityDTO(List<CommunityBoard> recentCommunityBoards, List<CommunityCommentDTO> recentCommunityComments) {
-        this.recentCommunityBoards = recentCommunityBoards;
-        this.recentCommunityComments = recentCommunityComments;
+    private List<CommunityBoardDTO> recentCommunityBoardDTOs;
+    private List<CommunityCommentDTO> recentCommunityCommentDTOs; // DTO 사용 이유 : 댓글에 연관된 게시글을 불러오기 위함이다. 데이터베이스 컬럼과 1대1 매칭을 할 수 없고 유연한 데이터 통신을 위해 사용
+    public UserActivityDTO(List<CommunityBoardDTO> recentCommunityBoardDTOs, List<CommunityCommentDTO> recentCommunityCommentDTOs) {
+        this.recentCommunityBoardDTOs = recentCommunityBoardDTOs;
+        this.recentCommunityCommentDTOs = recentCommunityCommentDTOs;
     }
 
-    public List<CommunityBoard> getRecentCommunityBoards() {
-        return recentCommunityBoards;
+    public List<CommunityBoardDTO> getRecentCommunityBoardDTOs() {
+        return recentCommunityBoardDTOs;
     }
 
-    public void setRecentCommunityBoards(List<CommunityBoard> recentCommunityBoards) {
-        this.recentCommunityBoards = recentCommunityBoards;
+    public void setRecentCommunityBoardDTOs(List<CommunityBoardDTO> recentCommunityBoardDTOs) {
+        this.recentCommunityBoardDTOs = recentCommunityBoardDTOs;
     }
 
-    public List<CommunityCommentDTO> getRecentCommunityComments() {
-        return recentCommunityComments;
+    public List<CommunityCommentDTO> getRecentCommunityCommentDTOs() {
+        return recentCommunityCommentDTOs;
     }
 
-    public void setRecentCommunityComments(List<CommunityCommentDTO> recentCommunityComments) {
-        this.recentCommunityComments = recentCommunityComments;
+    public void setRecentCommunityCommentDTOs(List<CommunityCommentDTO> recentCommunityCommentDTOs) {
+        this.recentCommunityCommentDTOs = recentCommunityCommentDTOs;
     }
 }

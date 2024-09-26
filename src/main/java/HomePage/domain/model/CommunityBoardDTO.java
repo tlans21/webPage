@@ -2,36 +2,24 @@ package HomePage.domain.model;
 
 import java.sql.Timestamp;
 
-public class CommunityCommentDTO {
+public class CommunityBoardDTO {
+
     private Long id;
-    private Long board_id;
     private String writer;
+    private String title;
     private String content;
     private Timestamp registerDate;
     private Timestamp updateDate;
     private Timestamp deleteDate;
 
-    private BoardInfo relatedBoard;
+    private int viewCnt;
+    private int commentCnt;
 
-    public static class BoardInfo{
-        private Long id;
-        private String title;
 
-        public Long getId() {
-            return id;
-        }
+    private String category;
 
-        public void setId(Long id) {
-            this.id = id;
-        }
+    public CommunityBoardDTO() {
 
-        public String getTitle() {
-            return title;
-        }
-
-        public void setTitle(String title) {
-            this.title = title;
-        }
     }
 
     public Long getId() {
@@ -42,20 +30,20 @@ public class CommunityCommentDTO {
         this.id = id;
     }
 
-    public Long getBoard_id() {
-        return board_id;
-    }
-
-    public void setBoard_id(Long board_id) {
-        this.board_id = board_id;
-    }
-
     public String getWriter() {
         return writer;
     }
 
     public void setWriter(String writer) {
         this.writer = writer;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getContent() {
@@ -90,11 +78,27 @@ public class CommunityCommentDTO {
         this.deleteDate = deleteDate;
     }
 
-    public BoardInfo getRelatedBoard() {
-        return relatedBoard;
+    public int getViewCnt() {
+        return viewCnt;
     }
 
-    public void setRelatedBoard(BoardInfo relatedBoard) {
-        this.relatedBoard = relatedBoard;
+    public void setViewCnt(int viewCnt) {
+        this.viewCnt = viewCnt;
+    }
+
+    public int getCommentCnt() {
+        return commentCnt;
+    }
+
+    public void setCommentCnt(int commentCnt) {
+        this.commentCnt = commentCnt;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 }

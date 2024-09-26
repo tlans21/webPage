@@ -1,23 +1,22 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>관리자 페이지</title>
 
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <!-- <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script> -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.0/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" th:href="@{/css/adminPageStyle.css}">
-    <link rel="stylesheet" type="text/css" th:href="@{/css/navBarStyle.css}">
     <link rel="stylesheet" type="text/css" th:href="@{/css/paginationStyle.css}">
     <link rel="stylesheet" type="text/css" th:href="@{/css/navAdminStyle.css}">
+
+
 </head>
 <body>
-    <header th:replace="~{fragments/navBar :: navBar}">
-        <h1>관리자 대시보드</h1>
-    </header>
+    <header th:replace="~{fragments/navBar :: navBar}"></header>
     <main>
         <div class="content-wrapper">
             <div class="mainContainer">

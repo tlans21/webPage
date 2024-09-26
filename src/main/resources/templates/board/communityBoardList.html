@@ -4,10 +4,11 @@
     <meta charset="UTF-8">
     <title>커뮤니티 게시판</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" th:href="@{/css/communityBoardStyle.css}">
     <link rel="stylesheet" type="text/css" th:href="@{/css/paginationStyle.css}">
-    <link rel="stylesheet" type="text/css" th:href="@{/css/navBarStyle.css}">
     <link rel="stylesheet" type="text/css" th:href="@{/css/navAdminStyle.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/indexStyle.css}">
     <script th:src="@{/js/dropDown.js}"></script>
     <script th:src="@{/js/elapsedTime.js}"></script>
 </head>
@@ -32,9 +33,9 @@
                             <span class="caret">▼</span>
                         </button>
                         <div id="sortDropdown" class="dropdown-menu">
-                            <a href="#" th:href="@{/community/list(page=1, sort='latest')}" onclick="return changeSort('latest', this.href)">최신순</a>
-                            <a href="#" th:href="@{/community/list(page=1, sort='popular')}" onclick="return changeSort('popular', this.href)">조회순</a>
-                            <a href="#" th:href="@{/community/list(page=1, sort='comments')}" onclick="return changeSort('comments', this.href)">댓글순</a>
+                            <a th:href="@{/community/list(page=1, sort='latest')}" onclick="return changeSort('latest', this.href)">최신순</a>
+                            <a th:href="@{/community/list(page=1, sort='popular')}" onclick="return changeSort('popular', this.href)">조회순</a>
+                            <a th:href="@{/community/list(page=1, sort='comments')}" onclick="return changeSort('comments', this.href)">댓글순</a>
                         </div>
                     </div>
                 </div>

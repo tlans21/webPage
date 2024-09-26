@@ -34,13 +34,11 @@ public class MyPageApiController {
         return "fragments/mypage-content :: myPageContent";
     }
 
-    @GetMapping("/mypage-content/redirectShow")
+    @GetMapping("/mypage-content/edit/Page")
     public String showMyPageEditPage(Model model, Authentication authentication){
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         User currentUser = principalDetails.getUser();
 
-
-//        model.addAttribute()
         return "fragments/mypage-editPage :: myPageEditPage";
     }
 
