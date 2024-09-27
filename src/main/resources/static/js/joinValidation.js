@@ -117,10 +117,16 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!validatePassword()) {
             return false;
         }
+        
+        // 이메일 인증 버튼 검증
+        if (!isAutenticationAvailable){
+            alert("이메일 인증 번호 발송을 해야합니다.")
+            return false;
+        }
 
-        const isMailValid = await mailCheck(email);
+        const isMailValid = await mailCheck(email, authentication_number);
         // 이메일 인증 번호 검증
-        if (isMailValid){
+        if (!isMailValid){
             return false;
         }
 
@@ -144,8 +150,8 @@ document.addEventListener('DOMContentLoaded', function() {
         return true;
     }
 
-    async function mailCheck(email) {
-        const response = await fetch("/mailCheck?email=${encodeURIComponent(email)}&userNumber=${encodeURIComponent(authentication_number)}", {
+    async function mailCheck(email, authenticationNumber) {
+        const response = await fetch(`/mailCheck?email=${encodeURIComponent(email)}&userNumber=${encodeURIComponent(authenticationNumber)}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -165,18 +171,25 @@ document.addEventListener('DOMContentLoaded', function() {
     // 폼 제출 이벤트 리스너
     const signUpForm = document.querySelector('.sign-up-form');
     if (signUpForm) {
-        signUpForm.addEventListener('submit', function (event) {
+        signUpForm.addEventListener('submit', async function (event) {
             event.preventDefault(); // 기본 폼 제출 동작 막기
 
             const submitButton = this.querySelector('input[type="submit"]');
             submitButton.disabled = true; // 버튼 클릭 방지
-
-            const result = join(); 
-            if (result){
-                this.submit();
+            try {
+                const result = await join(); 
+                if (result){
+                    this.submit();
+                    alert("회원가입에 성공하셨습니다.");
+                } else {
+                    alert("not");
+                }
+            } catch(error) {
+                console.error('Error during form submission:', error);
+                alert('폼 제출 중 오류가 발생했습니다.');
+            } finally {
+                submitButton.disabled = false; // 버튼 클릭 방지 해제
             }
-
-            submitButton.disabled = false; // 버튼 클릭 방지 해제
         });
     }
 });
