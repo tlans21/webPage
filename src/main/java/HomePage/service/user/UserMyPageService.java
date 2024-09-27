@@ -30,7 +30,7 @@ public class UserMyPageService {
 
     public ProfileDTO getUserProfile(Long userId){
         User foundUser = userRepository.findById(userId).get();
-        ProfileDTO profile = new ProfileDTO(foundUser.getId(), foundUser.getUsername(), foundUser.getEmail(), foundUser.getCreateDate(), foundUser.getRoles());
+        ProfileDTO profile = new ProfileDTO(foundUser.getId(), foundUser.getUsername(), foundUser.getNickname(), foundUser.getEmail(), foundUser.getCreateDate(), foundUser.getRoles());
         return profile;
     }
 

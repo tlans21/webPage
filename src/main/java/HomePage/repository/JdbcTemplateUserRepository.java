@@ -29,20 +29,21 @@ public class JdbcTemplateUserRepository implements UserRepository {
 
     @Override
     public User save(User user) {
-        String sql = "INSERT INTO " + tableName + " (username, password, email, role, phoneNumber, provider, providerId, createdAt) " +
-                                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO " + tableName + " (username, password, nickname, email, role, phoneNumber, provider, providerId, createdAt) " +
+                                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         user.setCreateDate(new Timestamp(System.currentTimeMillis()));
         jdbcTemplate.update(connection -> {
                 PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
                 ps.setString(1, user.getUsername());
                 ps.setString(2, user.getPassword());
-                ps.setString(3, user.getEmail());
-                ps.setString(4, user.getRoles());
-                ps.setString(5, user.getPhoneNumber());
-                ps.setString(6, user.getProvider());
-                ps.setString(7, user.getProviderId());
-                ps.setTimestamp(8, user.getCreateDate());
+                ps.setString(3,user.getNickname());
+                ps.setString(4, user.getEmail());
+                ps.setString(5, user.getRoles());
+                ps.setString(6, user.getPhoneNumber());
+                ps.setString(7, user.getProvider());
+                ps.setString(8, user.getProviderId());
+                ps.setTimestamp(9, user.getCreateDate());
                return ps;
         }, keyHolder);
 
@@ -194,6 +195,13 @@ public class JdbcTemplateUserRepository implements UserRepository {
         return jdbcTemplate.queryForObject(sql, Integer.class, Timestamp.valueOf(start), Timestamp.valueOf(end));
     }
 
+    @Override
+    public boolean updateUserNickName(User user, String nickname) {
+        String sql = String.format("UPDATE %s SET nickname = ? FROM %s WHERE id = ?", tableName);
+        int rowsAffected = jdbcTemplate.update(sql, nickname, user.getId());
+        return rowsAffected > 0;
+    }
+
     private RowMapper<User> memberRowMapper(){
         return (rs, rowNum) -> {
             // 멤버 인스턴스 생성, 검색 용도로만 사용하고 이는 저장하려는 것이 아님.
@@ -201,6 +209,7 @@ public class JdbcTemplateUserRepository implements UserRepository {
             user.setId(rs.getLong("id"));
             user.setUsername(rs.getString("username"));
             user.setPassword(rs.getString("password"));
+            user.setNickname(rs.getString("nickname"));
             user.setEmail(rs.getString("email"));
             user.setPhoneNumber(rs.getString("phoneNumber"));
             user.setRoles(rs.getString("Role"));

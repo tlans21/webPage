@@ -202,6 +202,20 @@ public class UserService {
         return new Page<User>(users, pageNumber, totalUserPages, pageSize);
     }
 
+    public User updateUserNickname(User user, String nickName){
+        boolean isSuccess = userRepository.updateUserNickName(user, nickName);
+
+        if (isSuccess) {
+            user.setNickname(nickName);
+            return user;
+        } else {
+
+            return null;
+        }
+    }
+
+
+
     private boolean isSearchByUsername(String writer){
         return !isNullOrEmpty(writer);
     }

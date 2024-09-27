@@ -4,53 +4,10 @@
     --background-color: #ffffff;
     --secondary-bg-color: #f8f9fa;
 }
-body {
-    font-family: 'Inter', sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: var(--background-color);
-    color: var(--text-color);
-    line-height: 1.6;
-}
 .container {
     max-width: 1140px;
     margin: 0 auto;
     padding: 0 20px;
-}
-header {
-    background-color: var(--background-color);
-    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-    position: fixed;
-    width: 100%;
-    top: 0;
-    z-index: 1000;
-}
-nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 0;
-}
-.logo {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--primary-color);
-}
-.nav-links {
-    list-style: none;
-    display: flex;
-}
-.nav-links li {
-    margin-left: 2rem;
-}
-.nav-links a {
-    color: var(--text-color);
-    text-decoration: none;
-    font-weight: 500;
-    transition: color 0.3s ease;
-}
-.nav-links a:hover {
-    color: var(--primary-color);
 }
 .hero {
     display: flex;
