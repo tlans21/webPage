@@ -21,7 +21,7 @@ public class MyPageApiController {
 
 
     @GetMapping("/mypage-content")
-    public String getMyPageContent(Model model, Authentication authentication) {
+    public String showMyPageContent(Model model, Authentication authentication) {
         // 현재 로그인한 사용자 정보 가져오기
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         User currentUser = principalDetails.getUser();
@@ -33,16 +33,4 @@ public class MyPageApiController {
         // 마이페이지 콘텐츠만 반환
         return "fragments/mypage-content :: myPageContent";
     }
-
-    @GetMapping("/mypage-content/redirectShow")
-    public String showMyPageEditPage(Model model, Authentication authentication){
-        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        User currentUser = principalDetails.getUser();
-
-
-//        model.addAttribute()
-        return "fragments/mypage-editPage :: myPageEditPage";
-    }
-
-
 }

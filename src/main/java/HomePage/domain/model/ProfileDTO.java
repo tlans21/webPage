@@ -5,13 +5,16 @@ import java.sql.Timestamp;
 public class ProfileDTO {
     Long userId;
     String username;
+    String nickname;
     String email;
+
     Timestamp createdAt;
     String role;
 
-    public ProfileDTO(Long userId, String username, String email, Timestamp createdAt, String role) {
+    public ProfileDTO(Long userId, String username, String nickname, String email, Timestamp createdAt, String role) {
         this.userId = userId;
         this.username = username;
+        this.nickname = nickname;
         this.email = email;
         this.createdAt = createdAt;
         this.role = role;
@@ -31,6 +34,14 @@ public class ProfileDTO {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
     }
 
     public String getEmail() {

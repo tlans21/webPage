@@ -3,59 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gourmet Code - 당신의 맛있는 미식 여행</title>
+    <title>오늘 뭐 먹지? - 음식 추천 AI 서비스</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.0/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" th:href="@{/css/indexStyle.css}">
-    <link rel="stylesheet" type="text/css" th:href="@{/css/navBarStyle.css}">
 </head>
 <body>
     <header th:replace="~{fragments/navBar :: navBar}"></header>
-
-
-    <div class="hero">
-        <div class="container">
-            <h1>당신의 맛있는 미식 여행</h1>
-            <p>새로운 맛의 세계를 발견하고, 당신만의 특별한 미식 경험을 공유하세요!</p>
-            <button class="cta-button">맛집 탐험 시작하기</button>
-        </div>
-    </div>
-
-    <section class="features">
-        <div class="container">
-            <div class="features-grid">
-                <div class="feature-card">
-                    <h3>숨은 맛집 발견</h3>
-                    <p>당신의 동네에 숨어있는 보석 같은 맛집들을 발견해보세요.</p>
-                </div>
-                <div class="feature-card">
-                    <h3>맛있는 리뷰</h3>
-                    <p>다른 미식가들의 솔직한 리뷰로 맛집 선택을 쉽고 즐겁게!</p>
-                </div>
-                <div class="feature-card">
-                    <h3>미식 커뮤니티</h3>
-                    <p>같은 취향의 미식가들과 소통하며 새로운 맛의 세계를 경험하세요.</p>
+    <main>
+        <section class="hero">
+            <div class="container">
+                <h1>AI 기반 개인 맞춤<br>식단 추천 서비스</h1>
+                <p class="subtitle">영양 균형과 개인의 취향을 고려한 맞춤형 식단으로 건강한 라이프스타일을 만들어보세요.</p>
+                <a href="#" class="cta-button">무료로 시작하기</a>
+            </div>
+        </section>
+        <section id="features" class="features">
+            <div class="container">
+                <div class="features-grid">
+                    <div class="feature">
+                        <h3>AI 기반 분석</h3>
+                        <p>개인의 식습관, 영양 요구사항, 건강 목표를 AI가 분석하여 최적의 식단을 제안합니다.</p>
+                    </div>
+                    <div class="feature">
+                        <h3>실시간 조정</h3>
+                        <p>일일 활동량, 건강 상태 변화에 따라 실시간으로 식단을 조정합니다.</p>
+                    </div>
+                    <div class="feature">
+                        <h3>레시피 제공</h3>
+                        <p>추천 식단에 맞는 상세 레시피와 조리법을 제공하여 쉽게 따라 할 수 있습니다.</p>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
+    </main>
     <footer>
         <div class="container">
-            <p>&copy; 2024 Gourmet Code. All rights reserved.</p>
+            <p>&copy; 2024 Nutri AI. All rights reserved.</p>
         </div>
     </footer>
-<!--    <script>-->
-<!--        document.addEventListener('DOMContentLoaded', () => {-->
-<!--            const authButton = document.getElementById('authButton');-->
-<!--            if (authButton) {-->
-<!--                let isLoggedIn = false;-->
-<!--                authButton.addEventListener('click', () => {-->
-<!--                    isLoggedIn = !isLoggedIn;-->
-<!--                    authButton.textContent = isLoggedIn ? '로그아웃' : '로그인';-->
-<!--                });-->
-<!--            }-->
-<!--        });-->
-<!--    </script>-->
 </body>
 
 

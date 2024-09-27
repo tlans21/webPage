@@ -145,4 +145,9 @@ public class MemoryUserRepository implements UserRepository {
     public List<User> findUserPageByRole(int offset, int limit, String role) {
         return null;
     }
+
+    @Override
+    public boolean updateUserNickName(User user, String nickname) {
+        return false;
+    }
 }

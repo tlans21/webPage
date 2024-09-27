@@ -36,4 +36,6 @@ public interface UserRepository {
     int countByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
     int countByDeletedAtBetween(LocalDateTime start, LocalDateTime end);
 
+    boolean updateUserNickName(User user, String nickname);
+
 }

@@ -2,17 +2,16 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;900&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.0/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/navBarStyle.css">
-    <link rel="stylesheet" href="css/myPageModalStyle.css">
 </head>
 <body>
     <th:block th:fragment="navBar">
+        <link href="https://fonts.googleapis.com/css?family=Noto+Sans KR&display=swap" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" th:href="@{/css/navBarStyle.css}">
+        <link rel="stylesheet" type="text/css" th:href="@{/css/myPageModalStyle.css}" sec:authorize="isAuthenticated()">
         <!-- Navgation Bar -->
         <nav class="nav-menu">
             <div class="nav-container">
-                <a th:href="@{/index}" class="logo">오늘 뭐 먹지?</a>
+                <a th:href="@{/}" class="logo">오늘 뭐 먹지?</a>
                 <ul class="nav-items">
                     <li><a href="#">맛집 탐색</a></li>
                     <li><a href="#">리뷰 작성</a></li>
@@ -74,38 +73,34 @@
 
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.0/js/bootstrap.bundle.min.js"></script>
-        <script>
+        <script defer>
             function toggleSidebar() {
-                document.getElementById('sidebar').classList.toggle('active');
-                document.getElementById('content').classList.toggle('active');
+                const sidebar = document.getElementById('sidebar');
+                const content = document.getElementById('content');
+                
+                if (sidebar) {
+                    sidebar.classList.toggle('active');
+                }
+                
+                if (content) {
+                    content.classList.toggle('active');
+                }
             }
-
-            document.getElementById('sidebarToggle').addEventListener('click', toggleSidebar);
-            document.getElementById('closeSidebar').addEventListener('click', toggleSidebar);
-        </script>
-        <script>
+    
             document.addEventListener('DOMContentLoaded', function() {
-                const myPageButton = document.getElementById('myPageButton');
-                const myPageModal = new bootstrap.Modal(document.getElementById('myPageModal'));
-                const myPageContent = document.getElementById('myPageContent');
-            
-
-
-                myPageButton.addEventListener('click', function() {
-                    fetch('/api/v1/user/mypage-content')
-                        .then(response => response.text())
-                        .then(html => {
-                            myPageContent.innerHTML = html;
-                            // 스타일시트 동적 추가
-                            const link = document.createElement('link');
-                            link.rel = 'stylesheet';
-                            link.href = 'css/myPageModalStyle.css';
-                            document.head.appendChild(link);
-                            myPageModal.show();
-                        })
-                        .catch(error => console.error('Error:', error));
-                });
+                const sidebarToggle = document.getElementById('sidebarToggle');
+                const closeSidebar = document.getElementById('closeSidebar');
+    
+                if (sidebarToggle) {
+                    sidebarToggle.addEventListener('click', toggleSidebar);
+                }
+    
+                if (closeSidebar) {
+                    closeSidebar.addEventListener('click', toggleSidebar);
+                }
             });
+        </script>
+        <script th:src="@{/js/editMyPageModal.js}" defer>
         </script>
     </th:block>
 </body>

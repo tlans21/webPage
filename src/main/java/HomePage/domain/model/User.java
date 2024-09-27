@@ -14,6 +14,7 @@ public class User {
     private Long id;
     @NotNull
     private String username;
+    private String nickname;
     @NotNull
     private String password;
     @NotNull
@@ -34,9 +35,10 @@ public class User {
     }
 
     @Builder
-    public User(String username, String password, String email, String role, String phoneNumber, String provider, String providerId, Timestamp createDate){
+    public User(String username, String password, String nickname, String email, String role, String phoneNumber, String provider, String providerId, Timestamp createDate){
        this.username = username;
        this.password = password;
+       this.nickname = nickname;
        this.email = email;
        this.roles = role;
        this.phoneNumber = phoneNumber;
@@ -67,6 +69,14 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
     }
 
     public String getEmail() {
@@ -138,7 +148,5 @@ public class User {
     public void setProviderId(String providerId) {
         this.providerId = providerId;
     }
-
-
 
 }

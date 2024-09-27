@@ -1,11 +1,13 @@
 package HomePage.domain.model;
 
 public class CommunityBoard extends Board{
+
     private String category;
 
     public CommunityBoard(){
 
     }
+
 
     public String getCategory() {
         return category;

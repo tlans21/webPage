@@ -1,9 +1,18 @@
-body {
+/* :root {
+    --primary-color: #ff6b6b;
+    --secondary-color: #4ecdc4;
+    --accent-color: #feca57;
+    --text-color: #2d3436;
+    --background-color: #f9f9f9;
+    --card-bg-color: #ffffff;
+} */
+
+/* body {
     font-family: Arial, sans-serif;
     background-color: #f0f0f0;
     margin: 0;
     padding: 0px;
-}
+} */
 .mainContainer {
     display: flex;
     justify-content: space-between;
