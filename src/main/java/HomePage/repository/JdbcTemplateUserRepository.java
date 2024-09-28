@@ -37,8 +37,8 @@ public class JdbcTemplateUserRepository implements UserRepository {
                 PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
                 ps.setString(1, user.getUsername());
                 ps.setString(2, user.getPassword());
-                ps.setString(3,user.getNickname());
-                ps.setString(4, user.getEmail());
+                ps.setString(3, user.getEmail());
+                ps.setString(4, user.getNickname());
                 ps.setString(5, user.getRoles());
                 ps.setString(6, user.getPhoneNumber());
                 ps.setString(7, user.getProvider());
@@ -197,8 +197,9 @@ public class JdbcTemplateUserRepository implements UserRepository {
 
     @Override
     public boolean updateUserNickName(User user, String nickname) {
-        String sql = String.format("UPDATE %s SET nickname = ? FROM %s WHERE id = ?", tableName);
+        String sql = String.format("UPDATE %s SET nickname = ? FROM WHERE id = ?", tableName);
         int rowsAffected = jdbcTemplate.update(sql, nickname, user.getId());
+        System.out.println("나" + rowsAffected);
         return rowsAffected > 0;
     }
 

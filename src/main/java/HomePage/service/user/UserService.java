@@ -209,7 +209,6 @@ public class UserService {
             user.setNickname(nickName);
             return user;
         } else {
-
             return null;
         }
     }
