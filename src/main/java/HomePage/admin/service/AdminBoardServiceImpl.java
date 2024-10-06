@@ -2,8 +2,8 @@ package HomePage.admin.service;
 
 import HomePage.admin.mapper.AdminBoardMapper;
 import HomePage.admin.mapper.AdminCommentMapper;
-import HomePage.domain.model.CommunityBoard;
-import HomePage.domain.model.Page;
+import HomePage.domain.model.entity.CommunityBoard;
+import HomePage.domain.model.entity.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

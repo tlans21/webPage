@@ -1,4 +1,4 @@
-package HomePage.domain.model;
+package HomePage.domain.model.dto;
 
 public class ChartDataDTO {
     private String name;

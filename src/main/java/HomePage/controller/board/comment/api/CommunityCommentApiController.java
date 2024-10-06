@@ -1,7 +1,7 @@
 package HomePage.controller.board.comment.api;
 
 import HomePage.config.auth.PrincipalDetails;
-import HomePage.domain.model.CommunityComment;
+import HomePage.domain.model.entity.CommunityComment;
 import HomePage.service.CommunityCommentService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;

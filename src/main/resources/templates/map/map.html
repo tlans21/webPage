@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+    <title>간단한 지도 표시하기</title>
+    <script type="text/javascript" src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=z9fdx1to2u"></script>
+    <style>
+        #main {
+            width: 100%; /* 또는 원하는 너비 */
+         /* 고정 높이 대신 최소 높이 사용 */
+        }
+        #food-list {
+            display: inline-block;
+        }
+        .food-item {
+            border: 1px solid #ddd;
+            margin-bottom: 10px;
+            padding: 10px;
+            width: calc(100%); /* 3열 레이아웃, 여백 고려 */
+            box-sizing: border-box;
+        }
+        #loading {
+            text-align: center;
+            display: none;
+        }
+    </style>
+
+</head>
+<body>
+    <header th:replace="~{fragments/navBar :: navBar}"></header>
+    <div class="content-wrapper">
+        <div class="ad-space">
+                광고 영역 (추후 구현 예정)
+        </div>
+        <div id="main">
+            <div id="food-list">
+                <!-- food-item 등록 칸 -->
+            </div>
+            <!-- <div id="map"></div> -->
+            <div id="loading">로딩 중....</div>
+        </div>
+        
+    </div>
+    
+
+
+
+
+
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        let imageInfoList = [];  // 변경: imageTitleList를 imageInfoList로 변경
+        let isLoading = false;
+        let page = 1;
+        let totalPage = 10;
+        const foodList = document.getElementById('food-list');
+        const loading = document.getElementById('loading');
+
+        function createFoodItem(restaurant) {
+            const div = document.createElement('div');
+            div.className = 'food-item';
+            div.innerHTML = `
+                <h3>${restaurant.title}</h3>
+                <img src="${restaurant.imageUrl}" alt="${restaurant.title}" 
+                     data-restaurant="${restaurant.title}" data-address="${restaurant.address}" 
+                     onerror="handleImageError(this, '${restaurant.title}', '${restaurant.address}')">
+                <p>${restaurant.description}</p>
+                <p>주소: ${restaurant.address}</p>
+                <p>전화번호: ${restaurant.telephone}</p>
+            `;
+            return div;
+        }
+ 
+        function handleImageError(img, restaurantTitle, restaurantAddress){
+            const imageInfo = imageInfoList.find(info => info.title === restaurantTitle && info.address === restaurantAddress);
+            if(!imageInfo){
+                imageInfoList.push({title: restaurantTitle, address: restaurantAddress});
+            }
+        }
+
+        async function fetchFoodImages() {
+            if (imageInfoList.length === 0){
+                return;
+            }
+            try {
+                console.log("Sending request to create images", imageInfoList);
+                const response = await fetch('/api/restaurants/create/image', {
+                    method: 'POST',
+                    headers: {
+                        'Content-type': 'application/json',
+                    },
+                    body: JSON.stringify({restaurants: imageInfoList})
+                });
+
+                if (!response.ok){
+                    throw new Error('Batch image fetch failed');
+                }
+                const data = await response.json();
+
+                if(data){
+                    data.forEach(restaurant => {
+                        const img = document.querySelector(`img[data-restaurant="${restaurant.title}"][data-address="${restaurant.address}"]`);
+                        if (img && restaurant.imageUrl){
+                            img.src = restaurant.imageUrl;
+                        }
+                    })
+                }
+            }catch(error){
+                console.error('Error fetching images:', error);
+            }
+        }
+
+        async function fetchFoods() {
+            //isLoading 플래그로 로딩 상태 확인
+            if (isLoading || page > totalPage){
+                return;
+            }
+            
+            isLoading = true;
+            loading.style.display = 'block';
+            
+            try{
+                const response = await fetch(`/api/foods?page=${page}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-type': 'application/json',
+                    }
+                });
+
+                const data = await response.json();
+                if(data){
+                    totalPage = data.Page.totalPages;
+                    const restaurants = data.Page.content;
+
+                    restaurants.forEach(restaurant => {
+                        console.log(restaurant.imageUrl);
+                        foodList.appendChild(createFoodItem(restaurant));
+                    });
+                    page++;
+                    console.log(1);
+                    await fetchFoodImages();
+                    console.log(2);
+                }
+            }catch(error){
+                console.log("Error : ", error);
+                
+            }finally{
+                loading.style.display = 'none';
+                isLoading = false;
+            }
+        }
+
+        // 초기 로드
+        fetchFoods();
+        // 무한 스크롤
+        window.addEventListener('scroll', () => {
+            if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {
+                fetchFoods();
+            }
+        });
+        /*]]>*/
+    </script>
+
+    <script>
+        var mapOptions = {
+            center: new naver.maps.LatLng(37.3595704, 127.105399),
+            zoom: 10
+        };
+
+        var map = new naver.maps.Map('map', mapOptions);
+        var marker = new naver.maps.Marker({
+        position: new naver.maps.LatLng(37.3595704, 127.105399),
+        map: map
+    });
+    </script>
+</body>
+</html>

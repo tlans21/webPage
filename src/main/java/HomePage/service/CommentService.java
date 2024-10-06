@@ -1,6 +1,6 @@
 package HomePage.service;
 
-import HomePage.domain.model.Comment;
+import HomePage.domain.model.entity.Comment;
 
 import java.util.List;
 

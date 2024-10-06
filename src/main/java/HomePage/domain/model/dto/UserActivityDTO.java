@@ -1,4 +1,7 @@
-package HomePage.domain.model;
+package HomePage.domain.model.dto;
+
+import HomePage.domain.model.dto.CommunityBoardDTO;
+import HomePage.domain.model.dto.CommunityCommentDTO;
 
 import java.util.List;
 

@@ -2,7 +2,7 @@ package HomePage.config.jwt;
 
 import HomePage.config.auth.PrincipalDetails;
 import HomePage.config.jwt.provider.TokenProvider;
-import HomePage.domain.model.User;
+import HomePage.domain.model.entity.User;
 import HomePage.repository.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -30,11 +30,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
-        System.out.println("인증이나 권한이 필요한 주소 요청이 됨");
-
         String accessToken = tokenProvider.getAccessTokenFromRequest(request);
-
-        System.out.println("accessToken : " + accessToken);
 
         if (accessToken == null){  // accessToken이 없으면 종료하고 다음 체인
             chain.doFilter(request, response);
@@ -53,8 +49,6 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         }
 
         String username = tokenProvider.getUsernameFromToken(accessToken);
-
-        System.out.println("username : " + username);
 
         if(username != null){
             User userEntity = userRepository.findByUsername(username).get();

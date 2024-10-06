@@ -5,7 +5,7 @@ import HomePage.config.oauth.provider.FacebookUserInfo;
 import HomePage.config.oauth.provider.GoogleUserInfo;
 import HomePage.config.oauth.provider.NaverUserInfo;
 import HomePage.config.oauth.provider.OAuth2UserInfo;
-import HomePage.domain.model.User;
+import HomePage.domain.model.entity.User;
 import HomePage.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;

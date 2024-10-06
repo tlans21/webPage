@@ -1,6 +1,6 @@
 package HomePage.repository;
 
-import HomePage.domain.model.CommunityComment;
+import HomePage.domain.model.entity.CommunityComment;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;

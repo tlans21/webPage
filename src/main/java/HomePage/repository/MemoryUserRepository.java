@@ -1,6 +1,6 @@
 package HomePage.repository;
 
-import HomePage.domain.model.User;
+import HomePage.domain.model.entity.User;
 
 import java.time.LocalDateTime;
 import java.util.*;

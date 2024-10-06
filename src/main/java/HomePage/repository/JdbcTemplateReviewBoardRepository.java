@@ -1,6 +1,6 @@
 package HomePage.repository;
 
-import HomePage.domain.model.ReviewBoard;
+import HomePage.domain.model.entity.ReviewBoard;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;

@@ -1,6 +1,6 @@
 package HomePage.repository;
 
-import HomePage.domain.model.Comment;
+import HomePage.domain.model.entity.Comment;
 
 import java.time.LocalDateTime;
 import java.util.List;

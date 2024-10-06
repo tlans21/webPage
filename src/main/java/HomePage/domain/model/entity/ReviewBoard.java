@@ -1,6 +1,8 @@
-package HomePage.domain.model;
+package HomePage.domain.model.entity;
 
-public class ReviewBoard extends Board{
+import HomePage.domain.model.entity.Board;
+
+public class ReviewBoard extends Board {
     private String restaurantName;
     private int rating;
 

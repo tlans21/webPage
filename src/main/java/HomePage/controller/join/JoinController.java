@@ -1,7 +1,7 @@
 package HomePage.controller.join;
 
 import HomePage.controller.UserForm;
-import HomePage.domain.model.User;
+import HomePage.domain.model.entity.User;
 import HomePage.exception.JoinException;
 import HomePage.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

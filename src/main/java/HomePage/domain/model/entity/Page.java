@@ -1,4 +1,4 @@
-package HomePage.domain.model;
+package HomePage.domain.model.entity;
 
 import java.util.List;
 

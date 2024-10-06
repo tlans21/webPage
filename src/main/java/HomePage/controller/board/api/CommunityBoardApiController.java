@@ -2,7 +2,7 @@ package HomePage.controller.board.api;
 
 import HomePage.config.auth.PrincipalDetails;
 import HomePage.controller.board.form.CommunityBoardWriteForm;
-import HomePage.domain.model.CommunityBoard;
+import HomePage.domain.model.entity.CommunityBoard;
 import HomePage.service.CommunityBoardService;
 import HomePage.service.CommunityCommentService;
 import jakarta.validation.Valid;

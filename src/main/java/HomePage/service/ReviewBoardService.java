@@ -1,7 +1,7 @@
 package HomePage.service;
 
-import HomePage.domain.model.Page;
-import HomePage.domain.model.ReviewBoard;
+import HomePage.domain.model.entity.Page;
+import HomePage.domain.model.entity.ReviewBoard;
 import HomePage.repository.BoardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

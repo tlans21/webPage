@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 @MapperScan("HomePage.admin.mapper")
+@MapperScan("HomePage.mapper")
 public class WebSiteApplication {
 
 	public static void main(String[] args) {

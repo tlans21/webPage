@@ -1,9 +1,9 @@
 package HomePage.service;
 
 import HomePage.controller.board.form.CommunityBoardWriteForm;
-import HomePage.domain.model.CommunityBoard;
-import HomePage.domain.model.CommunityComment;
-import HomePage.domain.model.Page;
+import HomePage.domain.model.entity.CommunityBoard;
+import HomePage.domain.model.entity.CommunityComment;
+import HomePage.domain.model.entity.Page;
 import HomePage.repository.JdbcTemplateCommunityBoardRepository;
 import HomePage.repository.JdbcTemplateCommunityCommentRepository;
 import org.junit.jupiter.api.BeforeEach;
