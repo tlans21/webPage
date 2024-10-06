@@ -1,38 +1,15 @@
-package HomePage.domain.model;
+package HomePage.domain.model.entity;
 
 import java.sql.Timestamp;
 
-public class CommunityCommentDTO {
-    private Long id;
-    private Long board_id;
-    private String writer;
-    private String content;
-    private Timestamp registerDate;
-    private Timestamp updateDate;
-    private Timestamp deleteDate;
-
-    private BoardInfo relatedBoard;
-
-    public static class BoardInfo{
-        private Long id;
-        private String title;
-
-        public Long getId() {
-            return id;
-        }
-
-        public void setId(Long id) {
-            this.id = id;
-        }
-
-        public String getTitle() {
-            return title;
-        }
-
-        public void setTitle(String title) {
-            this.title = title;
-        }
-    }
+public abstract class Comment {
+    Long id;
+    Long board_id;
+    String writer;
+    String content;
+    Timestamp registerDate;
+    Timestamp updateDate;
+    Timestamp deleteDate;
 
     public Long getId() {
         return id;
@@ -88,13 +65,5 @@ public class CommunityCommentDTO {
 
     public void setDeleteDate(Timestamp deleteDate) {
         this.deleteDate = deleteDate;
-    }
-
-    public BoardInfo getRelatedBoard() {
-        return relatedBoard;
-    }
-
-    public void setRelatedBoard(BoardInfo relatedBoard) {
-        this.relatedBoard = relatedBoard;
     }
 }

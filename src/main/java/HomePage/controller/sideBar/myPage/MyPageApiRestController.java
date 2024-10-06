@@ -1,7 +1,7 @@
 package HomePage.controller.sideBar.myPage;
 
 import HomePage.config.auth.PrincipalDetails;
-import HomePage.domain.model.User;
+import HomePage.domain.model.entity.User;
 import HomePage.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

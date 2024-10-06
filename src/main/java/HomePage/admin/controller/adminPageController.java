@@ -2,8 +2,8 @@ package HomePage.admin.controller;
 
 import HomePage.admin.service.AdminBoardService;
 import HomePage.config.auth.PrincipalDetails;
-import HomePage.domain.model.CommunityBoard;
-import HomePage.domain.model.Page;
+import HomePage.domain.model.entity.CommunityBoard;
+import HomePage.domain.model.entity.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;

@@ -1,6 +1,6 @@
-package HomePage.domain.model;
+package HomePage.domain.model.entity;
 
-public class CommunityBoard extends Board{
+public class CommunityBoard extends Board {
 
     private String category;
 

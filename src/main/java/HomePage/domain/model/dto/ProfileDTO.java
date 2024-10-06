@@ -1,4 +1,4 @@
-package HomePage.domain.model;
+package HomePage.domain.model.dto;
 
 import java.sql.Timestamp;
 

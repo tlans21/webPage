@@ -1,19 +1,26 @@
-package HomePage.domain.model;
+package HomePage.domain.model.dto;
 
 import java.sql.Timestamp;
 
-public abstract class Board {
-    Long id;
-    String writer;
-    String title;
-    String content;
-    Timestamp registerDate;
-    Timestamp updateDate;
-    Timestamp deleteDate;
+public class CommunityBoardDTO {
 
-    int viewCnt;
-    int commentCnt;
+    private Long id;
+    private String writer;
+    private String title;
+    private String content;
+    private Timestamp registerDate;
+    private Timestamp updateDate;
+    private Timestamp deleteDate;
 
+    private int viewCnt;
+    private int commentCnt;
+
+
+    private String category;
+
+    public CommunityBoardDTO() {
+
+    }
 
     public Long getId() {
         return id;
@@ -85,5 +92,13 @@ public abstract class Board {
 
     public void setCommentCnt(int commentCnt) {
         this.commentCnt = commentCnt;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 }

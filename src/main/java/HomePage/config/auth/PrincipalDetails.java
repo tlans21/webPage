@@ -1,6 +1,6 @@
 package HomePage.config.auth;
 
-import HomePage.domain.model.User;
+import HomePage.domain.model.entity.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;

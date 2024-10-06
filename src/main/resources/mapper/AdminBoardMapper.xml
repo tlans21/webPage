@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="HomePage.admin.mapper.AdminBoardMapper">
-    <resultMap id="communityBoardResultMap" type="HomePage.domain.model.CommunityBoard">
+    <resultMap id="communityBoardResultMap" type="HomePage.domain.model.entity.CommunityBoard">
         <id property="id" column="board_id"/>
         <result property="writer" column="writer"/>
         <result property="title" column="title"/>
@@ -13,7 +13,7 @@
         <result property="deleteDate" column="deletedAt"/>
     </resultMap>
 
-    <insert id="save" parameterType="HomePage.domain.model.CommunityBoard" useGeneratedKeys="true" keyProperty="id">
+    <insert id="save" parameterType="HomePage.domain.model.entity.CommunityBoard" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO security.communityboard (writer, title, content, createdAt, viewCnt, commentCnt)
         VALUES (#{writer}, #{title}, #{content}, #{registerDate}, #{viewCnt}, #{commentCnt})
     </insert>
@@ -51,7 +51,7 @@
         SELECT COUNT(*) FROM security.communityboard WHERE writer LIKE CONCAT('%', #{writer}, '%')
     </select>
 
-    <update id="update" parameterType="HomePage.domain.model.CommunityBoard">
+    <update id="update" parameterType="HomePage.domain.model.entity.CommunityBoard">
         UPDATE security.communityboard
         SET title = #{title}, content = #{content}, updatedAt = #{updateDate}
         WHERE board_id = #{id}

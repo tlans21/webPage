@@ -1,7 +1,7 @@
 package HomePage.service;
 
-import HomePage.domain.model.Board;
-import HomePage.domain.model.Page;
+import HomePage.domain.model.entity.Board;
+import HomePage.domain.model.entity.Page;
 
 import java.util.List;
 

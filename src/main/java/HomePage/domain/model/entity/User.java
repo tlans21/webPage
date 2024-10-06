@@ -1,4 +1,4 @@
-package HomePage.domain.model;
+package HomePage.domain.model.entity;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;

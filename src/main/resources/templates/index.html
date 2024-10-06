@@ -14,8 +14,8 @@
         <section class="hero">
             <div class="container">
                 <h1>AI 기반 개인 맞춤<br>식단 추천 서비스</h1>
-                <p class="subtitle">영양 균형과 개인의 취향을 고려한 맞춤형 식단으로 건강한 라이프스타일을 만들어보세요.</p>
-                <a href="#" class="cta-button">무료로 시작하기</a>
+                <a href="#" class="cta-button">다른 지역 선택</a>
+                <a href="#" class="cta-button">현재 위치로 설정</a>
             </div>
         </section>
         <section id="features" class="features">
@@ -36,6 +36,9 @@
                 </div>
             </div>
         </section>
+        
+        <section th:replace="~{fragments/chatBot :: chatBot}"></section>
+
     </main>
     <footer>
         <div class="container">
@@ -43,6 +46,5 @@
         </div>
     </footer>
 </body>
-
 
 </html>
