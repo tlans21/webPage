@@ -21,9 +21,67 @@
             width: calc(100%); /* 3열 레이아웃, 여백 고려 */
             box-sizing: border-box;
         }
+        .food-item img {
+            width : 300px;
+            height: 200px;
+        }
         #loading {
             text-align: center;
             display: none;
+        }
+        .modal-wrapper {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        #mapModal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        #mapModal-content {
+            background-color: #fefefe;
+            margin: 10% auto; /* 상단에서의 거리 조정 */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%; /* 너비 조정 */
+            max-width: 800px; /* 최대 너비 설정 */
+            max-height: 80vh; /* 최대 높이 설정 */
+            overflow-y: auto; /* 내용이 넘칠 경우 스크롤 허용 */
+            position: relative;
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+        }
+        #map {
+            width: 100%;
+            height: 400px; /* 지도의 높이 설정 */
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            position: absolute;
+            right: 10px;
+            top: 5px;
+        }
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
         }
     </style>
 
@@ -42,6 +100,13 @@
             <div id="loading">로딩 중....</div>
         </div>
         
+        <div id="mapModal" class="modal-wrapper">
+            <div id="mapModal-content">
+                <span class="close">&times;</span>
+                <div id="map"></div>
+            </div>
+        </div>
+        
     </div>
     
 
@@ -52,66 +117,12 @@
 
     <script th:inline="javascript">
         /*<![CDATA[*/
-        let imageInfoList = [];  // 변경: imageTitleList를 imageInfoList로 변경
+        // let imageInfoList = [];  // 변경: imageTitleList를 imageInfoList로 변경
         let isLoading = false;
         let page = 1;
         let totalPage = 10;
         const foodList = document.getElementById('food-list');
         const loading = document.getElementById('loading');
-
-        function createFoodItem(restaurant) {
-            const div = document.createElement('div');
-            div.className = 'food-item';
-            div.innerHTML = `
-                <h3>${restaurant.title}</h3>
-                <img src="${restaurant.imageUrl}" alt="${restaurant.title}" 
-                     data-restaurant="${restaurant.title}" data-address="${restaurant.address}" 
-                     onerror="handleImageError(this, '${restaurant.title}', '${restaurant.address}')">
-                <p>${restaurant.description}</p>
-                <p>주소: ${restaurant.address}</p>
-                <p>전화번호: ${restaurant.telephone}</p>
-            `;
-            return div;
-        }
- 
-        function handleImageError(img, restaurantTitle, restaurantAddress){
-            const imageInfo = imageInfoList.find(info => info.title === restaurantTitle && info.address === restaurantAddress);
-            if(!imageInfo){
-                imageInfoList.push({title: restaurantTitle, address: restaurantAddress});
-            }
-        }
-
-        async function fetchFoodImages() {
-            if (imageInfoList.length === 0){
-                return;
-            }
-            try {
-                console.log("Sending request to create images", imageInfoList);
-                const response = await fetch('/api/restaurants/create/image', {
-                    method: 'POST',
-                    headers: {
-                        'Content-type': 'application/json',
-                    },
-                    body: JSON.stringify({restaurants: imageInfoList})
-                });
-
-                if (!response.ok){
-                    throw new Error('Batch image fetch failed');
-                }
-                const data = await response.json();
-
-                if(data){
-                    data.forEach(restaurant => {
-                        const img = document.querySelector(`img[data-restaurant="${restaurant.title}"][data-address="${restaurant.address}"]`);
-                        if (img && restaurant.imageUrl){
-                            img.src = restaurant.imageUrl;
-                        }
-                    })
-                }
-            }catch(error){
-                console.error('Error fetching images:', error);
-            }
-        }
 
         async function fetchFoods() {
             //isLoading 플래그로 로딩 상태 확인
@@ -135,14 +146,17 @@
                     totalPage = data.Page.totalPages;
                     const restaurants = data.Page.content;
 
-                    restaurants.forEach(restaurant => {
-                        console.log(restaurant.imageUrl);
-                        foodList.appendChild(createFoodItem(restaurant));
-                    });
+                    for (const restaurant of restaurants){
+                        try{
+                            console.log(1);
+                            const foodItem = await createFoodItem(restaurant);
+                            foodList.appendChild(foodItem);
+                        }catch(error){
+                            console.log(`Failed to load image for ${restaurant.title}`);
+                            // 이미지 로드 실패한 항목은 무시하고 다음으로 넘어갑니다
+                        }
+                    }
                     page++;
-                    console.log(1);
-                    await fetchFoodImages();
-                    console.log(2);
                 }
             }catch(error){
                 console.log("Error : ", error);
@@ -151,7 +165,33 @@
                 loading.style.display = 'none';
                 isLoading = false;
             }
+            // lazyload();
         }
+
+        async function createFoodItem(restaurant) {
+            const div = document.createElement('div');
+            div.className = 'food-item';
+            div.innerHTML = `
+                <h3><bold>${restaurant.title}</bold></h3>
+                <img src="${restaurant.imageUrl}" alt="${restaurant.title}", data-restaurant-id="${restaurant.id}">
+                <p>${restaurant.address}</p>
+            `;
+            
+            
+            const img = div.querySelector('img');
+            
+            // 이미지 클릭 이벤트 
+            img.addEventListener('click', openModal);
+
+            await new Promise ((resolve, reject) => {
+                img.onload = resolve;
+                img.onerror = reject;
+            });
+
+            return div;
+        }
+
+        // 메인 스크립트
 
         // 초기 로드
         fetchFoods();
@@ -161,9 +201,100 @@
                 fetchFoods();
             }
         });
+        
+        // 모달 관련 코드
+        const modal = document.getElementById('mapModal');
+        const span = document.getElementsByClassName("close")[0];
+
+        async function openModal(event) {
+            const restaurantId = event.target.dataset.restaurantId;
+            const modalMap = new bootstrap.Modal(document.getElementById('mapModal'));
+            const mapModalContent = document.getElementById('mapModal-content');
+
+            
+            modal.style.display = "block";
+            
+            try {
+                const response = await fetch(`/api/map/modal-map`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({id: restaurantId})
+                });
+
+                if(!response.ok){
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const html = await response.text();
+                console.log(html);
+                mapModalContent.innerHTML = html;
+                modalMap.show();
+                initializeModal();   
+
+            }catch (error) {
+                console.log("Error fetching restaurant data:", error);
+            }
+
+            // try {    
+            //     var tm128 = new naver.maps.Point(mapx, mapy)
+            //     var latLng = naver.maps.TransCoord.fromTM128ToLatLng(tm128);
+                //     const mapOptions = {
+            //         center: new naver.maps.LatLng(latLng.y, latLng.x),
+            //         zoom: 15
+            //     };
+            //     const map = new naver.maps.Map('map', mapOptions);
+            //     const marker = new naver.maps.Marker({
+            //         position: new naver.maps.LatLng(latLng.y, latLng.x),
+            //         map: map,
+            //         title: title
+            //     });
+            // }catch (error) {
+            //     console.log("Error creating map:", error);  // 오류 로깅
+            // } 
+        }
+
+    function initializeModal() {
+        console.log("Initializing profile edit");
+        
+        const title = document.getElementById('title');
+        if (title) {
+            console.log("Toggle button clicked");
+        }
+    }
+
+
+        // 모달 닫기 버튼 이벤트
+        const closeBtn = document.querySelector('#mapModal .close');
+        if (closeBtn) {
+            closeBtn.onclick = function() {
+                modal.style.display = "none";
+            }
+        }
+
+        // 모달 외부 클릭 시 닫기
+        window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+
+        span.onclick = function() {
+            modal.style.display = "none";
+        }
+
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+
         /*]]>*/
     </script>
+    
 
+    <!--
     <script>
         var mapOptions = {
             center: new naver.maps.LatLng(37.3595704, 127.105399),
@@ -176,5 +307,6 @@
         map: map
     });
     </script>
+    -->
 </body>
 </html>

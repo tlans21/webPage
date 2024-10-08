@@ -11,11 +11,11 @@
         <!-- Navgation Bar -->
         <nav class="nav-menu">
             <div class="nav-container">
-                <a th:href="@{/}" class="logo">오늘 뭐 먹지?</a>
+                <a th:href="@{/}" class="logo">이런 개 어떠냥</a>
                 <ul class="nav-items">
-                    <li><a th:href="@{/map}">맛집 탐색</a></li>
-                    <li><a href="#">리뷰 작성</a></li>
-                    <li><a href="#">푸드 갤러리</a></li>
+                    <li><a th:href="@{/map}">반려 동물 탐색</a></li>
+<!--                    <li><a href="#">리뷰 작성</a></li>-->
+                    <li><a href="#">반려 동물 갤러리</a></li>
                     <li><a th:href="@{/community/list}">커뮤니티</a></li>
                     <li th:if="${isAdmin}"><a th:href="@{/api/v1/admin/adminPage/boardList}">관리자 페이지</a></li>
                 </ul>
