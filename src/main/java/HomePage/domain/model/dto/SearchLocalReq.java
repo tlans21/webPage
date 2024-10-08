@@ -19,6 +19,8 @@ public class SearchLocalReq {
 
     private String sort = "random";  // 정렬 옵션: random(유사도순), comment(카페/블로그 리뷰 개수 순)
 
+    private String category = "";
+
     public MultiValueMap<String, String> toMultiValueMap() {
         var map = new LinkedMultiValueMap<String, String>();
 
@@ -26,6 +28,7 @@ public class SearchLocalReq {
         map.add("display", String.valueOf(display));
         map.add("start", String.valueOf(start));
         map.add("sort", sort);
+        map.add("category", category);
 
         return map;
 

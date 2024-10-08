@@ -19,8 +19,9 @@ public class RestaurantDto {
     private String address;
     private String roadAddress;
     private String homePageLink;
-    private String mapx;
-    private String mapy;
+    private int mapx;
+    private int mapy;
     private String imageUrl;
+
 
 }
