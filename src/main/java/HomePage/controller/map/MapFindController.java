@@ -19,7 +19,7 @@ public class MapFindController {
     private ObjectMapper objectMapper;
     @GetMapping("/map")
     public String showMap(){
-        return "map/map.html";
+        return "/map/map.html";
     }
     
     @GetMapping("/map/search")

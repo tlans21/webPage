@@ -5,6 +5,7 @@ import HomePage.service.restaurant.RestaurantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,6 +28,11 @@ public class MapModalController {
        return "/map/modal :: mapModal-content";
    }
 
+
+    @GetMapping("/test/map")
+    public String showTestMap(){
+        return "/map/maptest";
+    }
     private void restaurantDtoMappingToModelFromRequest(Map<String, Object> request, Model model){
         RestaurantDto restaurantDto = new RestaurantDto();
         restaurantDto.setTitle((String) request.get("title"));
@@ -36,4 +42,5 @@ public class MapModalController {
 
         model.addAttribute("restaurant", restaurantDto);
     }
+
 }
