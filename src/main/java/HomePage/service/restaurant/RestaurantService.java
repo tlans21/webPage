@@ -35,7 +35,7 @@ public class RestaurantService {
             throw new IllegalArgumentException("Page number must be greater than 0");
         }
 
-        int totalRestaurants = restaurantMapper.count();
+        int totalRestaurants = getTotalRestaurantCount();
 
         int totalRestaurantPages = (int) Math.ceil((double) totalRestaurants / pageSize);
         System.out.println("totalPage" + totalRestaurantPages);
@@ -55,6 +55,9 @@ public class RestaurantService {
                 .collect(Collectors.toList());
 
         return new Page<RestaurantDto>(restaurantDTOs, pageNumber, totalRestaurantPages, pageSize);
+    }
+    public int getTotalRestaurantCount(){
+        return restaurantMapper.count();
     }
 
 
