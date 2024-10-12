@@ -20,12 +20,13 @@ public class MapModalController {
     private RestaurantService restaurantService;
     @PostMapping("/map/modal-map")
     public String showModalMap(@RequestBody Map<String, Long> payload, Model model) {
-       Long id = payload.get("id");
-       RestaurantDto restaurantDto = restaurantService.getRestaurantById(id);
-       model.addAttribute("restaurant", restaurantDto);
-       System.out.println("mapModal");
-       System.out.println(id);
-       return "/map/modal :: mapModal-content";
+        Long id = payload.get("id");
+        RestaurantDto restaurantDto = restaurantService.getRestaurantById(id);
+        model.addAttribute("restaurant", restaurantDto);
+
+        System.out.println("mapModal");
+        System.out.println(id);
+        return "/map/modal :: mapModal-content";
    }
 
 
