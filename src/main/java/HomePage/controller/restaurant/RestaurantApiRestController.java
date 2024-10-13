@@ -26,7 +26,16 @@ public class RestaurantApiRestController {
     @Autowired
     private NaverApiMapService naverApiMapService;
     @GetMapping("/foods")
-    public ResponseEntity<Map<String, Object>> getRestaurant(@RequestParam(value="page", defaultValue = "1") int page){
+    public ResponseEntity<Map<String, Object>> getRestaurant(@RequestParam(value="page", defaultValue = "1") int page,
+                                                             @RequestParam(value="sortOption", defaultValue = "평점순") String sortOption,
+                                                             @RequestParam(value="themeOption", defaultValue = "") String themeOption,
+                                                             @RequestParam(value="serviceOption", defaultValue = "") String serviceOption){
+
+        System.out.println("page:" + page);
+        System.out.println("sortOption: " + sortOption);
+        System.out.println("themeOption: " + themeOption);
+        System.out.println("serviceOption: " + serviceOption);
+
         Page<RestaurantDto> restaurantsPage = restaurantService.getRestaurantsPage(page);
         int totalRestaurantCount = restaurantService.getTotalRestaurantCount();
         Map<String, Object> response = new HashMap<>();
@@ -41,6 +50,7 @@ public class RestaurantApiRestController {
 
         return "Total restaurants saved: " + totalSaved;
     }
+
 
 
 

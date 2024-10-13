@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script type="text/javascript" src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=z9fdx1to2u"></script>
     <script type="text/javascript" src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=z9fdx1to2u&submodules=geocoder,marker"></script>
     <title>간단한 지도 표시하기</title> 
@@ -19,6 +20,20 @@
             margin-bottom: 20px;
         }
 
+        #filter-btn-detail {
+            padding: 8px 16px;
+            border: none;
+            background-color: #fff;
+            cursor: pointer;
+            border-radius: 20px;
+            transition: background-color 0.3s;
+        }
+        
+        #filter-btn-detail:hover, #filter-btn-detail.active {
+            background-color: #ffba00;
+            color: white;
+        }
+        
         .filter-btn {
             padding: 8px 16px;
             border: none;
@@ -71,12 +86,14 @@
         }
         .filter-header h2 {
             margin: 0;
+            display: flex;
         }
         #resetFilter {
-            float: right;
             background: none;
             border: none;
+            margin-left: 5px;
             color: #ff9900;
+            font-size: 1.0em;
             cursor: pointer;
         }
         .filter-body {
@@ -94,7 +111,7 @@
             margin-top: 10px;
         }
 
-        .filter-option {
+        .filter-sort-option, .filter-theme-option, .filter-service-option {
             padding: 8px 16px;
             border: 1px solid #ddd;
             border-radius: 20px;
@@ -102,7 +119,7 @@
             cursor: pointer;
         }
 
-        .filter-option.active {
+        .filter-sort-option.active, .filter-theme-option.active, .filter-service-option.active {
             background-color: #ff9900;
             color: white;
             border-color: #ff9900;
@@ -155,6 +172,7 @@
             width: 100%;
             height: 200px; /* 고정 높이 또는 auto */
             object-fit: cover;
+            cursor: pointer;
         }
         .food-item h3 {
             margin: 10px 0;
@@ -213,7 +231,7 @@
         }
         .closeMapModal:hover,
         .closeMapModal:focus {
-            color: #000;
+            color: #000;N
             text-decoration: none;
             cursor: pointer;
         }
@@ -282,28 +300,28 @@
             <div id="filterModal-content">
                 <span class="closeFilterModal">&times;</span>
                 <div class="filter-header">
-                    <h2>필터</h2>
-                    <button id="resetFilter">초기화</button>
+                    <h2>필터 <button id="resetFilter"><i class="fa-solid fa-arrow-rotate-right"></i></button></h2>
+                    
                 </div>
                 
                 <div class="filter-body">
                     <div class="filter-section">
                         <h3>정렬</h3>
                         <div class="filter-options">
-                            <button class="filter-option active" data-filter="평점순">평점순</button>
-                            <button class="filter-option" data-filter="조회순">조회순</button>
-                            <button class="filter-option" data-filter="거리순">거리순</button>
-                            <button class="filter-option" data-filter="리뷰순">리뷰순</button>
+                            <button class="filter-sort-option active" data-filter="평점순">평점순</button>
+                            <button class="filter-sort-option" data-filter="조회순">조회순</button>
+                            <button class="filter-sort-option" data-filter="거리순">거리순</button>
+                            <button class="filter-sort-option" data-filter="리뷰순">리뷰순</button>
                         </div>
                     </div>
             
                     <div class="filter-section">
                         <h3>테마</h3>
                         <div class="filter-options">
-                            <button class="filter-option" data-filter="삼겹살">삼겹살</button>
-                            <button class="filter-option" data-filter="회식">회식</button>
-                            <button class="filter-option" data-filter="데이트">데이트</button>
-                            <button class="filter-option" data-filter="접대">접대</button>
+                            <button class="filter-theme-option" data-filter="삼겹살">삼겹살</button>
+                            <button class="filter-theme-option" data-filter="회식">회식</button>
+                            <button class="filter-theme-option" data-filter="데이트">데이트</button>
+                            <button class="filter-theme-option" data-filter="접대">접대</button>
                             <!-- 추가 옵션들 -->
                         </div>
                     </div>
@@ -311,9 +329,9 @@
                     <div class="filter-section">
                         <h3>서비스</h3>
                         <div class="filter-options">
-                            <button class="filter-option" data-filter="주차">주차</button>
-                            <button class="filter-option" data-filter="예약">예약</button>
-                            <button class="filter-option" data-filter="포장">포장</button>
+                            <button class="filter-service-option" data-filter="주차">주차</button>
+                            <button class="filter-service-option" data-filter="예약">예약</button>
+                            <button class="filter-service-option" data-filter="포장">포장</button>
                             <!-- 추가 옵션들 -->
                         </div>
                     </div>
@@ -549,10 +567,12 @@
                 mapModal.style.display = "none";
             }
 
-            function closeFilterModal() {
-                console.log("closeFilterModal");
-                filterModal.style.display = "none";
-            }
+            // function closeFilterModal() {
+            //     console.log("closeFilterModal");
+            //     const filterBtnDetail = document.getElementById('filter-btn-detail');
+            //     filterBtnDetail.classList.remove('active');
+            //     filterModal.style.display = "none";
+            // }
 
             function convertToLatLng(mapx, mapy) {
                 // 10^7로 나누어 실제 위도와 경도 값으로 변환
@@ -584,6 +604,8 @@
             // 필터 모달 외부 클릭 시 닫기 
             window.onclick = function(event) {
                 if (event.target == filterModal) {
+                    const filterBtnDetail = document.getElementById('filter-btn-detail');
+                    filterBtnDetail.classList.remove('active');
                     filterModal.style.display = "none";
                 }
             }
@@ -591,22 +613,29 @@
             // 필터 모달 닫기 버튼 클릭 시 닫기
             spanFilterClose.onclick = function() {
                 console.log("spanFilterClose clicked");
+                const filterBtnDetail = document.getElementById('filter-btn-detail');
+                filterBtnDetail.classList.remove('active');
                 filterModal.style.display = "none";
             }
         // ... other functions if needed ...
         }catch(error){
             console.log("Error : ", error);
         }
-
+        // =================================필터 관련 자바스크립트==========================
         // 필터 버튼에 이벤트 리스너 추가
         const filterButtons = document.querySelectorAll('.filter-btn');
         filterButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            const filter = button.getAttribute('data-filter');
+            button.addEventListener('click', () => {
+                const filter = button.getAttribute('data-filter');
                 filterFoodItems(filter);
-                
+            
                 // 활성 버튼 스타일 변경
                 filterButtons.forEach(btn => btn.classList.remove('active'));
+                const filterBtnDetail = document.getElementById('filter-btn-detail');
+                // 필터 버튼이 활성화 되어있다면 비활성화
+                if (filterBtnDetail && filterBtnDetail.classList.contains('active')) {
+                    filterBtnDetail.classList.remove('active');
+                }
                 button.classList.add('active');
             });
         });
@@ -629,8 +658,130 @@
         });
 
         function clickfilterBtnDetail() {
+            const filterbtnDetail = document.getElementById('filter-btn-detail');
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            filterbtnDetail.classList.add('active');
             filterModal.style.display = "block";
         }
     </script>
+    <script defer>
+        // 클릭한 버튼에 active 클래스 추가
+        function updateActiveButtonStyle(clickedButton){
+            // 클릭한 버튼의 클래스 이름 가져오기
+            const clickedOptionClass = clickedButton.classList[0];
+            // 클릭한 버튼과 같은 클래스 이름을 가진 모든 버튼 선택
+            const clickedOptions = document.querySelectorAll(`.${clickedOptionClass}`);
+            // 모든 버튼에서 active 클래스 제거
+            clickedOptions.forEach(option => {
+                option.classList.remove('active');
+            });
+            // 클릭한 버튼에 active 클래스 추가
+            clickedButton.classList.add('active');
+        }
+
+        // 정렬 버튼 클릭 이벤트 리스너
+        const sortOptions = document.querySelectorAll('.filter-sort-option');
+        sortOptions.forEach(option => 
+            option.addEventListener('click', handleClickfilterSortOption)
+        );
+        // 정렬 버튼 클릭 이벤트 핸들러
+        function handleClickfilterSortOption(event){
+            const sortOption = event.target.getAttribute('data-filter');
+            updateActiveButtonStyle(event.target);       
+        } 
+        // 테마 버튼 클릭 이벤트 리스너
+        const themeOptions = document.querySelectorAll('.filter-theme-option');
+        themeOptions.forEach(option => 
+            option.addEventListener('click', handleClickfilterThemeOption)
+        );
+        // 테마 버튼 클릭 이벤트 핸들러
+        function handleClickfilterThemeOption(event){
+            const themeOption = event.target.getAttribute('data-filter');
+            updateActiveButtonStyle(event.target);       
+        }
+       
+        // 서비스 버튼 클릭 이벤트 리스너
+        const serviceOptions = document.querySelectorAll('.filter-service-option');
+        serviceOptions.forEach(option => 
+            option.addEventListener('click', handleClickfilterServiceOption)
+        );
+        // 서비스 버튼 클릭 이벤트 핸들러
+        function handleClickfilterServiceOption(event){
+            const serviceOption = event.target.getAttribute('data-filter');
+            updateActiveButtonStyle(event.target);       
+        }
+
+        // 리셋 버튼 클릭 이벤트 리스너
+        const resetFilterBtn = document.getElementById('resetFilter');
+        resetFilterBtn.addEventListener('click', handleClickResetFilter);
+        // 리셋 버튼 클릭 이벤트 핸들러
+        function handleClickResetFilter(event){
+            const sortOptions = document.querySelectorAll('.filter-sort-option');
+            const themeOptions = document.querySelectorAll('.filter-theme-option');
+            const serviceOptions = document.querySelectorAll('.filter-service-option');
+            
+            sortOptions.forEach(option => option.classList.remove('active'));
+            themeOptions.forEach(option => option.classList.remove('active'));
+            serviceOptions.forEach(option => option.classList.remove('active'));
+            const defaultSortOption = sortOptions[0]; // 초기 정렬 버튼(평점순)
+            defaultSortOption.classList.add('active'); // 초기 정렬 버튼 활성화
+        }
+
+        // 필터 적용 버튼 클릭 이벤트 리스너
+        const applyFilterBtn = document.getElementById('applyFilter');
+        applyFilterBtn.addEventListener('click', handleClickApplyFilter);
+        // 필터 적용 버튼 클릭 이벤트 핸들러
+        async function handleClickApplyFilter(event){
+            filterModal.style.display = "none"; // 필터 모달창 닫기
+            const applyFilterBtn = document.getElementById('applyFilter');
+            
+            let sortOption = '평점순'; // 정렬 옵션 초기값
+            let themeOption = null; // 테마 옵션 초기값
+            let serviceOption = null; // 서비스 옵션 초기값
+            
+            // 정렬 옵션 가져오기
+            if (document.querySelector('.filter-sort-option.active')) {
+                const sortOptionElement = document.querySelector('.filter-sort-option.active').getAttribute('data-filter'); // 적용된 정렬 옵션
+                sortOption = sortOptionElement ? sortOptionElement : '평점순';
+            }   
+            // 테마 옵션 가져오기
+            if (document.querySelector('.filter-theme-option.active')) {
+                const themeOptionElement = document.querySelector('.filter-theme-option.active').getAttribute('data-filter'); // 적용된 테마 옵션
+                themeOption = themeOptionElement ? themeOptionElement : null;
+            }
+            // 서비스 옵션 가져오기
+            if (document.querySelector('.filter-service-option.active')) {
+                const serviceOptionElement = document.querySelector('.filter-service-option.active').getAttribute('data-filter'); // 적용된 서비스 옵션
+                serviceOption = serviceOptionElement ? serviceOptionElement : null;
+            }
+
+            const params = new URLSearchParams({ sortOption : sortOption});
+            if (themeOption) {
+                params.append('theme', themeOption);
+            }
+            if (serviceOption) {
+                params.append('service', serviceOption);
+            }
+            
+            // 페이지 불러오기
+            const response = await fetch(`/api/foods?${params.toString()}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            
+            const data = await response.json();
+            
+            // 페이지 업데이트
+        }
+
+    </script>
 </body>
 </html>
+
