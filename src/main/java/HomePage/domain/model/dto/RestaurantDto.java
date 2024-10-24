@@ -13,6 +13,8 @@ public class RestaurantDto {
     private Long id;
     private String title;
     private String link;
+    private int viewCnt;
+    private int reviewCnt;
     private String category;
     private String description;
     private String telephone;
@@ -22,6 +24,4 @@ public class RestaurantDto {
     private int mapx;
     private int mapy;
     private String imageUrl;
-
-
 }

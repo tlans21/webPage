@@ -13,6 +13,8 @@ public class Restaurant {
     private Long id;
     private String title;
     private String link;
+    private int viewCnt;
+    private int reviewCnt;
     private String category;
     private String description;
     private String telephone;

@@ -21,5 +21,9 @@ public interface RestaurantMapper {
     Restaurant findRestaurantByTitle(String title);
 
     Restaurant selectByImageUrl(String imageUrl);
+
+    void updateCountReview(@Param("restaurantId") Long restaurantId, @Param("reviewCnt") int reviewCnt);
+
+    boolean updateViewCnt(Long restaurantId);
 }
 

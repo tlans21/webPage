@@ -3,13 +3,12 @@ package HomePage.domain.model.entity;
 import java.sql.Timestamp;
 
 public abstract class Comment {
-    Long id;
-    Long board_id;
-    String writer;
-    String content;
-    Timestamp registerDate;
-    Timestamp updateDate;
-    Timestamp deleteDate;
+    protected Long id;
+    protected String writer;
+    protected String content;
+    protected Timestamp registerDate;
+    protected Timestamp updateDate;
+    protected Timestamp deleteDate;
 
     public Long getId() {
         return id;
@@ -18,15 +17,6 @@ public abstract class Comment {
     public void setId(Long id) {
         this.id = id;
     }
-
-    public Long getBoard_id() {
-        return board_id;
-    }
-
-    public void setBoard_id(Long board_id) {
-        this.board_id = board_id;
-    }
-
     public String getWriter() {
         return writer;
     }
@@ -66,4 +56,9 @@ public abstract class Comment {
     public void setDeleteDate(Timestamp deleteDate) {
         this.deleteDate = deleteDate;
     }
+
+    // 추상 메서드
+    public abstract Long getParentId();
+    public abstract void setParentId(Long boardId);
+
 }

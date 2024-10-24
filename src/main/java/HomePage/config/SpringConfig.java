@@ -3,7 +3,6 @@ package HomePage.config;
 import HomePage.repository.*;
 import HomePage.service.CommunityBoardService;
 import HomePage.service.CommunityCommentService;
-import HomePage.service.ReviewBoardService;
 import HomePage.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -40,16 +39,6 @@ public class SpringConfig {
     @Bean
     public JdbcTemplateCommunityBoardRepository communityBoardRepository(){
         return new JdbcTemplateCommunityBoardRepository(dataSource);
-    }
-
-    @Bean
-    public JdbcTemplateReviewBoardRepository reviewBoardBoardRepository(){
-        return new JdbcTemplateReviewBoardRepository(dataSource);
-    }
-
-    @Bean
-    public ReviewBoardService reviewBoardService(){
-        return new ReviewBoardService(reviewBoardBoardRepository());
     }
 
     @Bean
