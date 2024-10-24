@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="HomePage.mapper.RestaurantReviewCommentMapper">
+
+    <resultMap id="RestaurantReviewCommentResultMap" type="HomePage.domain.model.entity.RestaurantReviewComment">
+        <id property="id" column="id"/>
+        <result property="restaurantId" column="restaurant_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="content" column="content"/>
+        <result property="registerDate" column="created_at"/>
+        <result property="updateDate" column="updated_at"/>
+    </resultMap>
+
+    <insert id="save" parameterType="HomePage.domain.model.entity.RestaurantReviewComment" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO security.restaurant_review_comments (restaurant_id, user_id, content, created_at, updated_at)
+        VALUES (#{restaurantId}, #{userId}, #{content}, #{registerDate}, #{updateDate})
+    </insert>
+
+    <select id="findById" parameterType="long" resultMap="RestaurantReviewCommentResultMap">
+        SELECT * FROM restaurant_review_comments WHERE id = #{id}
+    </select>
+
+    <select id="findByRestaurantId" parameterType="long" resultMap="RestaurantReviewCommentResultMap">
+        SELECT * FROM restaurant_review_comments WHERE restaurant_id = #{restaurantId}
+        ORDER BY created_at DESC
+    </select>
+
+    <update id="update" parameterType="HomePage.domain.model.entity.RestaurantReviewComment">
+        UPDATE restaurant_review_comments
+        SET content = #{content}, updated_at = #{updatedDate}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById" parameterType="long">
+        DELETE FROM restaurant_review_comments WHERE id = #{id}
+    </delete>
+
+    <select id="findAll" resultMap="RestaurantReviewCommentResultMap">
+        SELECT * FROM restaurant_review_comments
+        ORDER BY created_at DESC
+    </select>
+
+    <select id="countByRestaurantId" parameterType="long" resultType="int">
+        SELECT COUNT(*) FROM restaurant_review_comments WHERE restaurant_id = #{restaurantId}
+    </select>
+
+    <select id="findByRestaurantIdWithPagination" resultMap="RestaurantReviewCommentResultMap">
+        SELECT * FROM restaurant_review_comments
+        WHERE restaurant_id = #{restaurantId}
+        ORDER BY created_at DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+</mapper>

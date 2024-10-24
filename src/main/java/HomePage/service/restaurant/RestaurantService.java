@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
@@ -101,7 +102,8 @@ public class RestaurantService {
                     restaurantDto.setMapx(localSearchItem.getMapx());
                     restaurantDto.setMapy(localSearchItem.getMapy());
                     restaurantDto.setImageUrl(imageItem.getLink());
-
+                    restaurantDto.setViewCnt(0);
+                    restaurantDto.setReviewCnt(0);
                     // dto -> entity 변환
                     Restaurant convertedRestaurant = objectMapper.convertValue(restaurantDto, Restaurant.class);
 
@@ -119,6 +121,14 @@ public class RestaurantService {
         // entity -> dto 변환
         RestaurantDto restaurantDto = objectMapper.convertValue(restaurant, RestaurantDto.class);
         return restaurantDto;
+    }
+
+    public void updateCountRestaurantReview(Long restaurantId, int reviewCnt){
+        restaurantMapper.updateCountReview(restaurantId, reviewCnt);
+    }
+    @Transactional
+    public boolean updateRestaurantViewCnt(Long restaurantId){
+        return restaurantMapper.updateViewCnt(restaurantId);
     }
 
 //    public List<Map<String, Restaurant>> createRestaurantImage(List<Map<String, String>> restaurants) {

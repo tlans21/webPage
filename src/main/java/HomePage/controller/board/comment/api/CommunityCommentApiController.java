@@ -28,7 +28,7 @@ public class CommunityCommentApiController {
         CommunityComment comment = new CommunityComment();
         comment.setContent(content);
         comment.setWriter(principalDetails.getUsername());
-        comment.setBoard_id(id);
+        comment.setBoardId(id);
 
         commentService.saveCommentAndIncrementCommentCnt(comment);
 

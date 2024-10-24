@@ -58,7 +58,7 @@ public class UserMyPageService {
         List<CommunityCommentDTO> recentCommunityCommentDTOs = recentCommunityComments.stream()
                 .map(recentCommunityComment -> {
                     CommunityCommentDTO communityCommentDTO = modelMapper.map(recentCommunityComment, CommunityCommentDTO.class);
-                    CommunityBoard relatedBoard = boardRepository.selectById(recentCommunityComment.getBoard_id()).get();
+                    CommunityBoard relatedBoard = boardRepository.selectById(recentCommunityComment.getBoardId()).get();
                     communityCommentDTO.setRelatedBoard(modelMapper.map(relatedBoard, CommunityCommentDTO.BoardInfo.class));
                     return communityCommentDTO;
                 })

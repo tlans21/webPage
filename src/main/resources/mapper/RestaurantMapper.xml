@@ -24,6 +24,18 @@
         WHERE id = #{id}
     </update>
 
+    <update id="updateCountReview">
+        UPDATE security.restaurants
+        SET review_cnt = #{reviewCnt}
+        WHERE id = #{restaurantId}
+    </update>
+
+    <update id="updateViewCnt">
+        UPDATE security.restaurants
+        SET view_cnt = view_cnt + 1
+        WHERE id = #{restaurantId}
+    </update>
+
     <delete id="delete">
         DELETE FROM security.restaurants WHERE id = #{id}
     </delete>
