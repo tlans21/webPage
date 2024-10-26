@@ -1,6 +1,7 @@
 package HomePage.controller.restaurant;
 
 import HomePage.domain.model.dto.RestaurantDto;
+import HomePage.domain.model.dto.RestaurantSearchCriteria;
 import HomePage.domain.model.entity.Page;
 import HomePage.service.naverApi.NaverApiMapService;
 import HomePage.service.restaurant.RestaurantService;
@@ -25,6 +26,17 @@ public class RestaurantApiRestController {
     private ObjectMapper objectMapper;
     @Autowired
     private NaverApiMapService naverApiMapService;
+
+    // RequestParam으로 받은 값을 DB용 값으로 변환
+    private String convertSortOption(String sortOption) {
+        return switch (sortOption) {
+            case "평점순" -> "averageRating";
+            case "조회순" -> "viewCount";
+            case "리뷰순" -> "reviewCount";
+            default -> "averageRating";
+        };
+    }
+
     @GetMapping("/foods")
     public ResponseEntity<Map<String, Object>> getRestaurant(@RequestParam(value="page", defaultValue = "1") int page,
                                                              @RequestParam(value="sortOption", defaultValue = "평점순") String sortOption,
@@ -36,7 +48,15 @@ public class RestaurantApiRestController {
         System.out.println("themeOption: " + themeOption);
         System.out.println("serviceOption: " + serviceOption);
 
-        Page<RestaurantDto> restaurantsPage = restaurantService.getRestaurantsPage(page);
+        //DTO 생성
+        RestaurantSearchCriteria searchCriteria = RestaurantSearchCriteria.builder()
+                .page(page)
+                .sortBy(convertSortOption(sortOption))
+                .theme(themeOption)
+                .service(serviceOption)
+                .build();
+
+        Page<RestaurantDto> restaurantsPage = restaurantService.getRestaurantsPageBySearchCriteria(searchCriteria);
         int totalRestaurantCount = restaurantService.getTotalRestaurantCount();
         Map<String, Object> response = new HashMap<>();
         response.put("Page", restaurantsPage);
@@ -50,6 +70,8 @@ public class RestaurantApiRestController {
 
         return "Total restaurants saved: " + totalSaved;
     }
+
+
 
 
 

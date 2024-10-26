@@ -253,6 +253,38 @@
             text-decoration: none;
             cursor: pointer;
         }
+
+
+
+        /* 평점 css */
+
+        .rating {
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: flex-end;
+        }
+
+        .rating > input {
+            display: none;
+        }
+
+        .rating > label {
+            position: relative;
+            width: 1em;
+            font-size: 30px;
+            color: #FFD600;
+            cursor: pointer;
+        }
+
+        .rating > label::before {
+            content: "\2605";
+            position: absolute;
+            opacity: 0;
+        }
+
+        .rating > input:checked ~ label:before {
+            opacity: 1;
+        }
         @media (max-width: 1024px) {
             .food-item {
                 flex: 0 1 calc(50% - 20px); /* 2개씩 배치 */
@@ -483,6 +515,7 @@
                     <h3><bold>${restaurant.title}</bold></h3>
                     <p><bold>리뷰 : ${restaurant.reviewCnt}</bold></p>
                     <p><bold>조회수 : ${restaurant.viewCnt}</bold></p>
+                    <p><bold>평점 : ${(!restaurant.averageRating || restaurant.averageRating === 0) ? '리뷰없음' : restaurant.averageRating.toFixed(2)}</bold></p>
                 `;
 
                 const img = div.querySelector('img');
@@ -529,15 +562,21 @@
                 }
             }
             function initializeModalScript(restaurantId){
+                
+                // 클로저 : 주변 환경 변수, 값을 기억해두었다가 접근하기 위함
+                function submitReviewHandler(event){
+                    submitReview(event, restaurantId);
+                }
+                
                 console.log("restaurantId : ", restaurantId);
                 setTimeout(() => {
                     var form = document.getElementById('reviewForm');
                     console.log("Form after delay:", form);
                     
                     if (form) {
-                        form.addEventListener('submit', function(event) {
-                            submitReview(event, restaurantId);
-                        })
+                        // 연속으로 댓글 작성시, fragment로 리렌더링 되는 form으로 이벤트가 2개 이상 등록 될 수 있기 때문.
+                        form.removeEventListener('submit', submitReviewHandler); // 기존 이벤트 제거
+                        form.addEventListener('submit', submitReviewHandler); // 새 이벤트 등록
                     } else {
                         console.error("Form with id 'reviewForm' not found");
                     }
@@ -548,21 +587,34 @@
                 event.preventDefault();
                 var form = document.getElementById('reviewForm');
                 var content = form.querySelector('textarea[name="content"]').value;
+                var ratingInput = form.querySelector('input[name="rating"]:checked');
+    
+                // rating 값 체크
+                if (!ratingInput) {
+                    alert('평점을 선택해주세요');
+                    return;
+                }
+                var rating = ratingInput.value;
+
                 var url = `/api/v1/user/create/review/${restaurantId}`;
+                
                 fetch(url, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
                     },
-                    body: `content=${encodeURIComponent(content)}`
+                    body: `content=${encodeURIComponent(content)}&rating=${encodeURIComponent(rating)}`
                 })
                 .then(response => response.text())
                 .then(html => {
                     console.log("Response received");
-                    document.querySelector('.comment-list').innerHTML = html;
+                    document.querySelector('.comments-section').innerHTML = html;
                     form.reset();
                     console.log("Form reset and comment list updated");
                     updateReviewCount(restaurantId);
+                    
+                    // comments-section요소가 다시 업데이트된 후에 이벤트 리스너를 재등록 하기위함.
+                    initializeModalScript(restaurantId);
                 })
                 .catch(error => {
                     console.error('Error:', error);
@@ -663,20 +715,20 @@
             });
             
 
-            // 맵 모달 외부 클릭 시 닫기
+            
             window.onclick = function(event) {
+                // 맵 모달 외부 클릭 시 닫기
                 if (event.target == mapModal) {
                     mapModal.style.display = "none";
                 }
-            }
-            // 필터 모달 외부 클릭 시 닫기 
-            window.onclick = function(event) {
+                // 필터 모달 외부 클릭 시 닫기 
                 if (event.target == filterModal) {
                     const filterBtnDetail = document.getElementById('filter-btn-detail');
                     filterBtnDetail.classList.remove('active');
                     filterModal.style.display = "none";
                 }
             }
+            
             
             // 필터 모달 닫기 버튼 클릭 시 닫기
             spanFilterClose.onclick = function() {
@@ -847,7 +899,12 @@
             const data = await response.json();
             
             // 페이지 업데이트
-        }
+            const foodList = document.getElementById('food-list');
+            const restaurant = data.content;
+            
+            if(data){
+                
+            }
 
     </script>
 </body>

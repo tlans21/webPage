@@ -31,19 +31,38 @@ public class RestaurantReviewServiceImpl implements RestaurantReviewService{
     private ObjectMapper objectMapper;
     @Autowired
     private UserRepository userRepository;
+    // 리뷰 저장 전용 메서드
+    private Long saveReview(RestaurantReviewCommentDTO commentDTO) {
+       RestaurantReviewComment comment = objectMapper.convertValue(commentDTO, RestaurantReviewComment.class);
+       comment.setRegisterDate(new Timestamp(System.currentTimeMillis()));
+       comment.setUpdateDate(new Timestamp(System.currentTimeMillis()));
+       return reviewCommentMapper.save(comment);
+   }
+
+    // 식당 통계 전용 메서드
+    private void updateRestaurantStatistics(Long restaurantId) {
+        int reviewCnt = countRestaurantReviewByRestaurantId(restaurantId);
+//        updateRatingByRestaurantId(restaurantId, rating); // restaurantId에 해당하는 리뷰의 평점을 업데이트한다.
+
+
+        // 총 평점 계산
+        List<RestaurantReviewCommentDTO> reviewDTOs = findByRestaurantId(restaurantId);
+        double totalRating = reviewDTOs.stream()
+                .mapToDouble(RestaurantReviewCommentDTO::getRating)
+                .sum();
+        // 평균 평점 계산
+        double averageRating = reviewCnt > 0 ? totalRating/ reviewCnt : 0.0;
+
+        restaurantService.updateCountRestaurantReview(restaurantId, reviewCnt); // restaurantId를 통해서 식당 서비스를 이용하여 식당 리뷰 갯수를 업데이트한다.
+        restaurantService.updateAverageRating(restaurantId, averageRating); // restaurantId에 해당하는 식당에 평균 평점을 업데이트한다.
+    }
 
 
     @Override
     @Transactional
     public Long save(RestaurantReviewCommentDTO commentDTO) {
-        RestaurantReviewComment comment = objectMapper.convertValue(commentDTO, RestaurantReviewComment.class);
-        comment.setRegisterDate(new Timestamp(System.currentTimeMillis()));
-        comment.setUpdateDate(new Timestamp(System.currentTimeMillis()));
-        Long savedId = reviewCommentMapper.save(comment); // 댓글 저장
-        RestaurantReviewCommentDTO foundReview = findById(savedId); // 저장된 review id값을 통해 reviewDto객체 불러옴
-
-        int reviewCnt = countRestaurantReviewByRestaurantId(foundReview.getRestaurantId()); // 식당 id값과 관련된 리뷰 개수 불러옴
-        restaurantService.updateCountRestaurantReview(foundReview.getRestaurantId(), reviewCnt);
+        Long savedId = saveReview(commentDTO);
+        updateRestaurantStatistics(commentDTO.getRestaurantId());
         return savedId;
     }
 
@@ -106,11 +125,12 @@ public class RestaurantReviewServiceImpl implements RestaurantReviewService{
 
     // 비즈니스 로직
 
-    public RestaurantReviewCommentDTO createReview(Long restaurantId, Long userId, String content){
+    public RestaurantReviewCommentDTO createReview(Long restaurantId, Long userId, String content, double rating){
         RestaurantReviewCommentDTO restaurantReviewCommentDTO = new RestaurantReviewCommentDTO();
         restaurantReviewCommentDTO.setRestaurantId(restaurantId);
         restaurantReviewCommentDTO.setContent(content);
         restaurantReviewCommentDTO.setUserId(userId);
+        restaurantReviewCommentDTO.setRating(rating);
         Long savedReviewId = save(restaurantReviewCommentDTO);
         if (savedReviewId == null) {
             throw new RuntimeException("Failed to save review");
@@ -118,7 +138,16 @@ public class RestaurantReviewServiceImpl implements RestaurantReviewService{
 
         return findById(savedReviewId);
     }
+
+//    public Boolean updateRatingByRestaurantId(Long restaurantId, double rating){
+//        return reviewCommentMapper.updateRatingByRestaurantId(restaurantId, rating);
+//    }
+
+
+
     private int countRestaurantReviewByRestaurantId(Long restaurantId){
         return reviewCommentMapper.countByRestaurantId(restaurantId);
     }
+
+
 }
