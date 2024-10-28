@@ -284,7 +284,7 @@
 
         .rating > input:checked ~ label:before {
             opacity: 1;
-        }
+        }   
         @media (max-width: 1024px) {
             .food-item {
                 flex: 0 1 calc(50% - 20px); /* 2개씩 배치 */
@@ -306,7 +306,7 @@
         광고 영역 (추후 구현 예정)
     </div>
     <div class="filter-bar">
-        <button id="filter-btn-detail" th:onclick="clickfilterBtnDetail()">필터</button>
+        <button id="filter-btn-detail">필터</button>
         <button class="filter-btn" data-filter="all">전체</button>
         <button class="filter-btn" data-filter="한식">한식</button>
         <button class="filter-btn" data-filter="양식/레스토랑">양식/레스토랑</button>
@@ -382,353 +382,51 @@
         </div>
         
     </div>
-    <script defer>
-        // window.onload = function() {
-        //     console.log("Window loaded");
-        //     // 모달 관련 코드
-        //     const closeBtn = document.querySelector('.close');
-        //     console.log("closeBtn : ", closeBtn);
-        //     if (closeBtn) {
-        //         closeBtn.onclick = function() {
-        //             mapModal.style.display = "none";
-        //         }
-        //     }
-        // };
+    <!-- import 맵 -->
+    <script type="importmap" th:inline="javascript">
+        {
+            "imports": {
+                "@/MapUtils": /*[[@{/js/MapUtils.js}]]*/ '',
+                "@/ModalService": /*[[@{/js/ModalService.js}]]*/ '',
+                "@/restaurantUtils": /*[[@{/js/restaurantUtils.js}]]*/ '',
+                "@/RestaurantService": /*[[@{/js/RestaurantService.js}]]*/ '',
+                "@/ReviewService": /*[[@{/js/ReviewService.js}]]*/ ''
+            }
+        }
+    </script>
+
+    <script type="module" defer>
+        import { restaurantService } from '@/RestaurantService';
+        import { modalService } from '@/ModalService';
+        import { reviewService } from '@/ReviewService';
+        console.log("test");
+        
         try{
-            var map;
-            console.log("DOMContentLoaded");
-            let isLoading = false;
-            let page = 1;
-            let totalPage = 10;
-            var imageLoadErrorCount = 0;
-            const foodList = document.getElementById('food-list');
-            const loading = document.getElementById('loading');
+            restaurantService.fetchFoods();
             
-            // 필터 모달 닫기 버튼
-            const spanFilterClose = document.getElementsByClassName("closeFilterModal")[0];
-
-            async function fetchFoods() {
-            //isLoading 플래그로 로딩 상태 확인
-                if (isLoading || page > totalPage){
-                    return;
-                }
-                
-                isLoading = true;
-                loading.style.display = 'block';
-                
-                try{
-                    const response = await fetch(`/api/foods?page=${page}`, {
-                        method: 'GET',
-                        headers: {
-                            'Content-type': 'application/json',
-                        }
-                    });
-
-                    const data = await response.json();
-                    if(data){
-                        totalPage = data.Page.totalPages;
-                        const restaurants = data.Page.content;
-                        var totalRestaurantCount = data.totalRestaurantCount;
-                        // 검색 결과 갯수
-                        for (const restaurant of restaurants){
-                            try{
-                                console.log(1);
-                                const foodItem = await createFoodItem(restaurant);
-                                foodList.appendChild(foodItem);
-                            }catch(error){
-                                // 이미지 로드가 안되는 것 카운트 하기 
-                                imageLoadErrorCount++;
-                                console.log(`Failed to load image for ${restaurant.title}`);
-                                // 이미지 로드 실패한 항목은 무시하고 다음으로 넘어갑니다
-                            }
-                        }
-                        document.getElementById('total-restaurant-count').textContent = `추천 맛집 (${totalRestaurantCount}개)`;
-                        page++;
-                    }
-                }catch(error){
-                    console.log("Error : ", error);
-                    
-                }finally{
-                    loading.style.display = 'none';
-                    isLoading = false;
-                }
-                // lazyload();
-            }
-            
-            // openModal 함수를 내부에서 정의하고 modal을 클로저로 <사용></사용>
-            async function openModal(event) {
-                const restaurantId = event.target.dataset.restaurantId;
-                const mapModalContent = document.getElementById('mapModal-content');
-                
-                try {
-                    const response = await fetch('/api/map/modal-map', {
-                        method: 'POST',
-                        headers: {
-                            'Content-type': 'application/json',
-                        },
-                        body: JSON.stringify({id: restaurantId})
-                    });
-
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-
-                    const htmlContent = await response.text();
-                    
-                    // 모달 내용 업데이트
-                    mapModalContent.innerHTML = htmlContent;
-
-                    // 가져온 내용을 토대로 닫기 이벤트 등록
-                    const mapModalcloseBtn = document.querySelector('.closeMapModal');
-                    if (mapModalcloseBtn) {
-                        mapModalcloseBtn.onclick = closeMapModal;
-                    }
-                    // 모달 표시
-                    mapModal.style.display = "block";
-                    // 모달 초기화
-                    initializeModal();
-                    initializeModalScript(restaurantId);
-                    // 모달 스타일 로드
-                    loadModalStyle();
-                    // 지도 생성
-                    setTimeout(() => {
-                        const mapx = document.getElementById('mapx').textContent;
-                        const mapy = document.getElementById('mapy').textContent;
-                        if (mapx && mapy) {
-                            createMap(parseFloat(mapx), parseFloat(mapy));
-                        } else {
-                            console.error("Map coordinates are missing");
-                        }
-                    }, 200);
-                } catch (error) {
-                    console.error('Error fetching restaurant data:', error);
-                }
-            }
-
-            // createFoodItem 함수 내에서 openModal을 사용할 수 있도록 수정
-            async function createFoodItem(restaurant) {
-                const div = document.createElement('div');
-                div.className = 'food-item';
-                div.setAttribute('data-category', restaurant.category);
-                div.innerHTML = `
-                    <img src="${restaurant.imageUrl}" alt="${restaurant.title}", data-restaurant-id="${restaurant.id}">
-                    <h3><bold>${restaurant.title}</bold></h3>
-                    <p><bold>리뷰 : ${restaurant.reviewCnt}</bold></p>
-                    <p><bold>조회수 : ${restaurant.viewCnt}</bold></p>
-                    <p><bold>평점 : ${(!restaurant.averageRating || restaurant.averageRating === 0) ? '리뷰없음' : restaurant.averageRating.toFixed(2)}</bold></p>
-                `;
-
-                const img = div.querySelector('img');
-                
-                // 이미지 클릭 이벤트 
-                img.addEventListener('click', openModal);
-
-                await new Promise ((resolve, reject) => {
-                    img.onload = resolve;
-                    img.onerror = reject;
-                });
-
-                return div;
-            }
-
             // 이미지 로드 에러 핸들러
             function handleImageLoadErrorHandler() {
 
             }
-            // DOMContentLoaded 이벤트 리스너 외부의 함수들
-            function initializeModal() {
-                console.log("Initializing profile edit");
-                
-                const title = document.getElementById('title');
-                const mapx = document.getElementById('mapx');
-                const mapy = document.getElementById('mapy');
-                const map = document.getElementById('map');
-                const link = document.getElementById('link');
-                const close = document.querySelector('.closeMapModal');
-                const containerFluid = document.querySelector('.container-fluid');
-                const form = document.getElementById('reviewForm');
-
-                if (title) { 
-                    console.log("Toggle button clicked");
-                }
-                if (mapx) {
-                    console.log("mapx : ", mapx);
-                }
-                if (mapy) {
-                    console.log("mapy : ", mapy);
-                }
-                if (map) {
-                    console.log("map : ", map);
-                }
-            }
-            function initializeModalScript(restaurantId){
-                
-                // 클로저 : 주변 환경 변수, 값을 기억해두었다가 접근하기 위함
-                function submitReviewHandler(event){
-                    submitReview(event, restaurantId);
-                }
-                
-                console.log("restaurantId : ", restaurantId);
-                setTimeout(() => {
-                    var form = document.getElementById('reviewForm');
-                    console.log("Form after delay:", form);
-                    
-                    if (form) {
-                        // 연속으로 댓글 작성시, fragment로 리렌더링 되는 form으로 이벤트가 2개 이상 등록 될 수 있기 때문.
-                        form.removeEventListener('submit', submitReviewHandler); // 기존 이벤트 제거
-                        form.addEventListener('submit', submitReviewHandler); // 새 이벤트 등록
-                    } else {
-                        console.error("Form with id 'reviewForm' not found");
-                    }
-                }, 100);  // 100ms 지연
-            }
-
-            function submitReview(event, restaurantId) {
-                event.preventDefault();
-                var form = document.getElementById('reviewForm');
-                var content = form.querySelector('textarea[name="content"]').value;
-                var ratingInput = form.querySelector('input[name="rating"]:checked');
-    
-                // rating 값 체크
-                if (!ratingInput) {
-                    alert('평점을 선택해주세요');
-                    return;
-                }
-                var rating = ratingInput.value;
-
-                var url = `/api/v1/user/create/review/${restaurantId}`;
-                
-                fetch(url, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: `content=${encodeURIComponent(content)}&rating=${encodeURIComponent(rating)}`
-                })
-                .then(response => response.text())
-                .then(html => {
-                    console.log("Response received");
-                    document.querySelector('.comments-section').innerHTML = html;
-                    form.reset();
-                    console.log("Form reset and comment list updated");
-                    updateReviewCount(restaurantId);
-                    
-                    // comments-section요소가 다시 업데이트된 후에 이벤트 리스너를 재등록 하기위함.
-                    initializeModalScript(restaurantId);
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('리뷰 작성 중 오류가 발생했습니다.');
-                });
-            }
-
-            function updateReviewCount(restaurantId) {
-                fetch(`/api/v1/user/review/${restaurantId}`)
-                .then(response => response.json())
-                .then(data => {
-                    // 리뷰 카운트 업데이트 로직
-                    console.log("Reviews updated:", data.reviews);
-                });
-            }
-
-            function loadModalStyle() {
-                if (!document.getElementById('mapModal-content')) {
-                    var link = document.createElement('link');
-                    link.id = "mapModalStyle";
-                    link.rel = "stylesheet";
-                    link.type = "text/css";
-                    link.href = "/css/mapModalStyle.css";
-                    document.head.appendChild(link);
-                }
-            }
-            
-            function createMap(mapx, mapy) {
-                try{
-                    console.log("Creating map with coordinates:", mapx, mapy);
-                    var tm128 = new naver.maps.Point(mapx, mapy);
-                    var latLng = convertToLatLng(mapx, mapy);
-                    var mapOptions = {
-                        center: new naver.maps.LatLng(latLng.y, latLng.x),
-                        zoom: 17,
-                    };
-
-                    map = new naver.maps.Map('map', mapOptions);
-
-                    var marker = new naver.maps.Marker({
-                        position: new naver.maps.LatLng(latLng.y, latLng.x),
-                        map: map
-                    });
-
-                     // 지도 크기 재조정
-                    // setTimeout( function() {
-                    //     window.dispatchEvent(new Event('resize'));
-                    // }, 600);
-
-
-                    // updateMapSize();
-                    
-                    console.log("Map created successfully");
-                } catch (error) {
-                    console.error("Error creating map:", error);
-                }
-            }
-            
-            // function updateMapSize() {
-            //     if (map) {
-            //         var mapDiv = document.getElementById('map');
-            //         var width = mapDiv.clientWidth;
-            //         var height = mapDiv.clientHeight;
-            //         map.setSize(new naver.maps.Size(width, height));
-            //     }
-            // }
-
-            function closeMapModal() {
-                console.log("closeMapModal");
-                mapModal.style.display = "none";
-            }
-
-            // function closeFilterModal() {
-            //     console.log("closeFilterModal");
-            //     const filterBtnDetail = document.getElementById('filter-btn-detail');
-            //     filterBtnDetail.classList.remove('active');
-            //     filterModal.style.display = "none";
-            // }
-
-            function convertToLatLng(mapx, mapy) {
-                // 10^7로 나누어 실제 위도와 경도 값으로 변환
-                var lat = mapy / 10000000;
-                var lng = mapx / 10000000;
-                return { y: lat, x: lng };
-            }
-
-            // window.addEventListener('resize', updateMapSize);
-            
-            // 메인 스크립트
-
-            // 초기 로드
-            fetchFoods();
             // 무한 스크롤
             window.addEventListener('scroll', () => {
                 if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {
-                    fetchFoods();
+                    restaurantService.fetchFoods();
                 }
             });
-            
-
-            
+            // 모달 관련 전역 이벤트
             window.onclick = function(event) {
-                // 맵 모달 외부 클릭 시 닫기
                 if (event.target == mapModal) {
-                    mapModal.style.display = "none";
+                    modalService.closeModal();
                 }
-                // 필터 모달 외부 클릭 시 닫기 
                 if (event.target == filterModal) {
                     const filterBtnDetail = document.getElementById('filter-btn-detail');
-                    filterBtnDetail.classList.remove('active');
+                    filterBtnDetail?.classList.remove('active');
                     filterModal.style.display = "none";
                 }
             }
             
+            const spanFilterClose =  document.getElementsByClassName("closeFilterModal")[0];
             
             // 필터 모달 닫기 버튼 클릭 시 닫기
             spanFilterClose.onclick = function() {
@@ -776,16 +474,20 @@
         window.addEventListener('load', () => {
             document.querySelector('.filter-btn[data-filter="all"]').click();
         });
-
-        function clickfilterBtnDetail() {
-            const filterbtnDetail = document.getElementById('filter-btn-detail');
-            const filterButtons = document.querySelectorAll('.filter-btn');
-            filterButtons.forEach(btn => btn.classList.remove('active'));
-            filterbtnDetail.classList.add('active');
-            filterModal.style.display = "block";
-        }
+        document.addEventListener('DOMContentLoaded', () => {
+            const filterBtnDetail = document.getElementById('filter-btn-detail');
+            filterBtnDetail.addEventListener('click', () => {
+                const filterbtnDetail = document.getElementById('filter-btn-detail');
+                const filterButtons = document.querySelectorAll('.filter-btn');
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                filterbtnDetail.classList.add('active');
+                filterModal.style.display = "block";
+            })
+        })
     </script>
-    <script defer>
+    <script type="module" defer>
+        import { createFoodItem } from '[[@{/js/restaurantUtils.js}]]';
+        import { modalService } from '@/ModalService';
         // 클릭한 버튼에 active 클래스 추가
         function updateActiveButtonStyle(clickedButton){
             // 클릭한 버튼의 클래스 이름 가져오기
@@ -883,29 +585,40 @@
             if (serviceOption) {
                 params.append('service', serviceOption);
             }
-            
-            // 페이지 불러오기
-            const response = await fetch(`/api/foods?${params.toString()}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-            
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            
-            const data = await response.json();
-            
-            // 페이지 업데이트
-            const foodList = document.getElementById('food-list');
-            const restaurant = data.content;
-            
-            if(data){
+            try {
+                // 페이지 불러오기
+                const response = await fetch(`/api/foods?${params.toString()}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
                 
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                
+                const data = await response.json();
+                
+                // 페이지 업데이트
+                const foodList = document.getElementById('food-list');
+                foodList.innerHTML = ``;
+                const restaurants = data.Page.content;
+                
+                await Promise.all(
+                    restaurants.map(async (restaurant) => {
+                        const foodItem = await createFoodItem(restaurant, modalService.openModal);
+                        foodList.append(foodItem);
+                    })
+                );
+            }catch(error) {
+                console.log("error: ", error);
             }
+            
+        }
+        
 
+        
     </script>
 </body>
 </html>
