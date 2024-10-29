@@ -1,0 +1,59 @@
+<!-- likes.xml -->
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.mapper.LikeMapper">
+    <insert id="insert" parameterType="Like">
+        INSERT INTO likes (
+            target_type,
+            target_id,
+            user_id,
+            created_at,
+            updated_at
+        ) VALUES (
+            #{targetType},
+            #{targetId},
+            #{userId},
+            #{createdAt},
+            #{updatedAt}
+        )
+    </insert>
+
+    <delete id="delete">
+        DELETE FROM likes
+        WHERE target_type = #{targetType}
+        AND target_id = #{targetId}
+        AND user_id = #{userId}
+    </delete>
+
+    <select id="exists" resultType="boolean">
+        SELECT EXISTS (
+            SELECT 1 FROM likes
+            WHERE target_type = #{targetType}
+            AND target_id = #{targetId}
+            AND user_id = #{userId}
+        )
+    </select>
+
+    <select id="countLikes" resultType="int">
+        SELECT COUNT(*)
+        FROM likes
+        WHERE target_type = #{targetType}
+        AND target_id = #{targetId}
+    </select>
+
+    <select id="findByUserIdAndType" resultType="Like">
+        SELECT * FROM likes
+        WHERE user_id = #{userId}
+        AND target_type = #{targetType}
+        ORDER BY created_at DESC
+    </select>
+
+    <!-- 인덱스 생성 SQL -->
+    <!--
+    CREATE INDEX idx_likes_target ON likes(target_type, target_id);
+    CREATE INDEX idx_likes_user ON likes(user_id);
+    CREATE UNIQUE INDEX uk_likes_composite ON likes(target_type, target_id, user_id);
+    -->
+</mapper>
