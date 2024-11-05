@@ -1,9 +1,10 @@
 package HomePage.admin.controller;
 
-import HomePage.admin.service.AdminBoardService;
+import HomePage.admin.service.AdminBoardServiceImpl;
 import HomePage.config.auth.PrincipalDetails;
 import HomePage.domain.model.entity.CommunityBoard;
 import HomePage.domain.model.entity.Page;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -15,13 +16,10 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/api/v1/admin")
+@NoArgsConstructor
 public class adminPageController {
     @Autowired
-    private final AdminBoardService adminBoardService;
-
-    public adminPageController(AdminBoardService adminBoardService) {
-        this.adminBoardService = adminBoardService;
-    }
+    private AdminBoardServiceImpl adminBoardService;
 
     @GetMapping("/adminPage/boardList")
     public String showAdminBoardPage(@RequestParam(value="page", defaultValue = "1") int page,
