@@ -20,5 +20,5 @@ public class RestaurantReviewCommentDTO {
     private Timestamp registerDate;
     private Timestamp updateDate;
     private Timestamp deleteDate;
-
+    private double rating;
 }

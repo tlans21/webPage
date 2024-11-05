@@ -24,4 +24,6 @@ public class RestaurantDto {
     private int mapx;
     private int mapy;
     private String imageUrl;
+    private double averageRating;
+
 }

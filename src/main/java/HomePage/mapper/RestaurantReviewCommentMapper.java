@@ -1,6 +1,7 @@
 package HomePage.mapper;
 
 import HomePage.domain.model.entity.RestaurantReviewComment;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,4 +17,5 @@ public interface RestaurantReviewCommentMapper {
 
     int countByRestaurantId(Long restaurantId);
 
+    Boolean updateRatingByRestaurantId(@Param("id") Long restaurantId,@Param("rating") double rating);
 }

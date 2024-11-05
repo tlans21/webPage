@@ -1,5 +1,6 @@
 package HomePage.mapper;
 
+import HomePage.domain.model.dto.RestaurantSearchCriteria;
 import HomePage.domain.model.entity.Restaurant;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -25,5 +26,8 @@ public interface RestaurantMapper {
     void updateCountReview(@Param("restaurantId") Long restaurantId, @Param("reviewCnt") int reviewCnt);
 
     boolean updateViewCnt(Long restaurantId);
+    void updateAverageRatingById(@Param("restaurantId") Long restaurantId, @Param("averageRating") double averageRating);
+    int countRestaurantsBySearchCriteria(RestaurantSearchCriteria criteria);
+    List<Restaurant> findRestaurantsBySearchCriteria(RestaurantSearchCriteria criteria);
 }
 

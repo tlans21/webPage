@@ -30,4 +30,6 @@ public class RestaurantReviewComment extends Comment{
     public void setRestaurantId(Long restaurantId){
         this.restaurantId = restaurantId;
     }
+
+    private double rating;
 }

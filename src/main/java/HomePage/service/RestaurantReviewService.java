@@ -10,7 +10,6 @@ public interface RestaurantReviewService {
     List<RestaurantReviewCommentDTO> findByRestaurantId(Long restaurantId);
     void update(RestaurantReviewCommentDTO commentDTO);
     void delete(Long id);
-    RestaurantReviewCommentDTO createReview(Long restaurantId, Long userId, String content);
-
+    RestaurantReviewCommentDTO createReview(Long restaurantId, Long userId, String content, double rating);
 
 }

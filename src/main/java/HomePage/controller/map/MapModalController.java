@@ -27,6 +27,9 @@ public class MapModalController {
     public String showModalMap(@RequestBody Map<String, Long> payload, Model model) {
         Long id = payload.get("id"); // restaurant_id값
         boolean isSuccess = restaurantService.updateRestaurantViewCnt(id);// 조회수 업데이트
+        if (!isSuccess) {
+
+        }
         System.out.println(isSuccess);
         RestaurantDto restaurantDto = restaurantService.getRestaurantById(id);
         List<RestaurantReviewCommentDTO> comments = restaurantReviewService.findByRestaurantId(id);

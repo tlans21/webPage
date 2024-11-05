@@ -13,8 +13,8 @@
     </resultMap>
 
     <insert id="save" parameterType="HomePage.domain.model.entity.RestaurantReviewComment" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO security.restaurant_review_comments (restaurant_id, user_id, content, created_at, updated_at)
-        VALUES (#{restaurantId}, #{userId}, #{content}, #{registerDate}, #{updateDate})
+        INSERT INTO security.restaurant_review_comments (restaurant_id, user_id, content, created_at, updated_at, rating)
+        VALUES (#{restaurantId}, #{userId}, #{content}, #{registerDate}, #{updateDate}, #{rating})
     </insert>
 
     <select id="findById" parameterType="long" resultMap="RestaurantReviewCommentResultMap">
@@ -30,6 +30,11 @@
         UPDATE restaurant_review_comments
         SET content = #{content}, updated_at = #{updatedDate}
         WHERE id = #{id}
+    </update>
+    <update id="updateRatingByRestaurantId">
+        UPDATE restaurant_review_comments
+        SET rating = #{rating}
+        WHERE id = #{rest
     </update>
 
     <delete id="deleteById" parameterType="long">

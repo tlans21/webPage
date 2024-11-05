@@ -1,10 +1,7 @@
 package HomePage.service.restaurant;
 
 import HomePage.config.naver.NaverClient;
-import HomePage.domain.model.dto.RestaurantDto;
-import HomePage.domain.model.dto.SearchImageReq;
-import HomePage.domain.model.dto.SearchImageRes;
-import HomePage.domain.model.dto.SearchLocalReq;
+import HomePage.domain.model.dto.*;
 import HomePage.domain.model.entity.Page;
 import HomePage.domain.model.entity.Restaurant;
 import HomePage.mapper.RestaurantMapper;
@@ -31,21 +28,30 @@ public class RestaurantService {
     private ObjectMapper objectMapper;
 
 
-    public Page<RestaurantDto> getRestaurantsPage(int pageNumber){
-        if (pageNumber <= 0) {
+    public int getTotalRestaurantCountWithCriteria(RestaurantSearchCriteria searchCriteria){
+        return restaurantMapper.countRestaurantsBySearchCriteria(searchCriteria);
+    }
+
+    public Page<RestaurantDto> getRestaurantsPageBySearchCriteria(RestaurantSearchCriteria searchCriteria){
+        int totalRestaurants = getTotalRestaurantCountWithCriteria(searchCriteria);
+        System.out.println(searchCriteria.getPageSize());
+        int totalPages = (int) Math.ceil((double) totalRestaurants / searchCriteria.getPageSize());
+
+        System.out.println("totalRestaurants" + totalRestaurants);
+        System.out.println("totalPage:" + totalPages);
+
+        if (searchCriteria.getPage() <= 0) {
             throw new IllegalArgumentException("Page number must be greater than 0");
         }
-
-        int totalRestaurants = getTotalRestaurantCount();
-
-        int totalRestaurantPages = (int) Math.ceil((double) totalRestaurants / pageSize);
-        System.out.println("totalPage" + totalRestaurantPages);
-        if (pageNumber > totalRestaurantPages) {
-            pageNumber = totalRestaurantPages; // or throw an exception if you prefer
+        if (searchCriteria.getPage() > totalPages) {
+            searchCriteria.setPage(totalPages);
         }
 
-        int offset = (pageNumber - 1) * pageSize;
-        List<Restaurant> restaurants = restaurantMapper.findRestaurantPage(offset, pageSize);
+        // offset 계산 및 설정
+        searchCriteria.setOffset((searchCriteria.getPage() - 1) * searchCriteria.getPageSize());
+
+//        int offset = (pageNumber - 1) * pageSize;
+        List<Restaurant> restaurants = restaurantMapper.findRestaurantsBySearchCriteria(searchCriteria);
 
         // 컨트롤러 계층에 전달하기 위해 entity -> dto 변환
         List<RestaurantDto> restaurantDTOs = restaurants.stream()
@@ -55,13 +61,11 @@ public class RestaurantService {
                 })
                 .collect(Collectors.toList());
 
-        return new Page<RestaurantDto>(restaurantDTOs, pageNumber, totalRestaurantPages, pageSize);
+        return new Page<RestaurantDto>(restaurantDTOs, searchCriteria.getPage(), totalPages, searchCriteria.getPageSize());
     }
     public int getTotalRestaurantCount(){
         return restaurantMapper.count();
     }
-
-
 
     public int createRestaurants(String query) {
         List<String> regions = Arrays.asList("서울", "경기", "인천", "강원", "충청", "대전", "세종", "전라", "광주", "경상", "대구", "부산", "제주", "");
@@ -129,6 +133,12 @@ public class RestaurantService {
     @Transactional
     public boolean updateRestaurantViewCnt(Long restaurantId){
         return restaurantMapper.updateViewCnt(restaurantId);
+    }
+
+    public void updateAverageRating(Long restaurantId, double averageRating) {
+        // 식당 id를 통해 연관된 리뷰들을 가져온다.
+
+        restaurantMapper.updateAverageRatingById(restaurantId, averageRating);
     }
 
 //    public List<Map<String, Restaurant>> createRestaurantImage(List<Map<String, String>> restaurants) {

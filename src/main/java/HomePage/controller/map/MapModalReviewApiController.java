@@ -31,32 +31,35 @@ public class MapModalReviewApiController {
     @PostMapping("/create/review/{restaurantId}")
     public String createReview(@PathVariable Long restaurantId,
                                @RequestParam String content,
+                               @RequestParam double rating,
                                Authentication authentication,
                                Model model) {
         System.out.println("create");
-        try {
-            PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-            User user = principalDetails.getUser();
-            Long userId = user.getId();
+        System.out.println(restaurantId);
+        System.out.println(content);
+        System.out.println(rating);
 
-            RestaurantReviewCommentDTO review = restaurantReviewService.createReview(restaurantId, userId, content);
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        User user = principalDetails.getUser();
+        Long userId = user.getId();
 
-            // 최신 리뷰 목록 조회
-            List<RestaurantReviewCommentDTO> reviews = restaurantReviewService.findByRestaurantId(restaurantId);
+        RestaurantReviewCommentDTO review = restaurantReviewService.createReview(restaurantId, userId, content, rating);
 
-            RestaurantDto restaurantDto = restaurantService.getRestaurantById(restaurantId);
+        // 최신 리뷰 목록 조회
+        List<RestaurantReviewCommentDTO> reviewDTOs = restaurantReviewService.findByRestaurantId(restaurantId);
+        System.out.println(reviewDTOs);
+        RestaurantDto restaurantDto = restaurantService.getRestaurantById(restaurantId);
 
-
-            model.addAttribute("restaurant", restaurantDto);
-            model.addAttribute("comments", reviews);
-
-            // 댓글 목록 부분만 반환
-            return "/map/commentsList :: comment-list";
-        } catch (Exception e) {
-            // 에러 처리
-            model.addAttribute("error", "리뷰 생성 중 오류가 발생했습니다: " + e.getMessage());
-            return "/map/commentsList :: .error-message";
+        for (RestaurantReviewCommentDTO reviewDTO : reviewDTOs){
+            System.out.println(reviewDTO.getContent());
         }
+
+        model.addAttribute("restaurant", restaurantDto);
+        model.addAttribute("comments", reviewDTOs);
+
+        // 댓글 목록 부분만 반환
+        return "/map/commentsSection :: comments-section";
+
     }
     @GetMapping("/review/{restaurantId}")
     @ResponseBody
