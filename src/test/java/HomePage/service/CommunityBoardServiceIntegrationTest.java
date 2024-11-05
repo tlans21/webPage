@@ -1,13 +1,14 @@
 package HomePage.service;
 
 import HomePage.controller.board.form.CommunityBoardWriteForm;
-import HomePage.domain.model.CommunityBoard;
-import HomePage.domain.model.CommunityComment;
-import HomePage.domain.model.Page;
-import HomePage.domain.model.User;
+import HomePage.domain.model.entity.CommunityBoard;
+import HomePage.domain.model.entity.CommunityComment;
+import HomePage.domain.model.entity.Page;
+import HomePage.domain.model.entity.User;
 import HomePage.repository.BoardRepository;
 import HomePage.repository.CommentRepository;
 import HomePage.repository.UserRepository;
+import HomePage.service.user.UserService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

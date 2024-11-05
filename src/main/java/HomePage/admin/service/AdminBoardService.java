@@ -1,7 +1,7 @@
 package HomePage.admin.service;
 
-import HomePage.domain.model.CommunityBoard;
-import HomePage.domain.model.Page;
+import HomePage.domain.model.entity.CommunityBoard;
+import HomePage.domain.model.entity.Page;
 
 import java.util.List;
 

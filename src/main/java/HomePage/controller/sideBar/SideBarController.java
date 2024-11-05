@@ -1,7 +1,7 @@
 package HomePage.controller.sideBar;
 
 import HomePage.config.auth.PrincipalDetails;
-import HomePage.service.UserService;
+import HomePage.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;

@@ -1,7 +1,7 @@
 package HomePage.admin.service;
 
-import HomePage.domain.model.ChartDataDTO;
-import HomePage.domain.model.StatDTO;
+import HomePage.domain.model.dto.ChartDataDTO;
+import HomePage.domain.model.dto.StatDTO;
 import HomePage.repository.JdbcTemplateCommunityBoardRepository;
 import HomePage.repository.JdbcTemplateCommunityCommentRepository;
 import HomePage.repository.UserRepository;

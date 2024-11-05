@@ -1,8 +1,8 @@
 package HomePage.repository;
 
-import HomePage.domain.model.CommunityBoard;
-import HomePage.domain.model.CommunityComment;
-import HomePage.domain.model.User;
+import HomePage.domain.model.entity.CommunityBoard;
+import HomePage.domain.model.entity.CommunityComment;
+import HomePage.domain.model.entity.User;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

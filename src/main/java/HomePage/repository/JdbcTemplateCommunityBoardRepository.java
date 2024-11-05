@@ -1,6 +1,6 @@
 package HomePage.repository;
 
-import HomePage.domain.model.CommunityBoard;
+import HomePage.domain.model.entity.CommunityBoard;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -138,6 +138,13 @@ public class JdbcTemplateCommunityBoardRepository implements BoardRepository<Com
     public List<CommunityBoard> selectByWriter(String writer) {
         String sql = String.format("SELECT * FROM %s WHERE writer = ?", tableName);
         List<CommunityBoard> result = jdbcTemplate.query(sql, communityBoardRowMapper(), writer);
+        return result;
+    }
+
+    @Override
+    public List<CommunityBoard> selectRecentByWriter(String writer, int limit) {
+        String sql = String.format("SELECT * FROM %s WHERE writer = ? ORDER BY createdAt DESC LIMIT ?", tableName);
+        List<CommunityBoard> result = jdbcTemplate.query(sql, communityBoardRowMapper(), writer, limit);
         return result;
     }
 

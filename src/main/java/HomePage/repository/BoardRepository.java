@@ -1,6 +1,6 @@
 package HomePage.repository;
 
-import HomePage.domain.model.Board;
+import HomePage.domain.model.entity.Board;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -27,6 +27,7 @@ public interface BoardRepository<T extends Board>{
     Optional<T> selectById(Long id);
     List<T> selectByTitle(String title);
     List<T> selectByWriter(String writer);
+    List<T> selectRecentByWriter(String writer, int limit);
 
     List<T> selectAll();
 

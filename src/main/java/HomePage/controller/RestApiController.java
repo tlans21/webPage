@@ -1,7 +1,7 @@
 package HomePage.controller;
 
 import HomePage.config.auth.PrincipalDetails;
-import HomePage.service.UserService;
+import HomePage.service.user.UserService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;

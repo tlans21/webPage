@@ -1,8 +1,8 @@
 package HomePage.controller.board;
 
-import HomePage.domain.model.CommunityBoard;
-import HomePage.domain.model.CommunityComment;
-import HomePage.domain.model.Page;
+import HomePage.domain.model.entity.CommunityBoard;
+import HomePage.domain.model.entity.CommunityComment;
+import HomePage.domain.model.entity.Page;
 import HomePage.service.CommunityBoardService;
 import HomePage.service.CommunityCommentService;
 import org.springframework.stereotype.Controller;

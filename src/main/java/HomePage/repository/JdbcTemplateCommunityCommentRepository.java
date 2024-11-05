@@ -1,6 +1,6 @@
 package HomePage.repository;
 
-import HomePage.domain.model.CommunityComment;
+import HomePage.domain.model.entity.CommunityComment;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -25,14 +25,14 @@ public class JdbcTemplateCommunityCommentRepository implements CommentRepository
 
     @Override
     public CommunityComment save(CommunityComment comment) {
-        String sql = "INSERT INTO " + tableName + " (writer, board_id, content, createdAt, updatedAt, deleteAt) " +
+        String sql = "INSERT INTO " + tableName + " (writer, board_id, content, createdAt, updatedAt, deletedAt) " +
                                         "VALUES (?, ?, ?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         comment.setRegisterDate(new Timestamp(System.currentTimeMillis()));
         jdbcTemplate.update(connection -> {
                 PreparedStatement ps = connection.prepareStatement(sql, new String[]{"comment_id"});
                 ps.setString(1, comment.getWriter());
-                ps.setLong(2, comment.getBoard_id());
+                ps.setLong(2, comment.getBoardId());
                 ps.setString(3, comment.getContent());
                 ps.setTimestamp(4, comment.getRegisterDate());
                 ps.setTimestamp(5, comment.getUpdateDate());
@@ -95,6 +95,17 @@ public class JdbcTemplateCommunityCommentRepository implements CommentRepository
         String sql = String.format("SELECT * FROM %s WHERE board_id = ?", tableName);
         return jdbcTemplate.query(sql, communityCommentRowMapper(), boardId);
     }
+    @Override
+    public List<CommunityComment> selectByWriter(String writer){
+        String sql = String.format("SELECT * FROM %s WHERE writer = ?", tableName);
+        return jdbcTemplate.query(sql, communityCommentRowMapper(), writer);
+    }
+
+    @Override
+    public List<CommunityComment> selectRecentByWriter(String writer, int limit) {
+        String sql = String.format("SELECT * FROM %s WHERE writer = ? ORDER BY createdAt DESC LIMIT ?", tableName);
+        return jdbcTemplate.query(sql, communityCommentRowMapper(), writer, limit);
+    }
 
     @Override
     public boolean deleteByWriter(String writer) {
@@ -123,7 +134,7 @@ public class JdbcTemplateCommunityCommentRepository implements CommentRepository
        return (rs, rowNum) -> {
            CommunityComment communityComment = new CommunityComment();
            communityComment.setId(rs.getLong("comment_id"));
-           communityComment.setBoard_id(rs.getLong("board_id"));
+           communityComment.setBoardId(rs.getLong("board_id"));
            communityComment.setContent(rs.getString("content"));
            communityComment.setWriter(rs.getString("writer"));
            communityComment.setRegisterDate(rs.getTimestamp("createdAt"));

@@ -1,6 +1,6 @@
 package HomePage.repository;
 
-import HomePage.domain.model.User;
+import HomePage.domain.model.entity.User;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -144,5 +144,10 @@ public class MemoryUserRepository implements UserRepository {
     @Override
     public List<User> findUserPageByRole(int offset, int limit, String role) {
         return null;
+    }
+
+    @Override
+    public boolean updateUserNickName(User user, String nickname) {
+        return false;
     }
 }

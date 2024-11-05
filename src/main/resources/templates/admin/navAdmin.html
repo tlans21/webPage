@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>관리자 페이지</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <link rel="stylesheet" type="text/css" th:href="@{/css/navAdminStyle.css}">
 </head>
 <body>
     <nav class="admin-sidebar" th:fragment="navAdmin">
+        <link rel="stylesheet" type="text/css" th:href="@{/css/navAdminStyle.css}">
+
         <h1 class="sidebar-title">관리자 페이지</h1>
         <ul class="sidebar-menu">
             <li><a th:href="@{/api/v1/admin/adminPage/dashBoard}"><i class="fas fa-home"></i> 대시보드</a></li>

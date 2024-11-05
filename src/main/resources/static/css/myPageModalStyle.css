@@ -1,0 +1,65 @@
+body {
+    font-family: 'Noto Sans KR', sans-serif;
+}
+.mypage-container {
+    padding: 20px;
+    background-color: #f8f9fa;
+}
+.profile-card, .recent-posts-card, .recent-comments-card {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    padding: 20px;
+}
+.profile-image {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+.activity-item {
+    border-bottom: 1px solid #e0e0e0;
+    padding: 1px 0;
+}
+.activity-item p {
+    font-size: 12px;
+}
+.activity-item:last-child {
+    border-bottom: none;
+}
+.preview-card {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    padding: 20px;
+    margin-top: 20px;
+}
+#editProfileForm {
+    display: none;
+}
+body { font-family: 'Noto Sans KR', sans-serif; background-color: #f8f9fa; }
+.card { border: none; box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15); border-radius: 0.5rem; }
+.card-header { background-color: #f1f3f5; border-bottom: none; }
+.activity-item { border-bottom: 1px solid #e9ecef; padding: 1rem 0; }
+.activity-item:last-child { border-bottom: none; }
+.badge-role { background-color: #4dabf7; color: white; font-weight: normal; }
+/* 링크 스타일 수정 */
+a {
+    color: inherit; /* 부모 요소의 텍스트 색상을 상속 */
+    text-decoration: none; /* 밑줄 제거 */
+    transition: color 0.3s ease; /* 부드러운 색상 전환 효과 */
+}
+
+a:hover {
+    color: #007bff; /* 호버 시 색상 변경 (부트스트랩 기본 파란색) */
+}
+
+/* 활동 항목 스타일 수정 */
+.activity-item a {
+    color: #495057; /* 더 어두운 회색으로 변경 */
+}
+
+.activity-item a:hover {
+    color: #007bff; /* 호버 시 부트스트랩 기본 파란색으로 변경 */
+}

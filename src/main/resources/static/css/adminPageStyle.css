@@ -1,0 +1,193 @@
+nav ul {
+    padding: 0;
+    list-style-type: none;
+}
+nav ul li {
+    display: inline;
+    margin-right: 10px;
+}
+nav ul li a {
+    color: #ffffff;
+    text-decoration: none;
+}
+main {
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+.search-container {
+    width: 300px;
+    margin: 20px auto;
+}
+.deleteBtn {
+    width: 100%;
+    padding: 10px;
+    background-color: #1e90ff;
+    color: white;
+    border: 1px solid #4CAF50;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.editBtn {
+    width : 100%;
+    padding: 10px;
+    background-color: #1e90ff;
+    color: white;
+    border: 1px solid #4CAF50;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.mainContainer {
+    display: flex;
+    justify-content: space-between;
+    max-width: 100%; 
+    margin: 0 auto;     /* 중앙 정렬 */
+}
+.leftLayer, .rightLayer {
+    width: 300px;  /* 고정 너비 */
+    background-color: white;
+}
+#boardManagement{
+    flex : 1;
+    max-width: 900px;
+    width: 900px;  /* 고정 너비 설정 */
+    background-color: white;
+    padding: 20px;
+    margin: 0 auto;  /* 중앙 정렬 */
+}
+#dashBoardManagement {
+    flex : 1;
+    max-width: 900px;
+    width: 900px;  /* 고정 너비 설정 */
+    background-color: white;
+    padding: 20px;
+    margin: 0 auto;  /* 중앙 정렬 */
+}
+.board-table{
+    display: table;
+}
+
+.board-header {
+    font-weight: bold;
+}
+
+.board-header, .board-item {
+    display: table-row;
+    width: 100%;
+}
+
+.board-header > div, .board-item > div {
+    display: table-cell;
+    padding: 10px 5px;
+    text-align: center;
+    white-space: nowrap; 
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+/* 각 열의 너비 지정 */
+.board-header > div:nth-child(1),
+.board-item > div:nth-child(1) {
+    width: 10%; /* ID */
+}
+
+.board-header > div:nth-child(2),
+.board-item > div:nth-child(2) {
+    width: 25%; /* Username */
+}
+
+.board-header > div:nth-child(3),
+.board-item > div:nth-child(3) {
+    width: 30%; /* Email */
+}
+
+.board-header > div:nth-child(4),
+.board-item > div:nth-child(4) {
+    width: 15%; /* 권한 */
+}
+
+.board-header > div:nth-child(5),
+.board-item > div:nth-child(5) {
+    width: 20%; /* 소셜 로그인 */
+}
+
+.board-header > div:nth-child(6),
+.board-item > div:nth-child(6) {
+    width: 10%; /* 관리 */
+}
+.board-item > div > a {
+    display: inline-block;
+    text-decoration: none;
+    color: inherit;
+}
+.cell-flex {
+    display: flex;
+    justify-content: center;
+}
+.cell-flex form {
+    text-align : center;
+    padding : 5px;
+}
+.pagination {
+    margin-top: 20px;
+    text-align: center;
+}
+.pagination a {
+    color: #333;    
+    padding: 8px 16px;
+    text-decoration: none;
+    transition: background-color .3s;
+    border: 1px solid #ddd;
+    margin: 0 4px;
+}
+.pagination a.active {
+    background-color: #35424a;
+    color: white;
+    border: 1px solid #35424a;
+}
+.pagination a:hover:not(.active) {background-color: #ddd;}
+footer {
+    background-color: #35424a;
+    color: #ffffff;
+    text-align: center;
+    padding: 1rem;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+.search-bar {
+    width: 100%;
+}
+.search-bar form {
+    display: flex;
+}
+.search-bar select {
+    width: 10%;
+    padding-top: 10px;
+    padding-left: 10px;
+    padding-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 20px;  
+}
+
+.search-bar input {
+    width: 80%;
+    padding-top: 10px;
+    padding-left: 10px;
+    padding-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+.search-bar .searchButton {
+    width: 10%;
+    padding-top: 10px;
+    padding-left: 10px;
+    padding-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
