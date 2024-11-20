@@ -87,7 +87,6 @@ public class RestaurantService {
                 // 이미지 검색
                 var localSearchImageReq = new SearchImageReq();
                 localSearchImageReq.setQuery(localSearchImageQuery);
-
                 // 이미지 검색 응답
                 SearchImageRes searchImageRes = naverClient.searchImage(localSearchImageReq);
 

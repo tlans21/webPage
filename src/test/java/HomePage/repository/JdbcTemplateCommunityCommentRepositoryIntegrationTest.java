@@ -68,7 +68,7 @@ class JdbcTemplateCommunityCommentRepositoryIntegrationTest {
 
         // when : 댓글 준비
         testComment = new CommunityComment();
-        testComment.setBoard_id(testBoard.getId());
+        testComment.setBoardId(testBoard.getId());
         testComment.setWriter("commentUser");
         testComment.setContent("Test Comment");
     }
@@ -97,7 +97,7 @@ class JdbcTemplateCommunityCommentRepositoryIntegrationTest {
 
             // then : 검증
             assertNotNull(savedComment.getId());
-            assertEquals(testComment.getBoard_id(), savedComment.getBoard_id());
+            assertEquals(testComment.getBoardId(), savedComment.getBoardId());
             assertEquals(testComment.getWriter(), savedComment.getWriter());
             assertEquals(testComment.getContent(), savedComment.getContent());
         }
@@ -107,7 +107,7 @@ class JdbcTemplateCommunityCommentRepositoryIntegrationTest {
         //given : 준비
         CommunityComment savedComment = commentRepository.save(testComment);
         //when : 실행
-        int result = commentRepository.countByBoardId(savedComment.getBoard_id());
+        int result = commentRepository.countByBoardId(savedComment.getBoardId());
         //then : 검증
         assertThat(result).isEqualTo(1);
     }
@@ -139,7 +139,7 @@ class JdbcTemplateCommunityCommentRepositoryIntegrationTest {
         assertThat(updatedComment).isNotNull();
         assertThat(updatedComment.getContent()).isEqualTo(updatedContent);
         assertThat(updatedComment.getWriter()).isEqualTo(savedComment.getWriter());
-        assertThat(updatedComment.getBoard_id()).isEqualTo(savedComment.getBoard_id());
+        assertThat(updatedComment.getBoardId()).isEqualTo(savedComment.getBoardId());
     }
 
     @Test
@@ -152,7 +152,7 @@ class JdbcTemplateCommunityCommentRepositoryIntegrationTest {
         assertThat(foundComment).isNotNull();
         assertThat(foundComment.getContent()).isEqualTo(savedComment.getContent());
         assertThat(foundComment.getWriter()).isEqualTo(savedComment.getWriter());
-        assertThat(foundComment.getBoard_id()).isEqualTo(savedComment.getBoard_id());
+        assertThat(foundComment.getBoardId()).isEqualTo(savedComment.getBoardId());
     }
 
     @Test
@@ -165,7 +165,7 @@ class JdbcTemplateCommunityCommentRepositoryIntegrationTest {
         assertThat(communityComments).isNotEmpty();
         assertThat(communityComments.get(0).getWriter()).isEqualTo(savedComment.getWriter());
         assertThat(communityComments.get(0).getContent()).isEqualTo(savedComment.getContent());
-        assertThat(communityComments.get(0).getBoard_id()).isEqualTo(savedComment.getBoard_id());
+        assertThat(communityComments.get(0).getBoardId()).isEqualTo(savedComment.getBoardId());
     }
 
     @Test

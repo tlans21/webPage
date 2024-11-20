@@ -66,6 +66,7 @@ public class RestaurantApiRestController {
 
     @GetMapping("/restaurants/create")
     public String createRestaurants(@RequestParam String query){
+        System.out.println(query);
         int totalSaved = restaurantService.createRestaurants(query);
 
         return "Total restaurants saved: " + totalSaved;

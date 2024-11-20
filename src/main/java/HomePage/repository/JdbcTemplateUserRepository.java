@@ -29,7 +29,7 @@ public class JdbcTemplateUserRepository implements UserRepository {
 
     @Override
     public User save(User user) {
-        String sql = "INSERT INTO " + tableName + " (username, password, nickname, email, role, phoneNumber, provider, providerId, createdAt) " +
+        String sql = "INSERT INTO " + tableName + " (username, email, nickname, password, role, phoneNumber, provider, providerId, createdAt) " +
                                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         user.setCreateDate(new Timestamp(System.currentTimeMillis()));
