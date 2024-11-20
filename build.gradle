@@ -24,6 +24,12 @@ repositories {
 	mavenCentral()
 }
 
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
@@ -47,19 +53,21 @@ dependencies {
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	implementation group: 'org.modelmapper', name: 'modelmapper', version: '2.3.8' // Model mapper
 	implementation 'com.fasterxml.jackson.core:jackson-databind'
-//	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
-}
-
-dependencies {
 	compileOnly 'org.projectlombok:lombok:1.18.30'  // 버전 명시
 	annotationProcessor 'org.projectlombok:lombok:1.18.30'
+//	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
 }
+
 
 tasks.named('test') {
 	useJUnitPlatform()
 }
 
-compileJava {	options.compilerArgs << '-parameters'}
+compileJava {
+	options.compilerArgs << '-parameters'
+	options.annotationProcessorPath = configurations.annotationProcessor
+}
 
 
 test {
