@@ -386,7 +386,7 @@ class CommunityBoardServiceUnitTest {
         nonDeleteBoard.setContent("Non-delete Content");
 
         CommunityComment comment = new CommunityComment();
-        comment.setBoard_id(boardId);
+        comment.setBoardId(boardId);
         comment.setId(1L);
 
         when(commentRepository.deleteByBoardId(boardId)).thenReturn(false);

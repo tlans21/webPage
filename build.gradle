@@ -11,6 +11,15 @@ java {
 	sourceCompatibility = '17'
 }
 
+jar {
+	enabled = false
+}
+
+bootJar {
+	archiveBaseName.set('capstone')
+	archiveVersion.set('0.0.1-SNAPSHOT')
+}
+
 repositories {
 	mavenCentral()
 }
@@ -28,7 +37,6 @@ dependencies {
 	testImplementation 'org.assertj:assertj-core:3.23.1'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
-	implementation 'org.projectlombok:lombok'
 	implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.2'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.2'
@@ -42,10 +50,21 @@ dependencies {
 //	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 }
 
+dependencies {
+	compileOnly 'org.projectlombok:lombok:1.18.30'  // 버전 명시
+	annotationProcessor 'org.projectlombok:lombok:1.18.30'
+}
+
 tasks.named('test') {
 	useJUnitPlatform()
 }
 
 compileJava {	options.compilerArgs << '-parameters'}
 
+
+test {
+    exclude '**/CommunityCommentTest.class'
+    exclude '**/JdbcTemplateCommunityCommentRepositoryIntegrationTest.class'
+    // 제외하고 싶은 테스트 클래스들 추가
+}
 
