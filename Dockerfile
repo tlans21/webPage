@@ -1,4 +1,4 @@
-FROM amazon/amazon-ec2-instance-selector:17-alpine-jdk
+FROM amazoncorretto:17-alpine
 ARG JAR_FILE=build/libs/*.jar
 ARG PROFILES
 ARG ENV
