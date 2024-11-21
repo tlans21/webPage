@@ -62,7 +62,7 @@ public class CommunityBoardController {
 
         addPaginationAttributes(model, boardPage, sort, searchType, searchKeyword);
 
-        return "/board/communityBoardList";
+        return "board/communityBoardList";
     }
 
 

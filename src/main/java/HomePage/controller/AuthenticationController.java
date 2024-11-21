@@ -42,7 +42,7 @@ public class AuthenticationController {
 
     @GetMapping("/loginForm")
     public String loginForm(){
-        return "/login/loginForm";
+        return "login/loginForm";
     }
     @PostMapping("/api/logout")
     public String logout(HttpServletRequest request, HttpServletResponse response){
