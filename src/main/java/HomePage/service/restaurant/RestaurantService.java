@@ -15,6 +15,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static java.lang.Math.max;
+
 @Service
 public class RestaurantService {
     @Value("${communityBoard.page-size}")
@@ -35,7 +37,7 @@ public class RestaurantService {
     public Page<RestaurantDto> getRestaurantsPageBySearchCriteria(RestaurantSearchCriteria searchCriteria){
         int totalRestaurants = getTotalRestaurantCountWithCriteria(searchCriteria);
         System.out.println(searchCriteria.getPageSize());
-        int totalPages = (int) Math.ceil((double) totalRestaurants / searchCriteria.getPageSize());
+        int totalPages = max(1, (int) Math.ceil((double) totalRestaurants / searchCriteria.getPageSize()));
 
         System.out.println("totalRestaurants" + totalRestaurants);
         System.out.println("totalPage:" + totalPages);

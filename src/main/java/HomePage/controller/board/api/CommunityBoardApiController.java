@@ -53,7 +53,8 @@ public class CommunityBoardApiController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         System.out.println(principalDetails.getUsername());
-        board.setWriter(principalDetails.getUsername());
+        board.setWriter(principalDetails.getUsername()); // 사용자 아이디 설정
+        board.setNickname(principalDetails.getUser().getNickname());
         board.setViewCnt(0);
         board.setCommentCnt(0);
         boardService.saveBoard(board);

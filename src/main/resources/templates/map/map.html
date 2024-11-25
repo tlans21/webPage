@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" th:href="@{/css/mapModalStyle.css}">
     <script type="text/javascript" src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=z9fdx1to2u"></script>
     <script type="text/javascript" src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=z9fdx1to2u&submodules=geocoder,marker"></script>
@@ -302,85 +302,87 @@
 </head>
 <body>
     <header th:replace="~{fragments/navBar :: navBar}"></header>
-    <div class="ad-space">
-        광고 영역 (추후 구현 예정)
-    </div>
-    <div class="filter-bar">
-        <button id="filter-btn-detail">필터</button>
-        <button class="filter-btn" data-filter="all">전체</button>
-        <button class="filter-btn" data-filter="한식">한식</button>
-        <button class="filter-btn" data-filter="양식/레스토랑">양식/레스토랑</button>
-        <button class="filter-btn" data-filter="고기/구이류">고기/구이류</button>
-        <button class="filter-btn" data-filter="씨푸드">씨푸드</button>
-        <button class="filter-btn" data-filter="일/중/세계음식">일/중/세계음식</button>
-        <button class="filter-btn" data-filter="카페/디저트">카페/디저트</button>
-        <button class="filter-btn" data-filter="나이트라이프">나이트라이프</button>
-    </div>
-    <div id="content-wrapper">
-        <div id="main">
-            <h2 id="total-restaurant-count"></h2>
-            <div id="food-list">
-                <!-- food-item 등록 칸 -->
-            </div>
-            <!-- <div id="map"></div> -->
-            <div id="loading">로딩 중....</div>
+    <div class="content-wrapper">
+        <div class="ad-space">
+            광고 영역 (추후 구현 예정)
         </div>
-        
-        <!-- 필터 버튼 모달 -->
-        <div id="filterModal">
-            <div id="filterModal-content">
-                <span class="closeFilterModal">&times;</span>
-                <div class="filter-header">
-                    <h2>필터 <button id="resetFilter"><i class="fa-solid fa-arrow-rotate-right"></i></button></h2>
+        <div class="filter-bar">
+            <button id="filter-btn-detail">필터</button>
+            <button class="filter-btn" data-filter="all">전체</button>
+            <button class="filter-btn" data-filter="한식">한식</button>
+            <button class="filter-btn" data-filter="양식/레스토랑">양식/레스토랑</button>
+            <button class="filter-btn" data-filter="고기/구이류">고기/구이류</button>
+            <button class="filter-btn" data-filter="씨푸드">씨푸드</button>
+            <button class="filter-btn" data-filter="일/중/세계음식">일/중/세계음식</button>
+            <button class="filter-btn" data-filter="카페/디저트">카페/디저트</button>
+            <button class="filter-btn" data-filter="나이트라이프">나이트라이프</button>
+        </div>
+        <div id="content-wrapper">
+            <div id="main">
+                <h2 id="total-restaurant-count"></h2>
+                <div id="food-list">
+                    <!-- food-item 등록 칸 -->
+                </div>
+                <!-- <div id="map"></div> -->
+                <div id="loading">로딩 중....</div>
+            </div>
+            
+            <!-- 필터 버튼 모달 -->
+            <div id="filterModal">
+                <div id="filterModal-content">
+                    <span class="closeFilterModal">&times;</span>
+                    <div class="filter-header">
+                        <h2>필터 <button id="resetFilter"><i class="fa-solid fa-arrow-rotate-right"></i></button></h2>
+                        
+                    </div>
                     
-                </div>
+                    <div class="filter-body">
+                        <div class="filter-section">
+                            <h3>정렬</h3>
+                            <div class="filter-options">
+                                <button class="filter-sort-option active" data-filter="평점순">평점순</button>
+                                <button class="filter-sort-option" data-filter="조회순">조회순</button>
+                                <button class="filter-sort-option" data-filter="거리순">거리순</button>
+                                <button class="filter-sort-option" data-filter="리뷰순">리뷰순</button>
+                            </div>
+                        </div>
                 
-                <div class="filter-body">
-                    <div class="filter-section">
-                        <h3>정렬</h3>
-                        <div class="filter-options">
-                            <button class="filter-sort-option active" data-filter="평점순">평점순</button>
-                            <button class="filter-sort-option" data-filter="조회순">조회순</button>
-                            <button class="filter-sort-option" data-filter="거리순">거리순</button>
-                            <button class="filter-sort-option" data-filter="리뷰순">리뷰순</button>
+                        <div class="filter-section">
+                            <h3>테마</h3>
+                            <div class="filter-options">
+                                <button class="filter-theme-option" data-filter="삼겹살">삼겹살</button>
+                                <button class="filter-theme-option" data-filter="회식">회식</button>
+                                <button class="filter-theme-option" data-filter="데이트">데이트</button>
+                                <button class="filter-theme-option" data-filter="접대">접대</button>
+                                <!-- 추가 옵션들 -->
+                            </div>
+                        </div>
+                
+                        <div class="filter-section">
+                            <h3>서비스</h3>
+                            <div class="filter-options">
+                                <button class="filter-service-option" data-filter="주차">주차</button>
+                                <button class="filter-service-option" data-filter="예약">예약</button>
+                                <button class="filter-service-option" data-filter="포장">포장</button>
+                                <!-- 추가 옵션들 -->
+                            </div>
                         </div>
                     </div>
-            
-                    <div class="filter-section">
-                        <h3>테마</h3>
-                        <div class="filter-options">
-                            <button class="filter-theme-option" data-filter="삼겹살">삼겹살</button>
-                            <button class="filter-theme-option" data-filter="회식">회식</button>
-                            <button class="filter-theme-option" data-filter="데이트">데이트</button>
-                            <button class="filter-theme-option" data-filter="접대">접대</button>
-                            <!-- 추가 옵션들 -->
-                        </div>
+                
+                    <div class="filter-footer">
+                        <button id="applyFilter">필터 적용</button>
                     </div>
-            
-                    <div class="filter-section">
-                        <h3>서비스</h3>
-                        <div class="filter-options">
-                            <button class="filter-service-option" data-filter="주차">주차</button>
-                            <button class="filter-service-option" data-filter="예약">예약</button>
-                            <button class="filter-service-option" data-filter="포장">포장</button>
-                            <!-- 추가 옵션들 -->
-                        </div>
-                    </div>
-                </div>
-            
-                <div class="filter-footer">
-                    <button id="applyFilter">필터 적용</button>
                 </div>
             </div>
-        </div>
 
-        <!-- 지도 모달 -->
-        <div id="mapModal" class="modal-wrapper">
-            <div id="mapModal-content">
-                <!-- mapModal 내용 삽입 -->
+            <!-- 지도 모달 -->
+            <div id="mapModal" class="modal-wrapper">
+                <div id="mapModal-content">
+                    <!-- mapModal 내용 삽입 -->
+                </div>
             </div>
+            
         </div>
-        
     </div>
     <!-- import 맵 -->
     <script type="importmap" th:inline="javascript">

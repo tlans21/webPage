@@ -30,6 +30,7 @@ public class JdbcTemplateCommunityBoardRepository implements BoardRepository<Com
 
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("writer", communityBoard.getWriter());
+        parameters.put("nickname", communityBoard.getNickname());
         parameters.put("title", communityBoard.getTitle());
         parameters.put("content", communityBoard.getContent());
         parameters.put("createdAt", communityBoard.getRegisterDate());
@@ -175,6 +176,7 @@ public class JdbcTemplateCommunityBoardRepository implements BoardRepository<Com
             communityBoard.setId(rs.getLong("board_id"));
             communityBoard.setTitle(rs.getString("title"));
             communityBoard.setContent(rs.getString("content"));
+            communityBoard.setNickname(rs.getString("nickname"));
             communityBoard.setWriter(rs.getString("writer"));
             communityBoard.setViewCnt(rs.getInt("viewCnt"));
             communityBoard.setRegisterDate(rs.getTimestamp("createdAt"));

@@ -2,6 +2,7 @@
 <html lang="ko" xmlns:th="http://thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>커뮤니티 게시판</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.0/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
@@ -59,7 +60,7 @@
                             <a th:href="@{/community/{id}(id=${board.id}, topic='community', page=${boardPage.currentPage})}"><div class="post-title" th:text="${board.title}"></div></a>
                             <span class="board-time" th:attr="data-timestamp=${board.registerDate}">시간</span>
                         </div>
-                        <span class="author" th:text="${board.writer}"></span>
+                        <span class="author" th:text="${board.nickname}"></span>
                         <div class="post-stats">
                             <span th:inline="text">[[${board.commentCnt}]]개의 댓글</span>
                             <span class="views" th:inline="text">조회수 [[${board.viewCnt}]]</span>
@@ -71,12 +72,6 @@
             <div class="rightLayer"></div>
         </div>
         <div class="container">
-            <div>
-                총 페이지: <span th:text="${boardPage.totalPages}"></span>
-                현재 페이지: <span th:text="${boardPage.currentPage}"></span>
-            </div>
-
-
             <nav class="pagination-container">
                 <div class="pagination">
                     <button th:if="${boardPage.currentPage > 1}"

@@ -56,7 +56,7 @@ public class CommunityBoardService implements BoardService<CommunityBoard>{
         int offset = (pageNumber - 1) * pageSize;
         List<CommunityBoard> communityBoards = communityBoardRepository.findPage(offset, pageSize);
 
-        return new Page<>(communityBoards, pageNumber, totalPages, pageSize);
+        return new Page<CommunityBoard>(communityBoards, pageNumber, totalPages, pageSize);
     }
 
     @Override

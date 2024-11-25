@@ -5,6 +5,7 @@ import java.sql.Timestamp;
 public abstract class Board {
     Long id;
     String writer;
+    String nickname;
     String title;
     String content;
     Timestamp registerDate;
@@ -85,5 +86,13 @@ public abstract class Board {
 
     public void setCommentCnt(int commentCnt) {
         this.commentCnt = commentCnt;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
     }
 }
