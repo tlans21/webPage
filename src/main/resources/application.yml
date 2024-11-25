@@ -131,6 +131,12 @@ naver:
       local: https://openapi.naver.com/v1/search/local.json
       image: https://openapi.naver.com/v1/search/image
 
+logging:
+  level:
+    root: WARN
+    HomePage: ERROR
+    org.springframework: WARN
+    org.hibernate: ERROR
 
 # Redis ?? (?? ?????)
 #spring:
