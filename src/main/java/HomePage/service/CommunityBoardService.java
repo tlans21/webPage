@@ -47,10 +47,10 @@ public class CommunityBoardService implements BoardService<CommunityBoard>{
         }
 
         int totalBoards = communityBoardRepository.count();
-        int totalPages = (int) Math.ceil((double) totalBoards / pageSize);
+        int totalPages = Math.max(1, (int) Math.ceil((double) totalBoards / pageSize));
 
         if (pageNumber > totalPages) {
-            pageNumber = totalPages; // or throw an exception if you prefer
+            pageNumber = totalPages;
         }
 
         int offset = (pageNumber - 1) * pageSize;
