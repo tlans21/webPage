@@ -73,7 +73,9 @@ spring:
     hiddenmethod:
       filter:
         enabled: true
-
+    contentnegotiation:
+      media-types:
+        js: application/javascript
   thymeleaf:
     prefix: classpath:/templates/
     cache: false

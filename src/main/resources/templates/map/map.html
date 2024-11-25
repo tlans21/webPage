@@ -388,12 +388,12 @@
     <script type="importmap" th:inline="javascript">
         {
             "imports": {
-                "@/MapUtils": /*[[@{/js/MapUtils.js}]]*/ '',
-                "@/ModalService": /*[[@{/js/ModalService.js}]]*/ '',
-                "@/restaurantUtils": /*[[@{/js/restaurantUtils.js}]]*/ '',
-                "@/RestaurantService": /*[[@{/js/RestaurantService.js}]]*/ '',
-                "@/ReviewService": /*[[@{/js/ReviewService.js}]]*/ '',
-                "@/FilterRestaurantService": /*[[@{/js/FilterRestaurantService.js}]]*/ ''
+                "@/MapUtils": "/js/MapUtils.js",
+                "@/ModalService": "/js/ModalService.js",
+                "@/restaurantUtils": "/js/restaurantUtils.js",
+                "@/RestaurantService": "/js/RestaurantService.js",
+                "@/ReviewService": "/js/ReviewService.js",
+                "@/FilterRestaurantService": "/js/FilterRestaurantService.js"
             }
         }
     </script>
@@ -489,11 +489,11 @@
         })
     </script>
     <script type="module" defer>
-        import { createFoodItem } from '[[@{/js/restaurantUtils.js}]]';
+        import { createFoodItem } from '/js/restaurantUtils.js';
         import { modalService } from '@/ModalService';
         import { filterRestaurantService} from '@/FilterRestaurantService';
 
-        filterRestaurantService;        
+        filterRestaurantService;                
     </script>
 </body>
 </html>
