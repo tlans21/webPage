@@ -23,6 +23,6 @@ public class UserController {
         List<User> users = userService.findMembers();
         model.addAttribute("members", users);
 
-        return "/user/userList";
+        return "user/userList";
     }
 }

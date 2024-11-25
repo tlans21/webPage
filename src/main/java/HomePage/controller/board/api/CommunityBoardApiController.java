@@ -43,7 +43,7 @@ public class CommunityBoardApiController {
                 model.addAttribute(key, validatorResult.get(key));
             }
             // 유효성 검사에 실패하여 페이지 폼으로 리턴
-            return "/board/communityBoardWriteForm";
+            return "board/communityBoardWriteForm";
         }
         CommunityBoard board = new CommunityBoard();
 
@@ -99,7 +99,7 @@ public class CommunityBoardApiController {
 
         model.addAttribute("article", board);
 
-        return "/board/boardEditView";
+        return "board/boardEditView";
     }
     @PutMapping("/{id}/edit")
     public String editBoard(@Valid CommunityBoardWriteForm boardWriteForm,

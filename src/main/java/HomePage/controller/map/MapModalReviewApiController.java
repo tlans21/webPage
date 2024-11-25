@@ -58,7 +58,7 @@ public class MapModalReviewApiController {
         model.addAttribute("comments", reviewDTOs);
 
         // 댓글 목록 부분만 반환
-        return "/map/commentsSection :: comments-section";
+        return "map/commentsSection :: comments-section";
 
     }
     @GetMapping("/review/{restaurantId}")

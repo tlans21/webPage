@@ -38,13 +38,13 @@ public class MapModalController {
         model.addAttribute("comments",  comments);
         System.out.println("mapModal");
         System.out.println(id);
-        return "/map/modal :: mapModal-content";
+        return "map/modal :: mapModal-content";
    }
 
 
     @GetMapping("/test/map")
     public String showTestMap(){
-        return "/map/maptest";
+        return "map/maptest";
     }
     private void restaurantDtoMappingToModelFromRequest(Map<String, Object> request, Model model){
         RestaurantDto restaurantDto = new RestaurantDto();

@@ -46,7 +46,7 @@ public class adminPageController {
 
         addPaginationAttributes(model, boardPage, sort, searchType, searchKeyword);
 
-        return "/admin/adminPage";
+        return "admin/adminPage";
     }
 
     private void addPaginationAttributes(Model model, Page<CommunityBoard> boardPage, String sort, String searchType, String searchKeyword){
@@ -75,7 +75,7 @@ public class adminPageController {
         for (CommunityBoard board : allBoards){
             System.out.println(board.getId());
         }
-        return "/admin/allBoards";
+        return "admin/allBoards";
     }
     @DeleteMapping("/{id}/delete")
     public String deleteBoard(@PathVariable Long id, Authentication authentication){
@@ -116,7 +116,7 @@ public class adminPageController {
 
         model.addAttribute("article", board);
 
-        return "/board/boardEditView";
+        return "board/boardEditView";
     }
 
     private boolean hasEditPermission(CommunityBoard board, PrincipalDetails principalDetails) {

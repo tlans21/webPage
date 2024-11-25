@@ -31,7 +31,7 @@ public class adminUserManagementController {
         }
 
         addPaginationAttributes(model, usersPage, searchType, searchKeyword);
-        return "/admin/userManagementPage";
+        return "admin/userManagementPage";
     }
 
     private boolean isValidSearch(String searchType, String searchKeyword){

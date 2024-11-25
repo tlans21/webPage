@@ -86,7 +86,7 @@ public class CommunityBoardController {
 
     @GetMapping("/writeForm")
     public String showWriteForm(){
-        return "/board/communityBoardWriteForm";
+        return "board/communityBoardWriteForm";
     }
 
 
@@ -129,7 +129,7 @@ public class CommunityBoardController {
 
         Timestamp timestamp = boardPage.getContent().stream().findAny().get().getRegisterDate();
         System.out.println(timestamp);
-        return "/board/boardViewDetail";
+        return "board/boardViewDetail";
     }
 
 

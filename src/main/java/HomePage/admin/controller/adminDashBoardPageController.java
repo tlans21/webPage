@@ -23,6 +23,6 @@ public class adminDashBoardPageController {
         model.addAttribute("postStats", adminDashBoardService.getPostStats());
         model.addAttribute("userChartData", adminDashBoardService.getUserChartData());
         model.addAttribute("postChartData", adminDashBoardService.getPostChartData());
-        return "/admin/adminDashBoardPage";
+        return "admin/adminDashBoardPage";
     }
 }

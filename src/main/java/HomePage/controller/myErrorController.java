@@ -13,7 +13,7 @@ import org.springframework.web.servlet.view.RedirectView;
 public class myErrorController implements ErrorController{
 
     public String getErrorPath() {
-        return "/error";
+        return "error";
     }
     @RequestMapping("/error")
     public String handleError(HttpServletRequest request) {

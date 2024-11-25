@@ -22,7 +22,7 @@ public class SideBarController {
 
     @GetMapping("/mypage")
     public String showMyPage(){
-        return "/myPage/myPageDetails";
+        return "myPage/myPageDetails";
     }
 
     @PutMapping("/deleteUser")
