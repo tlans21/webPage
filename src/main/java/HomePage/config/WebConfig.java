@@ -13,7 +13,9 @@ import java.util.concurrent.TimeUnit;
 public class WebConfig implements WebMvcConfigurer {
     @Override
     public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
-        configurer.mediaType("js", MediaType.valueOf("application/javascript"));
+        configurer
+                .mediaType("js", MediaType.valueOf("application/javascript"))
+                .mediaType("css", MediaType.valueOf("text/css"));
     }
 
     @Override
@@ -22,5 +24,10 @@ public class WebConfig implements WebMvcConfigurer {
                       .addResourceLocations("classpath:/static/js/")
                       .setCacheControl(CacheControl.maxAge(365, TimeUnit.DAYS))
                       .resourceChain(true);
+        // CSS 리소스 핸들러 추가
+        registry.addResourceHandler("/css/**")
+                .addResourceLocations("classpath:/static/css/")
+                .setCacheControl(CacheControl.maxAge(365, TimeUnit.DAYS))
+                .resourceChain(true);
     }
 }
