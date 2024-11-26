@@ -7,8 +7,13 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.0/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" th:href="@{/css/mapModalStyle.css}">
-    <script type="text/javascript" src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=z9fdx1to2u"></script>
-    <script type="text/javascript" src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=z9fdx1to2u&submodules=geocoder,marker"></script>
+    
+    <script type="text/javascript" 
+        th:src="@{|https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=${@environment.getProperty('naver.maps.client.id')}&submodules=geocoder,marker|}">
+    </script>
+    <script type="text/javascript" 
+        th:src="@{|https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=${@environment.getProperty('naver.maps.client.id')}|}">
+    </script>
     <title>간단한 지도 표시하기</title> 
     <style>
         /* 필터링 css */
