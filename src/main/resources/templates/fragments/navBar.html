@@ -37,20 +37,32 @@
         <!-- Side bar -->
 
         <div id="sidebar">
-            <button class="close-btn" id="closeSidebar">&times;</button>
-            <div class="p-4">
-                <h4 class="text-white">Menu</h4>
-                <ul class="nav flex-column">
-                    <li class="nav-item">
-                        <button id="myPageButton">마이 페이지</button>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white" th:href="@{/settings}">
-                            ⚙️ 설정
-                        </a>
-                    </li>
-                    <!-- 추가 메뉴 항목들 -->
-                </ul>
+            <button class="close-btn" id="closeSidebar">×</button>
+            <div class="sidebar-header">
+                <div class="logo-container">
+                    <img th:src="@{/images/logo.png}" alt="로고" class="logo">
+                </div>
+                <h3 class="header-title">Foody</h3>
+                <p class="header-subtitle">맛있는 경험을 공유하세요</p>
+            </div>
+            
+            <div class="menu-container">
+                <div class="menu-item" th:classappend="${currentMenu == 'mypage'} ? 'active'">
+                    <span class="menu-icon">👤</span>
+                    <button id="myPageButton">마이 페이지</button>
+                </div>
+                <div class="menu-item" th:classappend="${currentMenu == 'settings'} ? 'active'">
+                    <span class="menu-icon">⚙️</span>
+                    <a th:href="@{/settings}" class="menu-link">설정</a>
+                </div>
+                <div class="menu-item">
+                    <span class="menu-icon">📝</span>
+                    <a th:href="@{/reviews}" class="menu-link">리뷰 관리</a>
+                </div>
+                <div class="menu-item">
+                    <span class="menu-icon">🔔</span>
+                    <a th:href="@{/notifications}" class="menu-link">알림 센터</a>
+                </div>
             </div>
         </div>
         <!-- MyPage Modal -->
@@ -72,33 +84,9 @@
 
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.0/js/bootstrap.bundle.min.js" defer></script>
-        <script defer>
-            function toggleSidebar() {
-                const sidebar = document.getElementById('sidebar');
-                const content = document.getElementById('content');
-                
-                if (sidebar) {
-                    sidebar.classList.toggle('active');
-                }
-                
-                if (content) {
-                    content.classList.toggle('active');
-                }
-            }
-    
-            document.addEventListener('DOMContentLoaded', function() {
-                const sidebarToggle = document.getElementById('sidebarToggle');
-                const closeSidebar = document.getElementById('closeSidebar');
-    
-                if (sidebarToggle) {
-                    sidebarToggle.addEventListener('click', toggleSidebar);
-                }
-    
-                if (closeSidebar) {
-                    closeSidebar.addEventListener('click', toggleSidebar);
-                }
-            });
+        <script th:src="@{/js/toggleSideBar.js}" defer>
         </script>
+        <script th:src="@{/js/sidebarButton.js}" defer></script>
         <script th:src="@{/js/editMyPageModal.js}" defer>
         </script>
     </th:block>
