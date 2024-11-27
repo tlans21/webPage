@@ -1,7 +1,7 @@
 package HomePage.service;
 
-import HomePage.domain.model.CommunityBoard;
-import HomePage.domain.model.CommunityComment;
+import HomePage.domain.model.entity.CommunityBoard;
+import HomePage.domain.model.entity.CommunityComment;
 import HomePage.repository.BoardRepository;
 import HomePage.repository.CommentRepository;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,8 +28,8 @@ public class CommunityCommentService implements CommentService<CommunityComment>
     @Transactional
     public void saveCommentAndIncrementCommentCnt(CommunityComment comment) {
         saveComment(comment);
-        int commentCnt = countByBoardId(comment.getBoard_id());
-        incrementCommentCnt(comment.getBoard_id(), commentCnt);
+        int commentCnt = countByBoardId(comment.getBoardId());
+        incrementCommentCnt(comment.getBoardId(), commentCnt);
     }
 
     @Override

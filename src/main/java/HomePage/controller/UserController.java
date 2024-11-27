@@ -1,6 +1,6 @@
 package HomePage.controller;
 
-import HomePage.domain.model.User;
+import HomePage.domain.model.entity.User;
 import HomePage.service.user.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,6 +23,6 @@ public class UserController {
         List<User> users = userService.findMembers();
         model.addAttribute("members", users);
 
-        return "/user/userList";
+        return "user/userList";
     }
 }

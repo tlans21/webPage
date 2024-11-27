@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <th:block th:fragment="chatBot">
+        <link rel="stylesheet" type="text/css" th:href="@{/css/chatbotStyle.css}">
+        <script th:src="@{/js/chatbot.js}" defer></script>
+
+        <div id="chatbot-container" class="chatbot-closed">
+            <div id="chatbot-header">
+                <span>AI 음식 추천 챗봇</span>
+                <button id="chatbot-toggle">채팅</button>
+            </div>
+            <div id="chatbot-messages"></div>
+            <div id="chatbot-input">
+                <input type="text" id="user-input" placeholder="메시지를 입력하세요...">
+                <button id="send-button">전송</button>
+            </div>
+        </div>
+        
+    </th:block>
+</body>
+</html>

@@ -24,7 +24,7 @@ async function validateLogin() {
 }
 
 
-const loginForm = document.querySelector("#login-form");
+const loginForm = document.querySelector(".sign-in-form");
 
 loginForm.addEventListener("submit", async function(event) {
     event.preventDefault(); // 기본 제출 방지

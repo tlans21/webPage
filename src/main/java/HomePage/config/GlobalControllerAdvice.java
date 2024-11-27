@@ -14,13 +14,9 @@ public class GlobalControllerAdvice {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null && auth.getPrincipal() instanceof PrincipalDetails) {
             PrincipalDetails principalDetails = (PrincipalDetails) auth.getPrincipal();
-
-            System.out.println(principalDetails.getAuthorities().stream()
-                                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN")));
             return principalDetails.getAuthorities().stream()
                     .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
         }
-        System.out.println("isAdmin : false");
         return false;
     }
 
@@ -29,12 +25,9 @@ public class GlobalControllerAdvice {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null && auth.getPrincipal() instanceof PrincipalDetails) {
             PrincipalDetails principalDetails = (PrincipalDetails) auth.getPrincipal();
-            System.out.println(principalDetails.getAuthorities().stream()
-                                            .anyMatch(a -> a.getAuthority().equals("ROLE_USER")));
             return principalDetails.getAuthorities().stream()
                     .anyMatch(a -> a.getAuthority().equals("ROLE_USER"));
         }
-        System.out.println("isUser : false");
         return false;
     }
 }

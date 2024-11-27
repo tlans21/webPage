@@ -2,7 +2,7 @@ package HomePage.controller.board.api;
 
 import HomePage.config.auth.PrincipalDetails;
 import HomePage.controller.board.form.CommunityBoardWriteForm;
-import HomePage.domain.model.CommunityBoard;
+import HomePage.domain.model.entity.CommunityBoard;
 import HomePage.service.CommunityBoardService;
 import HomePage.service.CommunityCommentService;
 import jakarta.validation.Valid;
@@ -43,7 +43,7 @@ public class CommunityBoardApiController {
                 model.addAttribute(key, validatorResult.get(key));
             }
             // 유효성 검사에 실패하여 페이지 폼으로 리턴
-            return "/board/communityBoardWriteForm";
+            return "board/communityBoardWriteForm";
         }
         CommunityBoard board = new CommunityBoard();
 
@@ -53,7 +53,8 @@ public class CommunityBoardApiController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         System.out.println(principalDetails.getUsername());
-        board.setWriter(principalDetails.getUsername());
+        board.setWriter(principalDetails.getUsername()); // 사용자 아이디 설정
+        board.setNickname(principalDetails.getUser().getNickname());
         board.setViewCnt(0);
         board.setCommentCnt(0);
         boardService.saveBoard(board);
@@ -99,7 +100,7 @@ public class CommunityBoardApiController {
 
         model.addAttribute("article", board);
 
-        return "/board/boardEditView";
+        return "board/boardEditView";
     }
     @PutMapping("/{id}/edit")
     public String editBoard(@Valid CommunityBoardWriteForm boardWriteForm,

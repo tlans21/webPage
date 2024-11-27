@@ -1,6 +1,6 @@
 package HomePage.admin.mapper;
 
-import HomePage.domain.model.CommunityBoard;
+import HomePage.domain.model.entity.CommunityBoard;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 

@@ -1,8 +1,8 @@
 package HomePage.controller.board;
 
-import HomePage.domain.model.CommunityBoard;
-import HomePage.domain.model.CommunityComment;
-import HomePage.domain.model.Page;
+import HomePage.domain.model.entity.CommunityBoard;
+import HomePage.domain.model.entity.CommunityComment;
+import HomePage.domain.model.entity.Page;
 import HomePage.service.CommunityBoardService;
 import HomePage.service.CommunityCommentService;
 import org.springframework.stereotype.Controller;
@@ -62,7 +62,7 @@ public class CommunityBoardController {
 
         addPaginationAttributes(model, boardPage, sort, searchType, searchKeyword);
 
-        return "/board/communityBoardList";
+        return "board/communityBoardList";
     }
 
 
@@ -86,7 +86,7 @@ public class CommunityBoardController {
 
     @GetMapping("/writeForm")
     public String showWriteForm(){
-        return "/board/communityBoardWriteForm";
+        return "board/communityBoardWriteForm";
     }
 
 
@@ -129,7 +129,7 @@ public class CommunityBoardController {
 
         Timestamp timestamp = boardPage.getContent().stream().findAny().get().getRegisterDate();
         System.out.println(timestamp);
-        return "/board/boardViewDetail";
+        return "board/boardViewDetail";
     }
 
 

@@ -57,7 +57,53 @@ function initializeProfileEdit() {
             previewEmail.textContent = event.target.value;
         });
     }
+
+    if (editProfileForm) {
+        editProfileForm.addEventListener('submit', handleProfileSubmit);
+    }
 }
+
+function handleProfileSubmit(event) {
+    event.preventDefault();
+    
+    const nickname = document.getElementById('nickname').value;
+
+    fetch('/api/v1/user/mypage-content/edit/profile', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ nickname: nickname })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Success:', data);
+        // 성공 처리
+        if (data.success) {
+            // 프로필 정보 업데이트
+            document.querySelector('.card-body h4').textContent = nickname;
+            // 편집 폼 숨기기 및 활동 표시
+            document.getElementById('editProfileForm').style.display = 'none';
+            document.getElementById('userActivities').style.display = 'block';
+            document.getElementById('toggleEditProfile').style.display = 'inline-block';
+            // 성공 메시지 표시
+            alert('프로필이 성공적으로 업데이트되었습니다.');
+        } else {
+            throw new Error('프로필 업데이트에 실패했습니다.');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('프로필 업데이트 중 오류가 발생했습니다: ' + error.message);
+    });
+}
+
+
 
 // 이벤트 위임을 사용한 전역 클릭 이벤트 리스너
 document.addEventListener('click', function(event) {

@@ -1,7 +1,7 @@
 package HomePage.admin.controller;
 
-import HomePage.domain.model.Page;
-import HomePage.domain.model.User;
+import HomePage.domain.model.entity.Page;
+import HomePage.domain.model.entity.User;
 import HomePage.service.user.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,7 +31,7 @@ public class adminUserManagementController {
         }
 
         addPaginationAttributes(model, usersPage, searchType, searchKeyword);
-        return "/admin/userManagementPage";
+        return "admin/userManagementPage";
     }
 
     private boolean isValidSearch(String searchType, String searchKeyword){

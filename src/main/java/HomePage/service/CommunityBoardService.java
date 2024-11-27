@@ -1,8 +1,8 @@
 package HomePage.service;
 
-import HomePage.domain.model.CommunityBoard;
-import HomePage.domain.model.CommunityComment;
-import HomePage.domain.model.Page;
+import HomePage.domain.model.entity.CommunityBoard;
+import HomePage.domain.model.entity.CommunityComment;
+import HomePage.domain.model.entity.Page;
 import HomePage.repository.BoardRepository;
 import HomePage.repository.CommentRepository;
 import org.springframework.beans.factory.annotation.Value;
@@ -47,16 +47,16 @@ public class CommunityBoardService implements BoardService<CommunityBoard>{
         }
 
         int totalBoards = communityBoardRepository.count();
-        int totalPages = (int) Math.ceil((double) totalBoards / pageSize);
+        int totalPages = Math.max(1, (int) Math.ceil((double) totalBoards / pageSize));
 
         if (pageNumber > totalPages) {
-            pageNumber = totalPages; // or throw an exception if you prefer
+            pageNumber = totalPages;
         }
 
         int offset = (pageNumber - 1) * pageSize;
         List<CommunityBoard> communityBoards = communityBoardRepository.findPage(offset, pageSize);
 
-        return new Page<>(communityBoards, pageNumber, totalPages, pageSize);
+        return new Page<CommunityBoard>(communityBoards, pageNumber, totalPages, pageSize);
     }
 
     @Override

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="HomePage.mapper.RestaurantMapper">
+    <insert id="insert" parameterType="HomePage.domain.model.entity.Restaurant">
+        INSERT INTO restaurants (title, link, category, description, telephone, address, road_address, mapx, mapy, image_url)
+        VALUES (#{title}, #{link}, #{category},  #{description}, #{telephone}, #{address}, #{roadAddress}, #{mapx}, #{mapy}, #{imageUrl})
+    </insert>
+
+    <select id="selectById" resultType="HomePage.domain.model.entity.Restaurant">
+        SELECT * FROM security.restaurants WHERE id = #{id}
+    </select>
+
+    <select id="selectAll" resultType="HomePage.domain.model.entity.Restaurant">
+        SELECT * FROM security.restaurants
+    </select>
+
+    <select id="count">
+        SELECT COUNT(*) FROM security.restaurants;
+    </select>
+    <update id="update" parameterType="HomePage.domain.model.entity.Restaurant">
+        UPDATE security.restaurants
+        SET title = #{title}, link = #{link}, category = #{category}, description = #{description},
+            telephone = #{telephone}, address = #{address}, road_address = #{roadAddress}, mapx = #{mapx}, mapy = #{mapy}, image_url = #{imageUrl}
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateCountReview">
+        UPDATE security.restaurants
+        SET review_cnt = #{reviewCnt}
+        WHERE id = #{restaurantId}
+    </update>
+
+    <update id="updateViewCnt">
+        UPDATE security.restaurants
+        SET view_cnt = view_cnt + 1
+        WHERE id = #{restaurantId}
+    </update>
+    <update id="updateAverageRatingById">
+        UPDATE security.restaurants
+        SET average_rating = #{averageRating}
+        WHERE id = #{restaurantId}
+    </update>
+
+    <delete id="delete">
+        DELETE FROM security.restaurants WHERE id = #{id}
+    </delete>
+
+    <select id="selectByTitleAndAddress" resultType="HomePage.domain.model.entity.Restaurant">
+        SELECT * FROM security.restaurants WHERE title = #{title} AND address = #{address}
+    </select>
+    <select id="selectByImageUrl" resultType="HomePage.domain.model.entity.Restaurant">
+        SELECT * FROM security.restaurants WHERE image_url = #{imageUrl}
+    </select>
+
+    <select id="findRestaurantPage" resultType="HomePage.domain.model.entity.Restaurant">
+        SELECT *
+        FROM security.restaurants
+        ORDER BY id DESC
+        LIMIT #{pageSize} OFFSET #{offset}
+    </select>
+    <select id="findRestaurantByTitle" resultType="HomePage.domain.model.entity.Restaurant">
+        SELECT *
+        FROM security.restaurants
+        WHERE title = #{title}
+    </select>
+    <select id="findRestaurantsBySearchCriteria" parameterType="HomePage.domain.model.dto.RestaurantSearchCriteria" resultType="HomePage.domain.model.entity.Restaurant">
+       SELECT *
+       FROM security.restaurants
+       WHERE 1=1
+       <if test="theme != null and theme != ''">
+           AND theme = #{theme}
+       </if>
+       <if test="service != null and service != ''">
+           AND service = #{service}
+       </if>
+       <choose>
+           <when test="sortBy == 'averageRating'">
+               ORDER BY average_rating
+           </when>
+           <when test="sortBy == 'viewCount'">
+               ORDER BY view_cnt
+           </when>
+           <when test="sortBy == 'reviewCount'">
+               ORDER BY review_cnt
+           </when>
+           <otherwise>
+               ORDER BY average_rating
+           </otherwise>
+       </choose>
+       ${sortDirection}
+       LIMIT #{pageSize} OFFSET #{offset}
+    </select>
+
+    <!-- 검색 조건에 따른 총 레코드 수 조회 -->
+    <select id="countRestaurantsBySearchCriteria"
+           parameterType="HomePage.domain.model.dto.RestaurantSearchCriteria"
+           resultType="int">
+       SELECT COUNT(*)
+       FROM security.restaurants
+       WHERE 1=1
+       <if test="theme != null and theme != ''">
+           AND theme = #{theme}
+       </if>
+       <if test="service != null and service != ''">
+           AND service = #{service}
+       </if>
+    </select>
+
+</mapper>

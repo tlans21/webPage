@@ -1,6 +1,12 @@
 package HomePage.service.user;
 
-import HomePage.domain.model.*;
+import HomePage.domain.model.dto.CommunityBoardDTO;
+import HomePage.domain.model.dto.CommunityCommentDTO;
+import HomePage.domain.model.dto.ProfileDTO;
+import HomePage.domain.model.dto.UserActivityDTO;
+import HomePage.domain.model.entity.CommunityBoard;
+import HomePage.domain.model.entity.CommunityComment;
+import HomePage.domain.model.entity.User;
 import HomePage.repository.BoardRepository;
 import HomePage.repository.CommentRepository;
 import HomePage.repository.UserRepository;
@@ -52,7 +58,7 @@ public class UserMyPageService {
         List<CommunityCommentDTO> recentCommunityCommentDTOs = recentCommunityComments.stream()
                 .map(recentCommunityComment -> {
                     CommunityCommentDTO communityCommentDTO = modelMapper.map(recentCommunityComment, CommunityCommentDTO.class);
-                    CommunityBoard relatedBoard = boardRepository.selectById(recentCommunityComment.getBoard_id()).get();
+                    CommunityBoard relatedBoard = boardRepository.selectById(recentCommunityComment.getBoardId()).get();
                     communityCommentDTO.setRelatedBoard(modelMapper.map(relatedBoard, CommunityCommentDTO.BoardInfo.class));
                     return communityCommentDTO;
                 })

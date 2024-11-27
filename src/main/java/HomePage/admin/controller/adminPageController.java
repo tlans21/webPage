@@ -1,9 +1,10 @@
 package HomePage.admin.controller;
 
-import HomePage.admin.service.AdminBoardService;
+import HomePage.admin.service.AdminBoardServiceImpl;
 import HomePage.config.auth.PrincipalDetails;
-import HomePage.domain.model.CommunityBoard;
-import HomePage.domain.model.Page;
+import HomePage.domain.model.entity.CommunityBoard;
+import HomePage.domain.model.entity.Page;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -15,13 +16,10 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/api/v1/admin")
+@NoArgsConstructor
 public class adminPageController {
     @Autowired
-    private final AdminBoardService adminBoardService;
-
-    public adminPageController(AdminBoardService adminBoardService) {
-        this.adminBoardService = adminBoardService;
-    }
+    private AdminBoardServiceImpl adminBoardService;
 
     @GetMapping("/adminPage/boardList")
     public String showAdminBoardPage(@RequestParam(value="page", defaultValue = "1") int page,
@@ -48,7 +46,7 @@ public class adminPageController {
 
         addPaginationAttributes(model, boardPage, sort, searchType, searchKeyword);
 
-        return "/admin/adminPage";
+        return "admin/adminPage";
     }
 
     private void addPaginationAttributes(Model model, Page<CommunityBoard> boardPage, String sort, String searchType, String searchKeyword){
@@ -77,7 +75,7 @@ public class adminPageController {
         for (CommunityBoard board : allBoards){
             System.out.println(board.getId());
         }
-        return "/admin/allBoards";
+        return "admin/allBoards";
     }
     @DeleteMapping("/{id}/delete")
     public String deleteBoard(@PathVariable Long id, Authentication authentication){
@@ -118,7 +116,7 @@ public class adminPageController {
 
         model.addAttribute("article", board);
 
-        return "/board/boardEditView";
+        return "board/boardEditView";
     }
 
     private boolean hasEditPermission(CommunityBoard board, PrincipalDetails principalDetails) {

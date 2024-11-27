@@ -1,6 +1,6 @@
 package HomePage.repository;
 
-import HomePage.domain.model.CommunityBoard;
+import HomePage.domain.model.entity.CommunityBoard;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -25,14 +25,15 @@ public class JdbcTemplateCommunityBoardRepository implements BoardRepository<Com
     public CommunityBoard save(CommunityBoard communityBoard) {
         SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         jdbcInsert.withTableName(tableName).usingGeneratedKeyColumns("board_id");
-        Timestamp regDate = new Timestamp(System.currentTimeMillis());
-        communityBoard.setRegisterDate(regDate);
+        Timestamp createdAt = new Timestamp(System.currentTimeMillis());
+        communityBoard.setRegisterDate(createdAt);
 
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("writer", communityBoard.getWriter());
+        parameters.put("nickname", communityBoard.getNickname());
         parameters.put("title", communityBoard.getTitle());
         parameters.put("content", communityBoard.getContent());
-        parameters.put("regdate", communityBoard.getRegisterDate());
+        parameters.put("createdAt", communityBoard.getRegisterDate());
         parameters.put("viewCnt", communityBoard.getViewCnt());
         parameters.put("commentCnt", communityBoard.getCommentCnt());
 
@@ -59,12 +60,12 @@ public class JdbcTemplateCommunityBoardRepository implements BoardRepository<Com
     }
     @Override
     public List<CommunityBoard> findPageByTitle(int offset, int limit, String title){
-        String sql = String.format("SELECT * FROM %s WHERE deletedAt IS NULL AND title LIKE ? ORDER BY regdate DESC LIMIT ? OFFSET ?", tableName);
+        String sql = String.format("SELECT * FROM %s WHERE deletedAt IS NULL AND title LIKE ? ORDER BY createdAt DESC LIMIT ? OFFSET ?", tableName);
         return jdbcTemplate.query(sql, communityBoardRowMapper(), "%" + title + "%", limit, offset);
     }
     @Override
     public List<CommunityBoard> findPageByWriter(int offset, int limit, String writer){
-        String sql = String.format("SELECT * FROM %s WHERE deletedAt IS NULL AND writer = ? ORDER BY regdate DESC LIMIT ? OFFSET ?", tableName);
+        String sql = String.format("SELECT * FROM %s WHERE deletedAt IS NULL AND writer = ? ORDER BY createdAt DESC LIMIT ? OFFSET ?", tableName);
         return jdbcTemplate.query(sql, communityBoardRowMapper(), writer, limit, offset);
     }
     @Override
@@ -175,6 +176,7 @@ public class JdbcTemplateCommunityBoardRepository implements BoardRepository<Com
             communityBoard.setId(rs.getLong("board_id"));
             communityBoard.setTitle(rs.getString("title"));
             communityBoard.setContent(rs.getString("content"));
+            communityBoard.setNickname(rs.getString("nickname"));
             communityBoard.setWriter(rs.getString("writer"));
             communityBoard.setViewCnt(rs.getInt("viewCnt"));
             communityBoard.setRegisterDate(rs.getTimestamp("createdAt"));

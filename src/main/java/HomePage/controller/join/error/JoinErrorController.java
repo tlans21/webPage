@@ -10,6 +10,6 @@ public class JoinErrorController {
 
     @GetMapping("/join/error")
     public String joinErrorPage(){
-        return "/error/409";
+        return "error/409";
     }
 }

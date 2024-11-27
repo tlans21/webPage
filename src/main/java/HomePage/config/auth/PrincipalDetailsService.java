@@ -1,6 +1,6 @@
 package HomePage.config.auth;
 
-import HomePage.domain.model.User;
+import HomePage.domain.model.entity.User;
 import HomePage.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

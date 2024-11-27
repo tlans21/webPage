@@ -1,7 +1,7 @@
 package HomePage.controller.sideBar.myPage;
 
 import HomePage.config.auth.PrincipalDetails;
-import HomePage.domain.model.User;
+import HomePage.domain.model.entity.User;
 import HomePage.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -25,20 +25,26 @@ public class MyPageApiRestController {
     }
 
     @PostMapping("/mypage-content/edit/profile")
-    public ResponseEntity<Map<String, String>> editMyProfile(@RequestBody Map<String, String> request, Authentication authentication){
+    public ResponseEntity<Map<String, Boolean>> editMyProfile(@RequestBody Map<String, String> request, Authentication authentication){
         //  요청으로 부터 변경하고자 하는 닉네임얻기
         String nickname = request.get("nickname");
-
+        System.out.println(nickname);
         // authentication으로 유저 정보 얻기
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         User currentUser = principalDetails.getUser();
 
         // principalDetails로 찾기
-
+        User user = userService.updateUserNickname(currentUser, nickname);
 
         // 응답 주기
-        Map<String, String> response = new HashMap<>();
+        Map<String, Boolean> response = new HashMap<>();
 
+        if (user.getNickname() == nickname) {
+            response.put("success", true);
+        } else {
+            response.put("success", false);
+        }
+        System.out.println(user.getNickname());
         return ResponseEntity.ok(response);
     }
 }

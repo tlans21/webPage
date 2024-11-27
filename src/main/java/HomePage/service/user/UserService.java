@@ -1,8 +1,8 @@
 package HomePage.service.user;
 
 import HomePage.controller.UserForm;
-import HomePage.domain.model.Page;
-import HomePage.domain.model.User;
+import HomePage.domain.model.entity.Page;
+import HomePage.domain.model.entity.User;
 import HomePage.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -209,7 +209,6 @@ public class UserService {
             user.setNickname(nickName);
             return user;
         } else {
-
             return null;
         }
     }

@@ -1,6 +1,6 @@
 package HomePage.repository;
 
-import HomePage.domain.model.CommunityComment;
+import HomePage.domain.model.entity.CommunityComment;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,7 +39,7 @@ class JdbcTemplateCommunityCommentRepositoryUnitTest {
         testComment = new CommunityComment();
         testComment.setId(1L); // 테스트 코멘트 ID는 1로 설정
         testComment.setWriter("testUser");
-        testComment.setBoard_id(2L); // 게시판 ID는 2로 설정
+        testComment.setBoardId(2L); // 게시판 ID는 2로 설정
         testComment.setContent("test Content");
         testComment.setRegisterDate(new Timestamp(System.currentTimeMillis()));
     }
@@ -75,7 +75,7 @@ class JdbcTemplateCommunityCommentRepositoryUnitTest {
         pscCaptor.getValue().createPreparedStatement(mockConnection);
 
         verify(mockPs).setString(1, testComment.getWriter());
-        verify(mockPs).setLong(2, testComment.getBoard_id());
+        verify(mockPs).setLong(2, testComment.getBoardId());
         verify(mockPs).setString(3, testComment.getContent());
         verify(mockPs).setTimestamp(4, testComment.getRegisterDate());
         verify(mockPs).setTimestamp(5, testComment.getUpdateDate());
@@ -162,14 +162,14 @@ class JdbcTemplateCommunityCommentRepositoryUnitTest {
         when(mockJdbcTemplate.query(
                 eq(sql),
                 any(RowMapper.class),
-                eq(testComment.getBoard_id())
+                eq(testComment.getBoardId())
         )).thenReturn(Arrays.asList(testComment));
         //when : 실행
-        List<CommunityComment> result = communityCommentRepository.selectByBoardId(testComment.getBoard_id());
+        List<CommunityComment> result = communityCommentRepository.selectByBoardId(testComment.getBoardId());
         //then : 검증
         assertThat(result).hasSize(1);
         assertThat(result.get(0)).isEqualTo(testComment);
-        verify(mockJdbcTemplate).query(eq(sql), any(RowMapper.class), eq(result.get(0).getBoard_id()));
+        verify(mockJdbcTemplate).query(eq(sql), any(RowMapper.class), eq(result.get(0).getBoardId()));
     }
 
     @Test
@@ -208,12 +208,12 @@ class JdbcTemplateCommunityCommentRepositoryUnitTest {
         String sql = String.format("DELETE FROM %s WHERE board_id = ?", communityCommentRepository.getTableName());
         when(mockJdbcTemplate.update(
                 eq(sql),
-                eq(testComment.getBoard_id())
+                eq(testComment.getBoardId())
         )).thenReturn(1);
         //when : 실행
-        boolean result = communityCommentRepository.deleteByBoardId(testComment.getBoard_id());
+        boolean result = communityCommentRepository.deleteByBoardId(testComment.getBoardId());
         //then : 검증
         assertThat(result).isTrue();
-        verify(mockJdbcTemplate).update(eq(sql), eq(testComment.getBoard_id()));
+        verify(mockJdbcTemplate).update(eq(sql), eq(testComment.getBoardId()));
     }
 }
