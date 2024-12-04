@@ -1,17 +1,16 @@
 package HomePage.controller.restaurant;
 
+import HomePage.common.response.CommonResponse;
 import HomePage.domain.model.dto.RestaurantDto;
 import HomePage.domain.model.dto.RestaurantSearchCriteria;
 import HomePage.domain.model.entity.Page;
+import HomePage.exception.ResourceNotFoundException;
 import HomePage.service.naverApi.NaverApiMapService;
 import HomePage.service.restaurant.RestaurantService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -38,38 +37,52 @@ public class RestaurantApiRestController {
     }
 
     @GetMapping("/foods")
-    public ResponseEntity<Map<String, Object>> getRestaurant(@RequestParam(value="page", defaultValue = "1") int page,
+    public CommonResponse<Map<String, Object>> getRestaurant(@RequestParam(value="page", defaultValue = "1") int page,
                                                              @RequestParam(value="sortOption", defaultValue = "평점순") String sortOption,
                                                              @RequestParam(value="themeOption", defaultValue = "") String themeOption,
                                                              @RequestParam(value="serviceOption", defaultValue = "") String serviceOption){
 
-        System.out.println("page:" + page);
-        System.out.println("sortOption: " + sortOption);
-        System.out.println("themeOption: " + themeOption);
-        System.out.println("serviceOption: " + serviceOption);
+        try{
+            //DTO 생성
+            RestaurantSearchCriteria searchCriteria = RestaurantSearchCriteria.builder()
+                    .page(page)
+                    .sortBy(convertSortOption(sortOption))
+                    .theme(themeOption)
+                    .service(serviceOption)
+                    .build();
 
-        //DTO 생성
-        RestaurantSearchCriteria searchCriteria = RestaurantSearchCriteria.builder()
-                .page(page)
-                .sortBy(convertSortOption(sortOption))
-                .theme(themeOption)
-                .service(serviceOption)
-                .build();
+            Page<RestaurantDto> restaurantsPage = restaurantService.getRestaurantsPageBySearchCriteria(searchCriteria);
+            int totalRestaurantCount = restaurantService.getTotalRestaurantCount();
 
-        Page<RestaurantDto> restaurantsPage = restaurantService.getRestaurantsPageBySearchCriteria(searchCriteria);
-        int totalRestaurantCount = restaurantService.getTotalRestaurantCount();
-        Map<String, Object> response = new HashMap<>();
-        response.put("Page", restaurantsPage);
-        response.put("totalRestaurantCount", totalRestaurantCount);
-        return ResponseEntity.ok(response);
+            Map<String, Object> response = new HashMap<>();
+            response.put("Page", restaurantsPage);
+            response.put("totalRestaurantCount", totalRestaurantCount);
+
+            return CommonResponse.success(response, "음식점 목록 조회 성공");
+        } catch (ResourceNotFoundException e){
+            return CommonResponse.error(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (Exception e){
+            return CommonResponse.error("서버 오류가 발생했습니다: " + e.getMessage(),
+                                        HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
     }
 
     @GetMapping("/restaurants/create")
-    public String createRestaurants(@RequestParam String query){
+    @ResponseStatus(HttpStatus.CREATED)
+    public CommonResponse<Integer> createRestaurants(@RequestParam String query){
         System.out.println(query);
-        int totalSaved = restaurantService.createRestaurants(query);
+        try {
+            int totalSaved = restaurantService.createRestaurants(query);
+            return CommonResponse.success(totalSaved, "음식점이 성공적으로 생성되었습니다.");
+        } catch (IllegalStateException e){
+            return CommonResponse.error("잘못된 요청입니다: " + e.getMessage(),
+                                                 HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return CommonResponse.error("서버 오류가 발생했습니다: " + e.getMessage(),
+                                                  HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
-        return "Total restaurants saved: " + totalSaved;
     }
 
 
