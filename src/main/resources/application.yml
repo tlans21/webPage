@@ -180,6 +180,12 @@ spring:
           naver:
             redirect-uri: http://localhost:8080/login/oauth2/code/naver
 
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html  # Swagger UI 경로 설정 (기본값이라 변경하고 싶을 때만 설정)
+  api-docs:
+    path: /v3/api-docs     # API docs 경로 설정 (기본값이라 변경하고 싶을 때만 설정)
+
 server:
   port: 8080
   serverAddress: localhost

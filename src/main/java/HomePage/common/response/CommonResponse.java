@@ -1,5 +1,6 @@
 package HomePage.common.response;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,33 +12,23 @@ import org.springframework.http.HttpStatus;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CommonResponse<T> {
-    private Status status;
-    private T data;
+    @Schema(description = "상태 코드", example = "200")
+    private int statusCode;
+
+    @Schema(description = "응답 메시지", example = "요청이 성공적으로 처리되었습니다")
     private String message;
-    private int code;    // HTTP 상태 코드
 
-    public static <T> CommonResponse<T> success(T data) {
-       return CommonResponse.<T>builder()
-               .status(Status.SUCCESS)
-               .data(data)
-               .code(HttpStatus.OK.value())
-               .build();
+    @Schema(description = "응답 데이터")
+    private T payload;
+
+    public static <T> CommonResponse<T> success(T payload, String message, HttpStatus status) {
+        return new CommonResponse<>(status.value(), message, payload);
     }
 
-    public static <T> CommonResponse<T> success(T data, String message) {
-       return CommonResponse.<T>builder()
-               .status(Status.SUCCESS)
-               .data(data)
-               .message(message)
-               .code(HttpStatus.OK.value())
-               .build();
+    public static <T> CommonResponse<T> success(){
+        return new CommonResponse<>(Result.OK.getCode(), Result.OK.getMessage(), null);
     }
-
     public static <T> CommonResponse<T> error(String message, HttpStatus status) {
-       return CommonResponse.<T>builder()
-               .status(Status.ERROR)
-               .message(message)
-               .code(status.value())
-               .build();
+        return new CommonResponse<>(status.value(), message, null);
     }
 }
