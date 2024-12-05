@@ -41,9 +41,9 @@ class RestaurantService {
 
     async renderRestaurants(data) {
         if (!data) return;
-        
-        this.totalPage = data.Page.totalPages;
-        const restaurants = data.Page.content;
+        console.log(data);
+        this.totalPage = data.payload.Page.totalPages;
+        const restaurants = data.payload.Page.content;
         const foodList = document.getElementById('food-list');
         
         for (const restaurant of restaurants) {
@@ -60,7 +60,7 @@ class RestaurantService {
         }
         
         document.getElementById('total-restaurant-count').textContent = 
-            `추천 맛집 (${data.totalRestaurantCount}개)`;
+            `추천 맛집 (${data.payload.totalRestaurantCount}개)`;
         this.page++;
     }
 }
