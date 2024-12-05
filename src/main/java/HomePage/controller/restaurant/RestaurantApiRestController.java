@@ -63,18 +63,22 @@ public class RestaurantApiRestController implements RestaurantApiDocs {
             Page<RestaurantDto> restaurantsPage = restaurantService.getRestaurantsPageBySearchCriteria(searchCriteria);
             int totalRestaurantCount = restaurantService.getTotalRestaurantCount();
 
-            Map<String, Object> response = new HashMap<>();
-            response.put("Page", restaurantsPage);
-            response.put("totalRestaurantCount", totalRestaurantCount);
+            Map<String, Object> successResponse = new HashMap<>();
+            successResponse.put("success", true);
+            successResponse.put("Page", restaurantsPage);
+            successResponse.put("totalRestaurantCount", totalRestaurantCount);
 
-            return CommonResponse.success(response, "음식점 목록 조회 성공", HttpStatus.OK);
+            return CommonResponse.success(successResponse, "음식점 목록 조회 성공", HttpStatus.OK);
         } catch (ResourceNotFoundException e){
-            return CommonResponse.error(e.getMessage(), HttpStatus.NOT_FOUND);
+            Map<String, Object> failResponse = new HashMap<>();
+            failResponse.put("success", false);
+            return CommonResponse.error(failResponse,"해당 정보를 데이터베이스에서 찾을 수 없음", HttpStatus.NOT_FOUND);
         } catch (Exception e){
-            return CommonResponse.error("서버 오류가 발생했습니다: " + e.getMessage(),
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("success", false);
+            return CommonResponse.error(errorResponse,"서버 오류가 발생했습니다: " + e.getMessage(),
                                         HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
     }
 
 
@@ -87,15 +91,20 @@ public class RestaurantApiRestController implements RestaurantApiDocs {
 
         System.out.println(query);
         try {
-            Map<String, Object> response = new HashMap<>();
+            Map<String, Object> successResponse = new HashMap<>();
             int totalSaved = restaurantService.createRestaurants(query);
-            response.put("totalSaved", totalSaved);
-            return CommonResponse.success(response, "음식점이 성공적으로 생성되었습니다.", HttpStatus.OK);
+            successResponse.put("success", true);
+            successResponse.put("totalSaved", totalSaved);
+            return CommonResponse.success(successResponse, "음식점이 성공적으로 생성되었습니다.", HttpStatus.OK);
         } catch (IllegalStateException e){
-            return CommonResponse.error("잘못된 요청입니다: " + e.getMessage(),
+            Map<String, Object> failResponse = new HashMap<>();
+            failResponse.put("success", false);
+            return CommonResponse.error(failResponse, "잘못된 요청입니다: " + e.getMessage(),
                                                  HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
-            return CommonResponse.error("서버 오류가 발생했습니다: " + e.getMessage(),
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("success", false);
+            return CommonResponse.error(errorResponse, "서버 오류가 발생했습니다: " + e.getMessage(),
                                                   HttpStatus.INTERNAL_SERVER_ERROR);
         }
 

@@ -58,7 +58,9 @@ public interface RestaurantApiDocs {
                     {
                         "statusCode": 404,
                         "message": "음식점을 찾을 수 없습니다",
-                        "payload": null
+                        "payload": {
+                            "success": false
+                        }
                     }
                     """))
         ),
@@ -70,7 +72,9 @@ public interface RestaurantApiDocs {
                     {
                         "statusCode": 500,
                         "message": "서버 오류가 발생했습니다",
-                        "payload": null
+                        "payload": {
+                            "success": false
+                        }
                     }
                     """))
         )
@@ -110,7 +114,9 @@ public interface RestaurantApiDocs {
                     {
                         "statusCode": 400,
                         "message": "잘못된 요청입니다.",
-                        "payload": null
+                        "payload": {
+                            "success": false
+                        }
                     }
                     """))
         ),
@@ -122,7 +128,9 @@ public interface RestaurantApiDocs {
                     {
                         "statusCode": 500,
                         "message": "서버 오류가 발생했습니다",
-                        "payload": null
+                        "payload": {
+                            "success": false
+                        }
                     }
                     """))
         )

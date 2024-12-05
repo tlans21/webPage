@@ -30,24 +30,23 @@ public class MailRestController implements MailApiDocs{
     @Override
     @PostMapping("/send-mail")
     public CommonResponse<Map<String, Boolean>> mailSend(@RequestBody @Valid MailRequest request) {
-        Map<String, Boolean> response = new HashMap<>();
-
         try {
             String email = request.getEmail();
             System.out.println(email);
             number = mailSendService.sendMail(email);
             String num = String.valueOf(number);
+            Map<String, Boolean> successResponse = new HashMap<>();
 
-            response.put("success", true);
-//            response.put("number", num);
-            return CommonResponse.success(response, "전송 성공", HttpStatus.OK);
-
+            successResponse.put("success", true);
+            return CommonResponse.success(successResponse, "전송 성공", HttpStatus.OK);
         } catch (mailSendingException e){
-            return CommonResponse.error("전송 실패", HttpStatus.BAD_REQUEST);
+            Map<String, Boolean> failResponse = new HashMap<>();
+            failResponse.put("success", false);
+            return CommonResponse.error(failResponse,"전송 실패", HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
-            response.put("success", false);
-//            response.put("error", e.getMessage());
-            return CommonResponse.error("서버 접속 에러", HttpStatus.INTERNAL_SERVER_ERROR);
+            Map<String, Boolean> errorResponse = new HashMap<>();
+            errorResponse.put("success", false);
+            return CommonResponse.error(errorResponse,"서버 접속 에러", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -67,16 +66,16 @@ public class MailRestController implements MailApiDocs{
 
            boolean isMatch = decodedUserNumber.equals(parseStringNumber);
 
-           Map<Object, Boolean> response = new HashMap<>();
-
            if (isMatch){
-               response.put("success", true);
+               Map<Object, Boolean> successResponse = new HashMap<>();
+               successResponse.put("success", true);
+               return CommonResponse.success(successResponse, "전송 성공", HttpStatus.OK); // 전송 성공 -> 200 상태 코드 반환
            }
            else {
-               response.put("success", false);
+               Map<Object, Boolean> failResponse = new HashMap<>();
+               failResponse.put("success", false);
+               return CommonResponse.success(failResponse, "전송 성공", HttpStatus.OK); // 전송 성공 -> 200 상태 코드 반환
            }
-
-           return CommonResponse.success(response, "전송 성공", HttpStatus.OK); // 전송 성공 -> 500 상태 코드 반환
        } catch (UnsupportedEncodingException e) {
            // 디코딩 과정에서 오류가 발생한 경우
            return CommonResponse.error("서버가 요청을 이해할 수 없음", HttpStatus.BAD_REQUEST); // 디코딩 실패 -> Bad Request는 "서버가 요청을 이해할 수 없음"

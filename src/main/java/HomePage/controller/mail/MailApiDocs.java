@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Map;
 
-@Tag(name = "mail", description = "이메일 API")
+@Tag(name = "Mail", description = "이메일 API")
 public interface MailApiDocs {
     @Operation(summary = "이메일 보내기", description = "이메일에 일련번호를 전송하고 성공인지 실패인지 확인합니다.")
     @io.swagger.v3.oas.annotations.parameters.RequestBody(
@@ -60,7 +60,9 @@ public interface MailApiDocs {
                                 {
                                     "statusCode": 400,
                                     "message": "전송 실패",
-                                    "payload": null
+                                    "payload": {
+                                        "success": false
+                                    }
                                 }
                                 """)
                     )
@@ -73,7 +75,9 @@ public interface MailApiDocs {
                                 {
                                     "statusCode": 500,
                                     "message": "서버 접속 에러",
-                                    "payload": null                       
+                                    "payload": {
+                                        "success": false
+                                    }                       
                                 }
                                 """)
                     )

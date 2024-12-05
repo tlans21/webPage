@@ -28,6 +28,10 @@ public class CommonResponse<T> {
     public static <T> CommonResponse<T> success(){
         return new CommonResponse<>(Result.OK.getCode(), Result.OK.getMessage(), null);
     }
+
+    public static <T> CommonResponse<T> error(T payload, String message, HttpStatus status) {
+        return new CommonResponse<>(status.value(), message, payload);
+    }
     public static <T> CommonResponse<T> error(String message, HttpStatus status) {
         return new CommonResponse<>(status.value(), message, null);
     }
