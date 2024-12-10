@@ -1,6 +1,6 @@
 package HomePage.exception;
 
-public class JoinRequestProcessingTimeoutException extends RuntimeException{
+public class JoinRequestProcessingTimeoutException extends RuntimeException {
     public JoinRequestProcessingTimeoutException(String message) {
         super(message);
     }
