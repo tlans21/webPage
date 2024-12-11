@@ -25,7 +25,9 @@ public class WebConfig implements WebMvcConfigurer {
     public static final List<String> CACHE_EXCLUDE_PATTERNS = Arrays.asList(
         "/api/**",
         "/profile/**",
-        "/notifications/**"
+        "/notifications/**",
+        "/env",
+        "/hc"
     );
 
     @Override
