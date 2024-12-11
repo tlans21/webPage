@@ -1,11 +1,10 @@
 package HomePage.config.cache;
 
-import HomePage.config.WebConfig;
+import HomePage.config.CacheExcludePatterns;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.util.PathMatcher;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -13,11 +12,12 @@ import java.util.Arrays;
 
 @Component
 public class CacheInterceptor implements HandlerInterceptor {
-    @Autowired
-    private PathMatcher pathMatcher;
+
+
     private boolean isExcludedPath(String requestUri) {
-         return WebConfig.CACHE_EXCLUDE_PATTERNS.stream()
-                 .anyMatch(pattern -> pathMatcher.match(pattern, requestUri));
+        AntPathMatcher antPathMatcher = new AntPathMatcher();
+        return CacheExcludePatterns.PATTERNS.stream()
+                .anyMatch(pattern -> antPathMatcher.match(pattern, requestUri));
     }
     // 뷰 캐싱을 위해서, 컨트롤러 실행 후, 페이지 렌더링 이전의 postHandle로 가로채야함
     @Override
