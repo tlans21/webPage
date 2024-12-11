@@ -10,6 +10,8 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Configuration
@@ -17,6 +19,21 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Autowired
     CacheInterceptor cacheInterceptor;
+
+
+    // 제외할 경로 패턴을 상수로 관리
+    public static final List<String> CACHE_EXCLUDE_PATTERNS = Arrays.asList(
+        "/api/**",
+        "/profile/**",
+        "/notifications/**"
+    );
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(cacheInterceptor)
+                .addPathPatterns("/**") // 모든 경로에 적용
+                .excludePathPatterns(CACHE_EXCLUDE_PATTERNS); //API 경로는 캐싱할 이유가 없기 때문에 제외
+    }
 
     @Override
     public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
@@ -36,12 +53,5 @@ public class WebConfig implements WebMvcConfigurer {
                 .addResourceLocations("classpath:/static/css/")
                 .setCacheControl(CacheControl.maxAge(365, TimeUnit.DAYS))
                 .resourceChain(true);
-    }
-
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(cacheInterceptor)
-                .addPathPatterns("/**") // 모든 경로에 적용
-                .excludePathPatterns("/api/**"); //API 경로는 캐싱할 이유가 없기 때문에 제외
     }
 }
