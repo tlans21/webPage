@@ -11,6 +11,7 @@ import java.util.concurrent.TimeUnit;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
+
     @Override
     public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
         configurer
