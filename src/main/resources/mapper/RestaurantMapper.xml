@@ -67,12 +67,15 @@
        SELECT *
        FROM security.restaurants
        WHERE 1=1
-       <if test="theme != null and theme != ''">
-           AND theme = #{theme}
-       </if>
-       <if test="service != null and service != ''">
-           AND service = #{service}
-       </if>
+<!--       <if test="theme != null and theme != ''">-->
+<!--           AND theme = #{theme}-->
+<!--       </if>-->
+<!--       <if test="service != null and service != ''">-->
+<!--           AND service = #{service}-->
+<!--       </if>-->
+        <if test="category != null and category != ''">
+            AND category LIKE CONCAT(#{category}, '%')
+        </if>
        <choose>
            <when test="sortBy == 'averageRating'">
                ORDER BY average_rating
@@ -98,12 +101,15 @@
        SELECT COUNT(*)
        FROM security.restaurants
        WHERE 1=1
-       <if test="theme != null and theme != ''">
-           AND theme = #{theme}
-       </if>
-       <if test="service != null and service != ''">
-           AND service = #{service}
-       </if>
+<!--       <if test="theme != null and theme != ''">-->
+<!--           AND theme = #{theme}-->
+<!--       </if>-->
+<!--       <if test="service != null and service != ''">-->
+<!--           AND service = #{service}-->
+<!--       </if>-->
+        <if test="category != null and category != ''">
+            AND category LIKE CONCAT(#{category}, '%')
+        </if>
     </select>
 
 </mapper>

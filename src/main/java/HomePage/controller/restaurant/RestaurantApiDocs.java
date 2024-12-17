@@ -87,7 +87,10 @@ public interface RestaurantApiDocs {
             @Parameter(description = "테마 옵션")
             @RequestParam(value="themeOption", defaultValue = "") String themeOption,
             @Parameter(description = "서비스 옵션")
-            @RequestParam(value="serviceOption", defaultValue = "") String serviceOption);
+            @RequestParam(value="serviceOption", defaultValue = "") String serviceOption,
+            @Parameter(description = "음식 카테고리")
+            @RequestParam(value="category", required = false) String category
+    );
 
 
     @Operation(summary = "음식점 생성", description = "새로운 음식점을 생성합니다.")

@@ -17,12 +17,11 @@ public class RestaurantSearchCriteria {
     private String sortBy = "averageRating";
     @Builder.Default
     private String sortDirection = "DESC";
+    private String category = "";
+
     private String theme;
     private String service;
 
     private int offset;
 
-    public void calculateOffset() {
-        this.offset = (page - 1) * pageSize;
-    }
 }
