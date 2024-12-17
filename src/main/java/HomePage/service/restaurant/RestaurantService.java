@@ -36,11 +36,7 @@ public class RestaurantService {
 
     public Page<RestaurantDto> getRestaurantsPageBySearchCriteria(RestaurantSearchCriteria searchCriteria){
         int totalRestaurants = getTotalRestaurantCountWithCriteria(searchCriteria);
-        System.out.println(searchCriteria.getPageSize());
         int totalPages = max(1, (int) Math.ceil((double) totalRestaurants / searchCriteria.getPageSize()));
-
-        System.out.println("totalRestaurants" + totalRestaurants);
-        System.out.println("totalPage:" + totalPages);
 
         if (searchCriteria.getPage() <= 0) {
             throw new IllegalArgumentException("Page number must be greater than 0");
@@ -48,6 +44,7 @@ public class RestaurantService {
         if (searchCriteria.getPage() > totalPages) {
             searchCriteria.setPage(totalPages);
         }
+        System.out.println(totalRestaurants);
 
         // offset 계산 및 설정
         searchCriteria.setOffset((searchCriteria.getPage() - 1) * searchCriteria.getPageSize());

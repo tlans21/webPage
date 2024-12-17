@@ -49,8 +49,15 @@ public class RestaurantApiRestController implements RestaurantApiDocs {
             @Parameter(description = "테마 옵션")
             @RequestParam(value="themeOption", defaultValue = "") String themeOption,
             @Parameter(description = "서비스 옵션")
-            @RequestParam(value="serviceOption", defaultValue = "") String serviceOption){
-
+            @RequestParam(value="serviceOption", defaultValue = "") String serviceOption,
+            @Parameter(description = "음식 카테고리")
+            @RequestParam(value="category", required = false) String category
+    ){
+        System.out.println("page: " + page);
+        System.out.println("sortOption: " + sortOption);
+        System.out.println("themeOption: " + themeOption);
+        System.out.println("serviceOption: " + serviceOption);
+        System.out.println("category: " + category);
         try{
             //DTO 생성
             RestaurantSearchCriteria searchCriteria = RestaurantSearchCriteria.builder()
@@ -58,10 +65,11 @@ public class RestaurantApiRestController implements RestaurantApiDocs {
                     .sortBy(convertSortOption(sortOption))
                     .theme(themeOption)
                     .service(serviceOption)
+                    .category(category)
                     .build();
 
             Page<RestaurantDto> restaurantsPage = restaurantService.getRestaurantsPageBySearchCriteria(searchCriteria);
-            int totalRestaurantCount = restaurantService.getTotalRestaurantCount();
+            int totalRestaurantCount = restaurantService.getTotalRestaurantCountWithCriteria(searchCriteria);
 
             Map<String, Object> successResponse = new HashMap<>();
             successResponse.put("success", true);

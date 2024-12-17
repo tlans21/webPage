@@ -51,6 +51,5 @@ public class JoinRestController implements JoinRestApiDocs{
             errorResponse.put("success", false);
             return CommonResponse.error(errorResponse, "서버로 부터 오류가 발생했습니다", HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
    }
 }

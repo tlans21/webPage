@@ -319,12 +319,11 @@
             <button class="filter-btn" data-filter="고기/구이류">고기/구이류</button>
             <button class="filter-btn" data-filter="씨푸드">씨푸드</button>
             <button class="filter-btn" data-filter="일/중/세계음식">일/중/세계음식</button>
-            <button class="filter-btn" data-filter="카페/디저트">카페/디저트</button>
+            <button class="filter-btn" data-filter="카페,디저트">카페</button>
             <button class="filter-btn" data-filter="나이트라이프">나이트라이프</button>
         </div>
         <div id="content-wrapper">
             <div id="main">
-                <h2 id="total-restaurant-count"></h2>
                 <div id="food-list">
                     <!-- food-item 등록 칸 -->
                 </div>
@@ -407,21 +406,20 @@
         import { restaurantService } from '@/RestaurantService';
         import { modalService } from '@/ModalService';
         import { reviewService } from '@/ReviewService';
+        import { filterRestaurantService } from '@/FilterRestaurantService';
+
         console.log("test");
         
         try{
-            restaurantService.fetchFoods();
+            filterRestaurantService;
+            
+            // restaurantService.fetchFoods();
             
             // 이미지 로드 에러 핸들러
             function handleImageLoadErrorHandler() {
 
             }
-            // 무한 스크롤
-            window.addEventListener('scroll', () => {
-                if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {
-                    restaurantService.fetchFoods();
-                }
-            });
+           
             // 모달 관련 전역 이벤트
             window.onclick = function(event) {
                 if (event.target == mapModal) {
