@@ -1,5 +1,3 @@
-import { createFoodItem } from '@/restaurantUtils';
-import { modalService } from '@/ModalService';
 import { restaurantService } from '@/RestaurantService';
 
 class FilterRestaurantService {
@@ -37,16 +35,17 @@ class FilterRestaurantService {
         this.applyFilterBtn.addEventListener('click', () => this.handleClickApplyFilter());
  
         this.filterButtons.forEach(button =>
-            button.addEventListener('click', () => {
+            button.addEventListener('click', async () => {
                 const filter = button.getAttribute('data-filter');
-                this.filterFoodItems(filter);
-            
+                
                 this.filterButtons.forEach(btn => btn.classList.remove('active'));
                 const filterBtnDetail = document.getElementById('filter-btn-detail');
                 if (filterBtnDetail && filterBtnDetail.classList.contains('active')) {
                     filterBtnDetail.classList.remove('active');
                 }
-                button.classList.add('active');   
+                button.classList.add('active');
+                
+                this.filterFoodItems(filter);
             })
         );
     }
@@ -55,7 +54,7 @@ class FilterRestaurantService {
         this.restaurantService.setFilter({
             category: filter === 'all' ? null : filter
         });
-        await this.restaurantService.fetchFoods();
+        this.restaurantService.fetchFoods();
     }
  
     updateActiveButtonStyle(clickedButton) {
@@ -70,6 +69,10 @@ class FilterRestaurantService {
     handleClickFilterOption(event, filterType) {
         const filterOption = event.target.getAttribute('data-filter');
         this.updateActiveButtonStyle(event.target);
+
+        this.restaurantService.setFilter({
+            [filterType]: filterOption
+        });
     }
  
     handleClickResetFilter() {
