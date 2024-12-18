@@ -3,6 +3,7 @@ import { modalService } from '@/ModalService';
 
 class RestaurantService {
    constructor() {
+       this.abortController = null;
        this.isLoading = false;
        this.page = 1;
        this.totalPage = 10;
@@ -26,25 +27,39 @@ class RestaurantService {
 
    async fetchFoods() {
        if (this.isLoading || this.page > this.totalPage) {
-           return;
+            return;
        }
-       
+       if (this.abortController) {
+            this.abortController.abort();
+            console.log("새로운 정보 요청");
+       }
+       this.abortController = new AbortController();
        this.isLoading = true;
+       
        document.getElementById('loading').style.display = 'block';
        
        try {
-           const data = await this.fetchRestaurantData();
+           const data = await this.fetchRestaurantData(this.abortController.signal);
            console.log(data);
+           if (this.abortController.signal.aborted){
+                return; 
+           }
            await this.renderRestaurants(data);
        } catch(error) {
-           console.error("Error fetching restaurants:", error);
+            if(error.name === 'AbortError'){
+                console.error("Request Aborting is success");
+            } else {
+                console.error("Error fetching restaurants:", error);
+            }
        } finally {
-           document.getElementById('loading').style.display = 'none';
-           this.isLoading = false;
-       }
+        if (!this.abortController.signal.aborted){
+                document.getElementById('loading').style.display = 'none';
+                this.isLoading = false;
+            }  
+        }
    }
 
-   async fetchRestaurantData() {
+   async fetchRestaurantData(signal) {
        console.log("현재 필터 버튼의 상태 : ", this.currentFilter.category);
        const params = new URLSearchParams({ page: this.page });
        
@@ -65,8 +80,14 @@ class RestaurantService {
            method: 'GET',
            headers: {
                'Content-type': 'application/json',
-           }
+           },
+           signal 
        });
+
+       if(signal.aborted){
+            return null;
+       }
+
        return await response.json();
    }
 
@@ -82,22 +103,27 @@ class RestaurantService {
        this.page = 1;
        this.totalPage = 10;
        document.getElementById('food-list').innerHTML = '';
+       this.isLoading = false;
    }
 
    async renderRestaurants(data) {
-       if (!data) return;
+       if (!data || this.abortController.signal.aborted) return;
        
        this.totalPage = data.payload.Page.totalPages;
        const restaurants = data.payload.Page.content;
        const foodList = document.getElementById('food-list');
        
        for (const restaurant of restaurants) {
+           if (this.abortController.signal.aborted) break;
            try {
                const foodItem = await createFoodItem(
                    restaurant, 
                    (event) => modalService.openModal(event)
                );
-               foodList.appendChild(foodItem);
+               if (!this.abortController.signal.aborted) {  
+                    foodList.appendChild(foodItem);
+               }
+               
            } catch(error) {
                this.imageLoadErrorCount++;
                console.log(`Failed to load image for ${restaurant.title}`);
@@ -105,8 +131,10 @@ class RestaurantService {
        }
        
        
-       this.page++;
-       console.log("renderRestaurants");
+       if (!this.abortController.signal.aborted) {  // 추가
+            this.page++;
+            console.log("renderRestaurants");
+       }
    }
 }
 

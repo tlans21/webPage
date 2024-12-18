@@ -411,9 +411,6 @@
         console.log("test");
         
         try{
-            filterRestaurantService;
-            
-            // restaurantService.fetchFoods();
             
             // 이미지 로드 에러 핸들러
             function handleImageLoadErrorHandler() {
@@ -496,7 +493,10 @@
         import { modalService } from '@/ModalService';
         import { filterRestaurantService} from '@/FilterRestaurantService';
 
-        filterRestaurantService;                
+        document.addEventListener('DOMContentLoaded', () => {
+            // FilterRestaurantService만 초기화하면 됨
+            filterRestaurantService;
+        });              
     </script>
 </body>
 </html>
