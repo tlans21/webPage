@@ -3,6 +3,7 @@ import { modalService } from '@/ModalService';
 
 class RestaurantService {
    constructor() {
+       this.currentRenderingPromise = null;
        this.abortController = null;
        this.isLoading = false;
        this.page = 1;
@@ -25,26 +26,48 @@ class RestaurantService {
         });
     }
 
+    async setFilter(filterOptions) {
+        // 1. 이전 요청 중단 (이전 요청에서 abortController가 생성되었으므로)
+        if (this.abortController) {
+            this.abortController.abort();
+        }
+        if (this.currentRenderingPromise) {
+            await this.currentRenderingPromise;
+        }
+        // 2. 현재 필터 변경
+        this.currentFilter = {
+            ...this.currentFilter,
+            ...filterOptions
+        };
+        // 3. 필터 변경으로 인한 상태 초기화
+        this.resetPagination();
+
+        // 4. 데이터 요청
+        await this.fetchFoods();
+    }
+ 
+    resetPagination() {
+        this.page = 1;
+        this.totalPage = 10;
+        this.isLoading = false;
+        document.getElementById('food-list').innerHTML = '';
+    }
+
    async fetchFoods() {
        if (this.isLoading || this.page > this.totalPage) {
             return;
        }
-       if (this.abortController) {
-            this.abortController.abort();
-            console.log("새로운 정보 요청");
-       }
-       this.abortController = new AbortController();
-       this.isLoading = true;
        
+       this.isLoading = true;
+       this.abortController = new AbortController();
        document.getElementById('loading').style.display = 'block';
        
        try {
            const data = await this.fetchRestaurantData(this.abortController.signal);
            console.log(data);
-           if (this.abortController.signal.aborted){
-                return; 
+           if (!this.abortController.signal.aborted){
+                await this.renderRestaurants(data); 
            }
-           await this.renderRestaurants(data);
        } catch(error) {
             if(error.name === 'AbortError'){
                 console.error("Request Aborting is success");
@@ -91,50 +114,94 @@ class RestaurantService {
        return await response.json();
    }
 
-   setFilter(filterOptions) {
-       this.currentFilter = {
-           ...this.currentFilter,
-           ...filterOptions
-       };
-       this.resetPagination();
-   }
-
-   resetPagination() {
-       this.page = 1;
-       this.totalPage = 10;
-       document.getElementById('food-list').innerHTML = '';
-       this.isLoading = false;
-   }
-
    async renderRestaurants(data) {
-       if (!data || this.abortController.signal.aborted) return;
+        if (!data || this.abortController.signal.aborted) return;
        
-       this.totalPage = data.payload.Page.totalPages;
-       const restaurants = data.payload.Page.content;
-       const foodList = document.getElementById('food-list');
-       
-       for (const restaurant of restaurants) {
-           if (this.abortController.signal.aborted) break;
-           try {
-               const foodItem = await createFoodItem(
-                   restaurant, 
-                   (event) => modalService.openModal(event)
-               );
-               if (!this.abortController.signal.aborted) {  
-                    foodList.appendChild(foodItem);
-               }
+        this.totalPage = data.payload.Page.totalPages;
+        const restaurants = data.payload.Page.content;
+        // const foodList = document.getElementById('food-list');
+        // const temporaryItems = [];  // 임시 저장소
+    //    for (const restaurant of restaurants) {
+    //        if (this.abortController.signal.aborted) break;
+    //        try {
+    //            const foodItem = await createFoodItem(
+    //                restaurant, 
+    //                (event) => modalService.openModal(event)
+    //            );
+    //            if (!this.abortController.signal.aborted) {
+    //                 console.log("1");  
+    //                 foodList.appendChild(foodItem);
+    //            }
                
-           } catch(error) {
-               this.imageLoadErrorCount++;
-               console.log(`Failed to load image for ${restaurant.title}`);
-           }
-       }
+    //        } catch(error) {
+    //            this.imageLoadErrorCount++;
+    //            console.log(`Failed to load image for ${restaurant.title}`);
+    //        }
+    //    }
        
        
-       if (!this.abortController.signal.aborted) {  // 추가
-            this.page++;
-            console.log("renderRestaurants");
-       }
+       
+    //    if (!this.abortController.signal.aborted) {  // 추가
+    //         this.page++;
+    //         console.log("renderRestaurants");
+    //    }
+        // for (const restaurant of restaurants) {
+        //     if (this.abortController.signal.aborted) break;
+        //     try {
+        //         const foodItem = await createFoodItem(
+        //             restaurant, 
+        //             (event) => modalService.openModal(event)
+        //         );
+        //         if (!this.abortController.signal.aborted) {
+        //             temporaryItems.push(foodItem);  // DOM에 바로 추가하지 않고 임시 저장
+        //         }
+        //     } catch(error) {
+        //         this.imageLoadErrorCount++;
+        //         console.log(`Failed to load image for ${restaurant.title}`);
+        //     }
+        // }
+        
+        // // 모든 아이템이 준비되고 abort되지 않았을 때만 한 번에 DOM에 추가
+        // if (!this.abortController.signal.aborted) {
+        //     for (const item of temporaryItems){
+        //         if (this.abortController.signal.aborted) return;
+        //         foodList.appendChild(item);
+        //     }
+        //     if (!this.abortController.signal.aborted) {
+        //         this.page++;
+        //         console.log("renderRestaurants");
+        //     }
+        // }
+        this.currentRenderingPromise = (async () => {
+            const temporaryItems = [];
+            
+            for (const restaurant of restaurants) {
+                if (this.abortController.signal.aborted) return;
+                try {
+                    const foodItem = await createFoodItem(
+                                    restaurant, 
+                                    (event) => modalService.openModal(event)
+                    );
+                    if (!this.abortController.signal.aborted) {
+                        temporaryItems.push(foodItem);
+                    }
+                } catch(error) {
+                    // ... error handling
+                }
+            }
+
+            if (!this.abortController.signal.aborted) {
+                const foodList = document.getElementById('food-list');
+                for (const item of temporaryItems) {
+                    if (this.abortController.signal.aborted) return;
+                    foodList.appendChild(item);
+                }
+                this.page++;
+            }
+        })();
+
+        await this.currentRenderingPromise;
+        this.currentRenderingPromise = null;
    }
 }
 
