@@ -54,7 +54,7 @@ class FilterRestaurantService {
         this.restaurantService.setFilter({
             category: filter === 'all' ? null : filter
         });
-        this.restaurantService.fetchFoods();
+        //fetchFoods 제거 (내부에서 호출 되도록 변경)
     }
  
     updateActiveButtonStyle(clickedButton) {
@@ -73,6 +73,7 @@ class FilterRestaurantService {
         this.restaurantService.setFilter({
             [filterType]: filterOption
         });
+        
     }
  
     handleClickResetFilter() {
@@ -89,7 +90,7 @@ class FilterRestaurantService {
         const filterOptions = this.getActiveFilterOptions();
         
         this.restaurantService.setFilter(filterOptions);
-        await this.restaurantService.fetchFoods();
+        //fetchFoods 제거 (내부에서 호출 되도록 변경)
     }
  
     getActiveFilterOptions() {
