@@ -18,40 +18,40 @@
     </insert>
 
     <select id="findById" parameterType="long" resultMap="RestaurantReviewCommentResultMap">
-        SELECT * FROM restaurant_review_comments WHERE id = #{id}
+        SELECT * FROM security.restaurant_review_comments WHERE id = #{id}
     </select>
 
     <select id="findByRestaurantId" parameterType="long" resultMap="RestaurantReviewCommentResultMap">
-        SELECT * FROM restaurant_review_comments WHERE restaurant_id = #{restaurantId}
+        SELECT * FROM security.restaurant_review_comments WHERE restaurant_id = #{restaurantId}
         ORDER BY created_at DESC
     </select>
 
     <update id="update" parameterType="HomePage.domain.model.entity.RestaurantReviewComment">
-        UPDATE restaurant_review_comments
+        UPDATE security.restaurant_review_comments
         SET content = #{content}, updated_at = #{updatedDate}
         WHERE id = #{id}
     </update>
     <update id="updateRatingByRestaurantId">
-        UPDATE restaurant_review_comments
+        UPDATE security.restaurant_review_comments
         SET rating = #{rating}
         WHERE id = #{rest
     </update>
 
     <delete id="deleteById" parameterType="long">
-        DELETE FROM restaurant_review_comments WHERE id = #{id}
+        DELETE FROM security.restaurant_review_comments WHERE id = #{id}
     </delete>
 
     <select id="findAll" resultMap="RestaurantReviewCommentResultMap">
-        SELECT * FROM restaurant_review_comments
+        SELECT * FROM security.restaurant_review_comments
         ORDER BY created_at DESC
     </select>
 
     <select id="countByRestaurantId" parameterType="long" resultType="int">
-        SELECT COUNT(*) FROM restaurant_review_comments WHERE restaurant_id = #{restaurantId}
+        SELECT COUNT(*) FROM security.restaurant_review_comments WHERE restaurant_id = #{restaurantId}
     </select>
 
     <select id="findByRestaurantIdWithPagination" resultMap="RestaurantReviewCommentResultMap">
-        SELECT * FROM restaurant_review_comments
+        SELECT * FROM security.restaurant_review_comments
         WHERE restaurant_id = #{restaurantId}
         ORDER BY created_at DESC
         LIMIT #{limit} OFFSET #{offset}
