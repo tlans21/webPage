@@ -186,7 +186,8 @@ class RestaurantService {
                         temporaryItems.push(foodItem);
                     }
                 } catch(error) {
-                    // ... error handling
+                    this.imageLoadErrorCount++;
+                    console.log(`Failed to load image for ${restaurant.title}`); 
                 }
             }
 

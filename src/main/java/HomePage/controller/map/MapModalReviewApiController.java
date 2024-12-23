@@ -47,7 +47,7 @@ public class MapModalReviewApiController implements MapModalReviewApiDocs{
         User user = principalDetails.getUser();
         Long userId = user.getId();
 
-        RestaurantReviewCommentDTO review = restaurantReviewService.createReview(restaurantId, userId, content, rating);
+        RestaurantReviewCommentDTO review = restaurantReviewService.createReview(restaurantId, userId, content, rating); // 리뷰 생성
 
         // 최신 리뷰 목록 조회
         List<RestaurantReviewCommentDTO> reviewDTOs = restaurantReviewService.findByRestaurantId(restaurantId);
