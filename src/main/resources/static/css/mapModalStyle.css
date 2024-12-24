@@ -39,8 +39,8 @@
 }
 
 .user-name {
-font-weight: bold;
-margin-right: 10px;
+    font-weight: bold;
+    margin-right: 10px;
 }
 
 .comment-date {
@@ -65,6 +65,25 @@ margin-right: 10px;
     cursor: pointer;
 }
 
+.like-btn {
+    background-color: #ffba00;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.dislike-btn {
+    background-color: #ffba00;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+
 .comment-input-wrapper {
     display: flex;
     flex-direction: column;
@@ -86,4 +105,86 @@ margin-right: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
     background-color: #f9f9f9;
+}
+
+#mapModal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+}
+#mapModal-content {
+    background-color: #fefefe;
+    margin: 5% auto; /* 상단에서의 거리 조정 */
+    padding: 20px;
+    border: 10px solid #888;
+    width: 80%; /* 너비 조정 */
+    height: 80vh; /* 최대 높이 설정 */
+    max-width: 1000px; /* 최대 너비 설정 */
+    max-height: 800px; /* 최대 높이 설정 */
+    overflow-y: auto; /* 내용이 넘칠 경우 스크롤 허용 */
+    position: relative;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+}
+#map {
+    width: 100%;
+    height: 100%; /* 지도의 높이 설정 */
+}
+#content-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-top: 20px;
+}
+
+.closeMapModal {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    position: absolute;
+    right: 10px;
+    top: 5px;
+}
+.closeMapModal:hover,
+.closeMapModal:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+
+/* 맵 모달 내의 평점 css */
+
+.rating {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+}
+
+.rating > input {
+    display: none;
+}
+
+.rating > label {
+    position: relative;
+    width: 1em;
+    font-size: 30px;
+    color: #FFD600;
+    cursor: pointer;
+}
+
+.rating > label::before {
+    content: "\2605";
+    position: absolute;
+    opacity: 0;
+}
+
+.rating > input:checked ~ label:before {
+    opacity: 1;
 }

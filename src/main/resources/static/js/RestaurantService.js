@@ -60,8 +60,7 @@ class RestaurantService {
        
        this.isLoading = true;
        this.abortController = new AbortController();
-       document.getElementById('loading').style.display = 'block';
-       
+       document.getElementById('loading').style.display = 'flex'    ;
        try {
            const data = await this.fetchRestaurantData(this.abortController.signal);
            console.log(data);
@@ -76,7 +75,7 @@ class RestaurantService {
             }
        } finally {
         if (!this.abortController.signal.aborted){
-                document.getElementById('loading').style.display = 'none';
+                document.getElementById('loading').style.display = 'none';                                
                 this.isLoading = false;
             }  
         }
