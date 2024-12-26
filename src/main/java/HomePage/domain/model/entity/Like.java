@@ -17,7 +17,7 @@ public class Like {
     private Long userId;
     private Timestamp createdAt;
     private Timestamp updatedAt;
-
+    private boolean isLike; // true: 좋아요, false: 싫어요
     // 팩토리 메서드
     public static Like createLike(LikeTargetType targetType, Long targetId, Long userId) {
         return Like.builder()

@@ -48,7 +48,7 @@ public class RestaurantReviewServiceImpl implements RestaurantReviewService{
 
 
         // 총 평점 계산
-        List<RestaurantReviewCommentDTO> reviewDTOs = findByRestaurantId(restaurantId);
+        List<RestaurantReviewCommentDTO> reviewDTOs = findByRestaurantIdWithoutJoin(restaurantId);
         double totalRating = reviewDTOs.stream()
                 .mapToDouble(RestaurantReviewCommentDTO::getRating)
                 .sum();
@@ -92,7 +92,7 @@ public class RestaurantReviewServiceImpl implements RestaurantReviewService{
 
     @Override
     @Transactional
-    public List<RestaurantReviewCommentDTO> findByRestaurantId(Long restaurantId) {
+    public List<RestaurantReviewCommentDTO> findByRestaurantIdWithoutJoin(Long restaurantId) {
         List<RestaurantReviewComment> comments = reviewCommentMapper.findByRestaurantId(restaurantId);
 
         return comments.stream()
@@ -114,6 +114,12 @@ public class RestaurantReviewServiceImpl implements RestaurantReviewService{
                     return dto;
                 })
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<RestaurantReviewCommentDTO> findByRestaurantIdWithJoin(Long restaurantId) {
+        List<RestaurantReviewCommentDTO> dto = reviewCommentMapper.findByRestaurantIdWithJoin(restaurantId);
+        return dto;
     }
 
     private String getOrCreateAnonymousNickname(Long userId, Map<Long, String> anonymousNicknameMap, AtomicInteger counter) {

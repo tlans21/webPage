@@ -21,4 +21,8 @@ public class RestaurantReviewCommentDTO {
     private Timestamp updateDate;
     private Timestamp deleteDate;
     private double rating;
+
+    private int likeCount;
+    private int dislikeCount;
+
 }

@@ -1,7 +1,7 @@
 // ModalService.js
 import { createMap, loadModalStyle } from '@/MapUtils';
 import { reviewService } from '@/ReviewService';
-import { initializeCommentTimes } from '@/elapsedTimeComment';
+
 
 export class ModalService {
     async openModal(event) {
@@ -43,7 +43,7 @@ export class ModalService {
         mapModal.style.display = "block";
 
         // 댓글 시간 초기화 함수 호출
-        initializeCommentTimes();
+        
     }
 
     setupModalEvents() {

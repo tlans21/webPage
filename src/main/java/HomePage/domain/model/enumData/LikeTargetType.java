@@ -1,8 +1,12 @@
 package HomePage.domain.model.enumData;
 
 public enum LikeTargetType {
-    RESTAURANT("R"),
-    BOARD("B");
+    RESTAURANT("RESTAURANT"),
+    BOARD("BOARD"),
+    COMMENT("COMMENT"),
+    REVIEW("REVIEW");
+
+
 
     private final String code;
 

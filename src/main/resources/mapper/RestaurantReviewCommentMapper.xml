@@ -10,6 +10,10 @@
         <result property="content" column="content"/>
         <result property="registerDate" column="created_at"/>
         <result property="updateDate" column="updated_at"/>
+        <result property="rating" column="rating"/>
+        <result property="writer" column="writer"/>
+        <result property="likeCount" column="like_count"/>
+        <result property="dislikeCount" column="dislike_count"/>
     </resultMap>
 
     <insert id="save" parameterType="HomePage.domain.model.entity.RestaurantReviewComment" useGeneratedKeys="true" keyProperty="id">
@@ -24,6 +28,33 @@
     <select id="findByRestaurantId" parameterType="long" resultMap="RestaurantReviewCommentResultMap">
         SELECT * FROM security.restaurant_review_comments WHERE restaurant_id = #{restaurantId}
         ORDER BY created_at DESC
+    </select>
+
+    <select id="findByRestaurantIdWithJoin" parameterType="long" resultMap="RestaurantReviewCommentResultMap">
+        SELECT
+            r.*,
+            u.username as writer,
+            SUM(CASE WHEN l.isLike = 1 THEN 1 ELSE 0 END) as like_count,
+            SUM(CASE WHEN l.isLike = 0 THEN 1 ELSE 0 END) as dislike_count
+        FROM
+            security.restaurant_review_comments r
+            LEFT JOIN security.user u ON r.user_id = u.id
+            LEFT JOIN security.likes l ON r.id = l.target_id
+                AND l.target_type = 'REVIEW'
+        WHERE
+            r.restaurant_id = #{restaurantId}
+        GROUP BY
+            r.id,
+            r.user_id,
+            r.restaurant_id,
+            u.username,
+            r.content,
+            r.created_at,
+            r.updated_at,
+            r.delete_date,
+            r.rating
+        ORDER BY
+            r.created_at DESC
     </select>
 
     <update id="update" parameterType="HomePage.domain.model.entity.RestaurantReviewComment">

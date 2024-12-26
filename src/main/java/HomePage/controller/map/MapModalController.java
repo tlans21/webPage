@@ -32,7 +32,7 @@ public class MapModalController {
         }
         System.out.println(isSuccess);
         RestaurantDto restaurantDto = restaurantService.getRestaurantById(id);
-        List<RestaurantReviewCommentDTO> comments = restaurantReviewService.findByRestaurantId(id);
+        List<RestaurantReviewCommentDTO> comments = restaurantReviewService.findByRestaurantIdWithoutJoin(id);
 
         model.addAttribute("restaurant", restaurantDto);
         model.addAttribute("comments",  comments);

@@ -1,11 +1,12 @@
 package HomePage.service.like;
 
-import HomePage.domain.model.dto.LikeRes;
-import HomePage.domain.model.enumData.LikeTargetType;
+import HomePage.domain.model.entity.Like;
 
 public interface LikeService {
-    LikeRes toggleLike(LikeTargetType targetType, Long targetId, Long userId);
-    int getLikeCount(LikeTargetType targetType, Long targetId);
 
-
+    public Like save(Like like);
+    public void addLikeToBoard(Long boardId, Long userId);
+    public void addLikeToComment(Long boardId, Long userId);
+    public void addLikeToRestaurant(Long restaurantId, Long userId);
+    public void addLikeToReview(Long reviewId, Long userId);
 }
