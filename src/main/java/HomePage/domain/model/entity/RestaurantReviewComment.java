@@ -32,4 +32,7 @@ public class RestaurantReviewComment extends Comment{
     }
 
     private double rating;
+
+    private int likeCount;
+    private int dislikeCount;
 }

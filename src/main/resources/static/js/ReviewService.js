@@ -37,7 +37,7 @@ class ReviewService {
         try {
             const response = await fetch(`/api/v1/user/review/${restaurantId}`);
             const data = await response.json();
-            console.log("Reviews updated:", data.reviews);
+            console.log("Reviews updated:", data);
             return data;
         } catch (error) {
             console.error('Error updating review count:', error);

@@ -51,7 +51,7 @@
             r.content,
             r.created_at,
             r.updated_at,
-            r.delete_date,
+            r.deleted_at,
             r.rating
         ORDER BY
             r.created_at DESC

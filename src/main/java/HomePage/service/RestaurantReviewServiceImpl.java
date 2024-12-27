@@ -117,9 +117,16 @@ public class RestaurantReviewServiceImpl implements RestaurantReviewService{
     }
 
     @Override
+    @Transactional
     public List<RestaurantReviewCommentDTO> findByRestaurantIdWithJoin(Long restaurantId) {
-        List<RestaurantReviewCommentDTO> dto = reviewCommentMapper.findByRestaurantIdWithJoin(restaurantId);
-        return dto;
+        List<RestaurantReviewComment> reviewComments = reviewCommentMapper.findByRestaurantIdWithJoin(restaurantId);
+
+
+        return reviewComments.stream()
+                .map(reviewComment -> {
+                    RestaurantReviewCommentDTO restaurantReviewCommentDTO = objectMapper.convertValue(reviewComment, RestaurantReviewCommentDTO.class);
+                    return restaurantReviewCommentDTO;
+                }).collect(Collectors.toList());
     }
 
     private String getOrCreateAnonymousNickname(Long userId, Map<Long, String> anonymousNicknameMap, AtomicInteger counter) {

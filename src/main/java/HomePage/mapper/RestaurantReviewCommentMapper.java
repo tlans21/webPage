@@ -1,6 +1,5 @@
 package HomePage.mapper;
 
-import HomePage.domain.model.dto.RestaurantReviewCommentDTO;
 import HomePage.domain.model.entity.RestaurantReviewComment;
 import org.apache.ibatis.annotations.Param;
 
@@ -16,7 +15,7 @@ public interface RestaurantReviewCommentMapper {
             @Param("restaurantId") Long restaurantId
     );
 
-    List<RestaurantReviewCommentDTO> findByRestaurantIdWithJoin(
+    List<RestaurantReviewComment> findByRestaurantIdWithJoin(
             @Param("restaurantId") Long restaurantId
     );
 
