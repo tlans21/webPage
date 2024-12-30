@@ -1,8 +1,10 @@
 package HomePage.service.peformance;
 
+import HomePage.config.auth.PrincipalDetails;
 import HomePage.domain.model.dto.RestaurantReviewCommentDTO;
 import HomePage.service.RestaurantReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,7 +13,7 @@ public class PerformanceTestService {
     @Autowired
     private RestaurantReviewService restaurantReviewService;
 
-    public void comparePerformance(Long restaurantId) {
+    public void comparePerformance(Long restaurantId, Authentication authentication) {
         int iterations = 100;
         long totalWithoutJoin = 0;
         long totalWithJoin = 0;
@@ -24,7 +26,9 @@ public class PerformanceTestService {
 
             // With JOIN
             start = System.nanoTime();
-            List<RestaurantReviewCommentDTO> withJoin = restaurantReviewService.findByRestaurantIdWithJoin(restaurantId);
+            PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+            Long userId = principalDetails.getUser().getId();
+            List<RestaurantReviewCommentDTO> withJoin = restaurantReviewService.findByRestaurantIdWithJoin(restaurantId, userId);
             totalWithJoin += System.nanoTime() - start;
         }
 

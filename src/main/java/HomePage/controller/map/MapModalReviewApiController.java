@@ -51,12 +51,12 @@ public class MapModalReviewApiController implements MapModalReviewApiDocs{
 
         // 최신 리뷰 목록 조회
 //        List<RestaurantReviewCommentDTO> reviewDTOs = restaurantReviewService.findByRestaurantIdWithoutJoin(restaurantId);
-        List<RestaurantReviewCommentDTO> reviewDTOs = restaurantReviewService.findByRestaurantIdWithJoin(restaurantId);
+        List<RestaurantReviewCommentDTO> reviewDTOs = restaurantReviewService.findByRestaurantIdWithJoin(restaurantId, userId);
         System.out.println(reviewDTOs);
         RestaurantDto restaurantDto = restaurantService.getRestaurantById(restaurantId);
 
         for (RestaurantReviewCommentDTO reviewDTO : reviewDTOs){
-            System.out.println(reviewDTO.getContent());
+            System.out.println(reviewDTO.getUserLikeStatus());
         }
 
         model.addAttribute("restaurant", restaurantDto);
@@ -64,14 +64,14 @@ public class MapModalReviewApiController implements MapModalReviewApiDocs{
 
         // 댓글 목록 부분만 반환
         return "map/commentsSection :: comments-section";
-
     }
     @GetMapping("/review/{restaurantId}")
     @ResponseBody
     @Override
     public CommonResponse<?> fetchReviews(
             @Parameter(description = "음식점 ID", required = true, example = "1")
-            @PathVariable Long restaurantId){
+            @PathVariable Long restaurantId,
+            Authentication authentication){
         try{
             RestaurantDto restaurantDto = restaurantService.getRestaurantById(restaurantId); // 현재 데이터 베이스에 있는지 확인
             if (!restaurantDto.getId().equals(restaurantId)){
@@ -82,7 +82,9 @@ public class MapModalReviewApiController implements MapModalReviewApiDocs{
             }
 
 //            List<RestaurantReviewCommentDTO> reviews = restaurantReviewService.findByRestaurantIdWithoutJoin(restaurantId);
-            List<RestaurantReviewCommentDTO> reviews = restaurantReviewService.findByRestaurantIdWithJoin(restaurantId);
+            PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+            Long userId = principalDetails.getUser().getId();
+            List<RestaurantReviewCommentDTO> reviews = restaurantReviewService.findByRestaurantIdWithJoin(restaurantId, userId);
 
             Map<String, Object> response = new HashMap<>();
             response.put("reviews", reviews);

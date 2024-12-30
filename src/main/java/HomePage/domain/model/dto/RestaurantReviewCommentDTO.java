@@ -21,8 +21,10 @@ public class RestaurantReviewCommentDTO {
     private Timestamp updateDate;
     private Timestamp deleteDate;
     private double rating;
-
     private int likeCount;
     private int dislikeCount;
+
+    private Boolean userLikeStatus; // null: 좋아요/싫어요 없음, true: 좋아요, false: 싫어요
+
 
 }

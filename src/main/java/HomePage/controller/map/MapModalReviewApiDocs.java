@@ -8,7 +8,10 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Tag(name = "Map Review", description = "지도 리뷰 API")
 public interface MapModalReviewApiDocs {
@@ -60,8 +63,11 @@ public interface MapModalReviewApiDocs {
                       """))
           )
       })
+
+    @GetMapping("/review/{restaurantId}")
+    @ResponseBody
     CommonResponse<?> fetchReviews(
-          @Parameter(description = "음식점 ID", required = true, example = "1")
-          @PathVariable Long restaurantId
-    );
+            @Parameter(description = "음식점 ID", required = true, example = "1")
+            @PathVariable Long restaurantId,
+            Authentication authentication);
 }

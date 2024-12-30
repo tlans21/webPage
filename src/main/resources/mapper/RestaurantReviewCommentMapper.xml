@@ -16,6 +16,18 @@
         <result property="dislikeCount" column="dislike_count"/>
     </resultMap>
 
+    <resultMap id="RestaurantReviewCommentDTOResultMap" type="HomePage.domain.model.dto.RestaurantReviewCommentDTO">
+        <id property="id" column="id"/>
+        <result property="writer" column="writer"/>
+        <result property="content" column="content"/>
+        <result property="restaurantId" column="restaurant_id"/>
+        <result property="registerDate" column="created_at"/>
+        <result property="likeCount" column="like_count"/>
+        <result property="dislikeCount" column="dislike_count"/>
+        <result property="rating" column="rating"/>
+        <result property="userLikeStatus" column="user_like_status"/>
+    </resultMap>
+
     <insert id="save" parameterType="HomePage.domain.model.entity.RestaurantReviewComment" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO security.restaurant_review_comments (restaurant_id, user_id, content, created_at, updated_at, rating)
         VALUES (#{restaurantId}, #{userId}, #{content}, #{registerDate}, #{updateDate}, #{rating})
@@ -30,29 +42,35 @@
         ORDER BY created_at DESC
     </select>
 
-    <select id="findByRestaurantIdWithJoin" parameterType="long" resultMap="RestaurantReviewCommentResultMap">
+    <select id="findByRestaurantIdWithJoin" parameterType="map" resultMap="RestaurantReviewCommentDTOResultMap">
         SELECT
-            r.*,
+            r.id,
+            r.content,
+            r.restaurant_id,
+            r.created_at,
+            r.rating,
             u.username as writer,
             SUM(CASE WHEN l.isLike = 1 THEN 1 ELSE 0 END) as like_count,
-            SUM(CASE WHEN l.isLike = 0 THEN 1 ELSE 0 END) as dislike_count
+            SUM(CASE WHEN l.isLike = 0 THEN 1 ELSE 0 END) as dislike_count,
+            ul.isLike as user_like_status
         FROM
             security.restaurant_review_comments r
             LEFT JOIN security.user u ON r.user_id = u.id
             LEFT JOIN security.likes l ON r.id = l.target_id
                 AND l.target_type = 'REVIEW'
+            LEFT JOIN security.likes ul ON r.id = ul.target_id
+                AND ul.target_type = 'REVIEW'
+                AND ul.user_id = #{userId}
         WHERE
             r.restaurant_id = #{restaurantId}
         GROUP BY
             r.id,
-            r.user_id,
-            r.restaurant_id,
-            u.username,
             r.content,
+            r.restaurant_id,
             r.created_at,
-            r.updated_at,
-            r.deleted_at,
-            r.rating
+            r.rating,
+            u.username,
+            ul.isLike
         ORDER BY
             r.created_at DESC
     </select>
