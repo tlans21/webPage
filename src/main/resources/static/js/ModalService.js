@@ -2,6 +2,7 @@
 import { createMap, loadModalStyle } from '@/MapUtils';
 import { reviewService } from '@/ReviewService';
 
+
 export class ModalService {
     async openModal(event) {
         const restaurantId = event.target.dataset.restaurantId;
@@ -40,6 +41,9 @@ export class ModalService {
         const mapModalContent = document.getElementById('mapModal-content');
         mapModalContent.innerHTML = htmlContent;
         mapModal.style.display = "block";
+
+        // 댓글 시간 초기화 함수 호출
+        
     }
 
     setupModalEvents() {

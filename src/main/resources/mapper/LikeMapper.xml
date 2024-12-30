@@ -4,23 +4,45 @@
 
 <mapper namespace="HomePage.mapper.LikeMapper">
     <insert id="insert" parameterType="HomePage.domain.model.entity.Like">
-        INSERT INTO likes (
+        INSERT INTO security.likes (
             target_type,
             target_id,
             user_id,
-            created_at,
-            updated_at
+            createdAt,
+            updatedAt,
+            isLike
         ) VALUES (
             #{targetType},
             #{targetId},
             #{userId},
             #{createdAt},
-            #{updatedAt}
+            #{updatedAt},
+            #{isLike}
         )
     </insert>
 
+    <update id="updateReviewCounts" parameterType="HomePage.domain.model.entity.Like">
+        UPDATE restaurant_review_comments
+        SET
+            like_count = (
+                SELECT COUNT(*)
+                FROM security.likes
+                WHERE target_type = #{targetType}
+                AND target_id = #{targetId}
+                AND isLike = true
+            ),
+            dislike_count = (
+                SELECT COUNT(*)
+                FROM security.likes
+                WHERE target_type = #{targetType}
+                AND target_id = #{targetId}
+                AND isLike = false
+            )
+        WHERE id = #{targetId}
+    </update>
+
     <delete id="delete">
-        DELETE FROM likes
+        DELETE FROM security.likes
         WHERE target_type = #{targetType}
         AND target_id = #{targetId}
         AND user_id = #{userId}
@@ -28,17 +50,36 @@
 
     <select id="exists" resultType="boolean">
         SELECT EXISTS (
-            SELECT 1 FROM likes
+            SELECT 1 FROM security.likes
             WHERE target_type = #{targetType}
             AND target_id = #{targetId}
             AND user_id = #{userId}
         )
     </select>
 
-    <select id="countLikes" resultType="int">
-        SELECT COUNT(*)
-        FROM likes
+    <update id="update" parameterType="HomePage.domain.model.entity.Like">
+        UPDATE security.likes
+        SET
+            isLike = #{isLike},
+            updatedAt = CURRENT_TIMESTAMP
         WHERE target_type = #{targetType}
         AND target_id = #{targetId}
+        AND user_id = #{userId}
+    </update>
+
+    <select id="countLikes" resultType="int">
+        SELECT COUNT(*)
+        FROM security.likes
+        WHERE target_type = #{targetType}
+        AND target_id = #{targetId}
+        AND isLike = #{isLike}
+    </select>
+
+    <select id="findByTargetAndUser" resultType="HomePage.domain.model.entity.Like">
+        SELECT *
+        FROM security.likes
+        WHERE target_type = #{targetType}
+        AND target_id = #{targetId}
+        AND user_id = #{userId}
     </select>
 </mapper>

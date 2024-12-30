@@ -17,15 +17,22 @@ public class Like {
     private Long userId;
     private Timestamp createdAt;
     private Timestamp updatedAt;
-
+    private boolean isLike; // true: 좋아요, false: 싫어요
     // 팩토리 메서드
-    public static Like createLike(LikeTargetType targetType, Long targetId, Long userId) {
+    public static Like createLike(LikeTargetType targetType, Long targetId, Long userId, Boolean isLike) {
         return Like.builder()
                 .targetType(targetType.getCode())
                 .targetId(targetId)
                 .userId(userId)
+                .isLike(isLike)
                 .createdAt(new Timestamp(System.currentTimeMillis()))
                 .updatedAt(new Timestamp(System.currentTimeMillis()))
                 .build();
+    }
+
+    //
+
+    public void setLike(boolean like) {
+        this.isLike = like;
     }
 }

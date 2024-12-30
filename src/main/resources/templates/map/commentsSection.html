@@ -27,6 +27,32 @@
         <div class="comment-list" th:each="comment : ${comments}">
             <div class="comment-item">
                 <div class="comment-header">
+                    <span class="user-name" th:text="${comment.writer}"></span>
+                    <span class="comment-date" th:attr="data-timestamp=${comment.registerDate}">시간</span>
+                </div>
+                <div class="comment-content">
+                    <span th:text="${comment.content}"></span>
+                </div>
+                <div class="comment-actions">
+                    <button class="like-btn" 
+                            th:data-review-id="${comment.id}"
+                            th:classappend="${comment.userLikeStatus != null && comment.userLikeStatus ? 'active' : ''}">
+                        좋아요
+                    </button>
+                    <span class="like-count" th:text="${comment.likeCount}">0</span>
+                    
+                    <button class="dislike-btn" 
+                            th:data-review-id="${comment.id}"
+                            th:classappend="${comment.userLikeStatus != null && comment.userLikeStatus == false ? 'active' : ''}">
+                        싫어요
+                    </button>
+                    <span class="dislike-count" th:text="${comment.dislikeCount}">0</span>
+                </div>
+            </div>
+        </div>
+        <!-- <div class="comment-list" th:each="comment : ${comments}">
+            <div class="comment-item" th:data-review-id="${comment.id}">
+                <div class="comment-header">
                 <span class="user-name" th:text="${comment.writer}"></span>
                 <span class="comment-date" th:text="${comment.registerDate}"></span>
                 </div>
@@ -34,13 +60,13 @@
                 <span th:text="${comment.content}"></span>
                 </div>
                 <div class="comment-actions">
-                <button class="like-btn">좋아요</button>
-                <span class="like-count">0</span>
-                <button class="dislike-btn">싫어요</button>
-                <span class="dislike-count">0</span>
+                    <button class="like-btn" th:data-review-id="${comment.id}">좋아요</button>
+                    <span class="like-count" th:text="${comment.likeCount}"></span>
+                    <button class="dislike-btn" th:data-review-id="${comment.id}">싫어요</button>
+                    <span class="dislike-count" th:text="${comment.dislikeCount}"></span>
                 </div>
             </div>
-        </div>
+        </div> -->
     </body>
 </html>
 </div>

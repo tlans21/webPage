@@ -124,17 +124,56 @@ body {
     padding-top: 70px; /* 네비게이션 바의 높이만큼 상단 패딩 추가 */
 }
 
-
 #sidebar {
     position: fixed;
     top: 0;
-    right: -250px;
+    right: -300px; /* 넓이 늘림 */
     height: 100vh;
-    width: 250px;
-    background-color: #343a40;
+    width: 300px; /* 넓이 늘림 */
+    background-color: white; /* 배경색 변경 */
     transition: 0.3s;
-    z-index: 1000;
+    z-index: 1001; /* nav-menu보다 위에 표시 */
+    box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+    padding: 20px;
 }
+
+.sidebar-header {
+    text-align: center;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eee;
+    margin-top: 20px;
+}
+
+.menu-container {
+    margin-top: 30px;
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    color: var(--text-color);
+    transition: 0.3s;
+}
+
+.menu-item:hover {
+    background-color: #f8f9fa;
+}
+
+.menu-icon {
+    margin-right: 15px;
+}
+
+.menu-link, .menu-item button {
+    color: var(--text-color);
+    text-decoration: none;
+    background: none;
+    border: none;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+}
+
 #sidebar.active {
     right: 0;
 }

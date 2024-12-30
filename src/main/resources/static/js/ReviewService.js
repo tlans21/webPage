@@ -1,5 +1,7 @@
 // ReviewService.js
+import { reviewLikeService } from './ReviewLikeService.js'
 class ReviewService {
+    
     async submitReview(event, restaurantId) {
         event.preventDefault();
         const form = document.getElementById('reviewForm');
@@ -37,7 +39,7 @@ class ReviewService {
         try {
             const response = await fetch(`/api/v1/user/review/${restaurantId}`);
             const data = await response.json();
-            console.log("Reviews updated:", data.reviews);
+            console.log("Reviews updated:", data);
             return data;
         } catch (error) {
             console.error('Error updating review count:', error);
@@ -52,6 +54,8 @@ class ReviewService {
                 form.removeEventListener('submit', submitReviewHandler);
                 form.addEventListener('submit', submitReviewHandler);
             }
+            // 좋아요/싫어요 버튼 초기화는 ReviewLikeService에서 처리
+            reviewLikeService.initializeLikeDislikeButtons();
         }, 100);
     }
 }

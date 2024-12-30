@@ -50,12 +50,13 @@ public class MapModalReviewApiController implements MapModalReviewApiDocs{
         RestaurantReviewCommentDTO review = restaurantReviewService.createReview(restaurantId, userId, content, rating); // 리뷰 생성
 
         // 최신 리뷰 목록 조회
-        List<RestaurantReviewCommentDTO> reviewDTOs = restaurantReviewService.findByRestaurantId(restaurantId);
+//        List<RestaurantReviewCommentDTO> reviewDTOs = restaurantReviewService.findByRestaurantIdWithoutJoin(restaurantId);
+        List<RestaurantReviewCommentDTO> reviewDTOs = restaurantReviewService.findByRestaurantIdWithJoin(restaurantId, userId);
         System.out.println(reviewDTOs);
         RestaurantDto restaurantDto = restaurantService.getRestaurantById(restaurantId);
 
         for (RestaurantReviewCommentDTO reviewDTO : reviewDTOs){
-            System.out.println(reviewDTO.getContent());
+            System.out.println(reviewDTO.getUserLikeStatus());
         }
 
         model.addAttribute("restaurant", restaurantDto);
@@ -63,22 +64,27 @@ public class MapModalReviewApiController implements MapModalReviewApiDocs{
 
         // 댓글 목록 부분만 반환
         return "map/commentsSection :: comments-section";
-
     }
     @GetMapping("/review/{restaurantId}")
     @ResponseBody
     @Override
     public CommonResponse<?> fetchReviews(
             @Parameter(description = "음식점 ID", required = true, example = "1")
-            @PathVariable Long restaurantId){
+            @PathVariable Long restaurantId,
+            Authentication authentication){
         try{
             RestaurantDto restaurantDto = restaurantService.getRestaurantById(restaurantId); // 현재 데이터 베이스에 있는지 확인
-            if (restaurantDto.getId() != restaurantId){
+            if (!restaurantDto.getId().equals(restaurantId)){
+                System.out.println("restaurantId:" + restaurantId);
+                System.out.println("restaurant get Id:" +restaurantDto.getId());
                 Map<String, Object> errorResponse = new HashMap<>();
                 return CommonResponse.error(errorResponse, "데이터 베이스와 일치하지 않음", HttpStatus.INTERNAL_SERVER_ERROR);
             }
 
-            List<RestaurantReviewCommentDTO> reviews = restaurantReviewService.findByRestaurantId(restaurantId);
+//            List<RestaurantReviewCommentDTO> reviews = restaurantReviewService.findByRestaurantIdWithoutJoin(restaurantId);
+            PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+            Long userId = principalDetails.getUser().getId();
+            List<RestaurantReviewCommentDTO> reviews = restaurantReviewService.findByRestaurantIdWithJoin(restaurantId, userId);
 
             Map<String, Object> response = new HashMap<>();
             response.put("reviews", reviews);

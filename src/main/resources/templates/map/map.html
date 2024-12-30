@@ -7,303 +7,18 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.0/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" th:href="@{/css/mapModalStyle.css}">
-    
+    <link rel="stylesheet" type="text/css" th:href="@{/css/loadingSpinnerStyle.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/restaurantListStyle.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/filterModalStyle.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/filterBarStyle.css}">
+
     <script type="text/javascript" 
         th:src="@{|https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=${@environment.getProperty('naver.maps.client.id')}&submodules=geocoder,marker|}">
     </script>
     <script type="text/javascript" 
         th:src="@{|https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=${@environment.getProperty('naver.maps.client.id')}|}">
     </script>
-    <title>간단한 지도 표시하기</title> 
-    <style>
-        /* 필터링 css */
-        .filter-bar {
-            display: flex;
-            justify-content: space-around;
-            padding: 10px 0;
-            background-color: #f8f8f8;
-            border-bottom: 1px solid #ddd;
-            margin-bottom: 20px;
-        }
-
-        #filter-btn-detail {
-            padding: 8px 16px;
-            border: none;
-            background-color: #fff;
-            cursor: pointer;
-            border-radius: 20px;
-            transition: background-color 0.3s;
-        }
-        
-        #filter-btn-detail:hover, #filter-btn-detail.active {
-            background-color: #ffba00;
-            color: white;
-        }
-        
-        .filter-btn {
-            padding: 8px 16px;
-            border: none;
-            background-color: #fff;
-            cursor: pointer;
-            border-radius: 20px;
-            transition: background-color 0.3s;
-        }
-
-        .filter-btn:hover, .filter-btn.active {
-            background-color: #ffba00;
-            color: white;
-        }
-
-        #filterModal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.4);
-        }
-        #filterModal-content {
-            display: flex;
-            flex-direction: column;
-            background-color: #fefefe;
-            margin: 5% auto; /* 상단에서의 거리 조정 */
-            padding: 20px;
-            border: 10px solid #888;
-            width: 80%; /* 너비 조정 */
-            height: 80vh; /* 최대 높이 설정 */
-            max-width: 1000px; /* 최대 너비 설정 */
-            max-height: 800px; /* 최대 높이 설정 */
-            overflow-y: auto; /* 내용이 넘칠 경우 스크롤 허용 */
-            position: relative;
-            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-        }
-        #filterModal-content h2 {
-            display: inline-block;
-        }
-
-        .filter-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        .filter-header h2 {
-            margin: 0;
-            display: flex;
-        }
-        #resetFilter {
-            background: none;
-            border: none;
-            margin-left: 5px;
-            color: #ff9900;
-            font-size: 1.0em;
-            cursor: pointer;
-        }
-        .filter-body {
-            flex-grow: 1;
-            overflow-y: auto;
-        }
-        .filter-section {
-            margin-bottom: 20px;
-        }
-
-        .filter-options {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .filter-sort-option, .filter-theme-option, .filter-service-option {
-            padding: 8px 16px;
-            border: 1px solid #ddd;
-            border-radius: 20px;
-            background-color: white;
-            cursor: pointer;
-        }
-
-        .filter-sort-option.active, .filter-theme-option.active, .filter-service-option.active {
-            background-color: #ff9900;
-            color: white;
-            border-color: #ff9900;
-        }
-        .filter-footer {
-            margin-top: 20px;
-        }
-
-        #applyFilter {
-            display: block;
-            width: 100%;
-            padding: 10px;
-            margin-top: 20px;
-            background-color: #ff9900;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-
-        
-
-
-
-        #main {
-            width: 100%; /* 또는 원하는 너비 */
-         /* 고정 높이 대신 최소 높이 사용 */
-        }
-        #food-list {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            gap: 20px;
-            width: 100%;
-            height: 100%;
-        }
-        .food-item {
-            flex: 0 1 calc(33.333% - 20px); /* 3개씩 배치할 경우 */
-            /* flex: 0 1 calc(25% - 20px); */ /* 4개씩 배치할 경우 */
-            border: 1px solid #ddd;
-            padding: 10px;
-            box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
-            background-color: #fff;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        .food-item img {
-            width: 100%;
-            height: 200px; /* 고정 높이 또는 auto */
-            object-fit: cover;
-            cursor: pointer;
-        }
-        .food-item h3 {
-            margin: 10px 0;
-            font-size: 1.2em;
-        }
-        .food-item p {
-            margin: 5px 0;
-        }
-        #loading {
-            text-align: center;
-            display: none;
-        }
-        #mapModal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.4);
-        }
-        #mapModal-content {
-            background-color: #fefefe;
-            margin: 5% auto; /* 상단에서의 거리 조정 */
-            padding: 20px;
-            border: 10px solid #888;
-            width: 80%; /* 너비 조정 */
-            height: 80vh; /* 최대 높이 설정 */
-            max-width: 1000px; /* 최대 너비 설정 */
-            max-height: 800px; /* 최대 높이 설정 */
-            overflow-y: auto; /* 내용이 넘칠 경우 스크롤 허용 */
-            position: relative;
-            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-        }
-        #map {
-            width: 100%;
-            height: 100%; /* 지도의 높이 설정 */
-        }
-        #content-wrapper {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding-top: 20px;
-        }
-        
-        .closeMapModal {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-            position: absolute;
-            right: 10px;
-            top: 5px;
-        }
-        .closeMapModal:hover,
-        .closeMapModal:focus {
-            color: #000;
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        .closeFilterModal {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-            position: absolute;
-            right: 10px;
-            top: 5px;
-        }
-        .closeFilterModal:hover,
-        .closeFilterModal:focus {
-            color: #000;
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-
-
-        /* 평점 css */
-
-        .rating {
-            display: flex;
-            flex-direction: row-reverse;
-            justify-content: flex-end;
-        }
-
-        .rating > input {
-            display: none;
-        }
-
-        .rating > label {
-            position: relative;
-            width: 1em;
-            font-size: 30px;
-            color: #FFD600;
-            cursor: pointer;
-        }
-
-        .rating > label::before {
-            content: "\2605";
-            position: absolute;
-            opacity: 0;
-        }
-
-        .rating > input:checked ~ label:before {
-            opacity: 1;
-        }   
-        @media (max-width: 1024px) {
-            .food-item {
-                flex: 0 1 calc(50% - 20px); /* 2개씩 배치 */
-            }
-        }
-
-        @media (max-width: 768px) {
-            .food-item {
-                flex: 0 1 100%; /* 1개씩 배치 */
-            }
-        }
-
-    </style>
-
+    <title>오늘 뭐 먹지? - 음식 추천 AI 서비스</title> 
 </head>
 <body>
     <header th:replace="~{fragments/navBar :: navBar}"></header>
@@ -323,7 +38,10 @@
                     <!-- food-item 등록 칸 -->
                 </div>
                 <!-- <div id="map"></div> -->
-                <div id="loading">로딩 중....</div>
+                <div id="loading">
+                    <div class="loading-spinner"></div>
+                    <div class="loading-text">정보를 불러오는 중입니다</div>
+                </div>
             </div>
             
             <!-- 필터 버튼 모달 -->
@@ -392,17 +110,18 @@
                 "@/restaurantUtils": "/js/restaurantUtils.js",
                 "@/RestaurantService": "/js/RestaurantService.js",
                 "@/ReviewService": "/js/ReviewService.js",
-                "@/FilterRestaurantService": "/js/FilterRestaurantService.js"
+                "@/FilterRestaurantService": "/js/FilterRestaurantService.js",
+                "@/elapsedTimeComment": "/js/elapsedTimeComment.js",
+                "@/ReviewLikeService": "/js/ReviewLikeService.js"
             }
         }
     </script>
-
+    <script th:src="@{/js/elapsedTimeComment.js}"></script>
     <script type="module" defer>
         import { restaurantService } from '@/RestaurantService';
         import { modalService } from '@/ModalService';
         import { reviewService } from '@/ReviewService';
         import { filterRestaurantService } from '@/FilterRestaurantService';
-
         console.log("test");
         
         try{
@@ -492,6 +211,9 @@
             // FilterRestaurantService만 초기화하면 됨
             filterRestaurantService;
         });              
+    </script>
+    <script>
+        
     </script>
 </body>
 </html>

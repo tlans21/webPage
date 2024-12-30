@@ -7,7 +7,8 @@ import java.util.List;
 public interface RestaurantReviewService {
     Long save(RestaurantReviewCommentDTO commentDTO);
     RestaurantReviewCommentDTO findById(Long id);
-    List<RestaurantReviewCommentDTO> findByRestaurantId(Long restaurantId);
+    List<RestaurantReviewCommentDTO> findByRestaurantIdWithoutJoin(Long restaurantId);
+    List<RestaurantReviewCommentDTO> findByRestaurantIdWithJoin(Long restaurantId, Long userId);
     void update(RestaurantReviewCommentDTO commentDTO);
     void delete(Long id);
     RestaurantReviewCommentDTO createReview(Long restaurantId, Long userId, String content, double rating);
