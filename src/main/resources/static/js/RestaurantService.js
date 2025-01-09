@@ -60,7 +60,7 @@ class RestaurantService {
        
        this.isLoading = true;
        this.abortController = new AbortController();
-       document.getElementById('loading').style.display = 'flex'    ;
+       document.getElementById('loading').style.display = 'flex';
        try {
            const data = await this.fetchRestaurantData(this.abortController.signal);
            console.log(data);
