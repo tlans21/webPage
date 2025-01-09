@@ -100,7 +100,6 @@ public class UserService {
         return user;
     }
 
-
     public List<User> findMembers(){
         return userRepository.findAll();
     }
