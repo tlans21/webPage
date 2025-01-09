@@ -30,6 +30,7 @@ public class UserLoginSuccessHandler implements AuthenticationSuccessHandler {
         Cookie cookie = new Cookie("access_token", accessToken);
         cookie.setHttpOnly(true);
         cookie.setPath("/");
+        System.out.println(accessToken);
         response.addCookie(cookie);
 
         userService.updateLastLoginDate(username);

@@ -84,7 +84,7 @@ public interface MailApiDocs {
             )
         }
     )
-    CommonResponse<Map<String, Boolean>> mailSend(
+    CommonResponse<Map<String, Object>> mailSend(
             @RequestBody @Valid MailRequest request);
 
 
@@ -100,7 +100,8 @@ public interface MailApiDocs {
                                     "statusCode": 200,
                                     "message": "전송 성공",
                                     "payload": {
-                                        "success": true
+                                        "success": true,
+                                        "num": num
                                     }
                                     
                                 }
