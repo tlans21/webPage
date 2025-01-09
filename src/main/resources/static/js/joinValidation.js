@@ -70,8 +70,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
             const data = await response.json();
             var respAuthenticationNum;
-            if (data.success) {
-                respAuthenticationNum = data.num;
+            const payload = data.payload;
+            const isSuccess = payload.success;
+            if (isSuccess) {
+                respAuthenticationNum = data.payload.num;
                 isAutenticationAvailable = true;
                 alert('이메일 전송이 성공했습니다.');
             } else {

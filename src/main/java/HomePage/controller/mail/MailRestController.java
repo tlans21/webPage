@@ -29,22 +29,22 @@ public class MailRestController implements MailApiDocs{
 
     @Override
     @PostMapping("/send-mail")
-    public CommonResponse<Map<String, Boolean>> mailSend(@RequestBody @Valid MailRequest request) {
+    public CommonResponse<Map<String, Object>> mailSend(@RequestBody @Valid MailRequest request) {
         try {
             String email = request.getEmail();
             System.out.println(email);
             number = mailSendService.sendMail(email);
             String num = String.valueOf(number);
-            Map<String, Boolean> successResponse = new HashMap<>();
-
+            Map<String, Object> successResponse = new HashMap<>();
+            successResponse.put("num", num);
             successResponse.put("success", true);
             return CommonResponse.success(successResponse, "전송 성공", HttpStatus.OK);
         } catch (mailSendingException e){
-            Map<String, Boolean> failResponse = new HashMap<>();
+            Map<String, Object> failResponse = new HashMap<>();
             failResponse.put("success", false);
             return CommonResponse.error(failResponse,"전송 실패", HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
-            Map<String, Boolean> errorResponse = new HashMap<>();
+            Map<String, Object> errorResponse = new HashMap<>();
             errorResponse.put("success", false);
             return CommonResponse.error(errorResponse,"서버 접속 에러", HttpStatus.INTERNAL_SERVER_ERROR);
         }
