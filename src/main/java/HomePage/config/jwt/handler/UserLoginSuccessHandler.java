@@ -34,6 +34,6 @@ public class UserLoginSuccessHandler implements AuthenticationSuccessHandler {
         response.addCookie(cookie);
 
         userService.updateLastLoginDate(username);
-//        response.sendRedirect("/");
+        response.sendRedirect("/");
     }
 }
