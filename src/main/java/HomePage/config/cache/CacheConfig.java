@@ -1,18 +1,23 @@
 package HomePage.config.cache;
 
-//@EnableCaching
-//@Configuration
-//public class CacheConfig {
-//    @Bean
-//    public EhcacheManager cacheManger(){
-//        return new EhcacheManager(ehcacheManager())
-//    }
-//
-//    @Bean
-//    public CacheManager ehcacheManager(){
-//        return CacheManagerBuilder.newCacheManagerBuilder()
-//                .withCache("ehCache",
-//                        CacheConfigurationBuilder.newCacheConfigurationBuilder(Long.class, String.class, ResourcePoolsBuilder.heap(100))
-//                ).build(true);
-//    }
-//}
+import com.github.benmanes.caffeine.cache.Caffeine;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.cache.caffeine.CaffeineCacheManager;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import java.util.concurrent.TimeUnit;
+
+@EnableCaching
+@Configuration
+public class CacheConfig {
+    @Bean
+    public CacheManager cacheManager() {
+        CaffeineCacheManager cacheManager = new CaffeineCacheManager();
+        cacheManager.setCaffeine(Caffeine.newBuilder()
+            .maximumSize(1000)
+            .expireAfterWrite(30, TimeUnit.MINUTES));
+        return cacheManager;
+    }
+}
