@@ -19,14 +19,6 @@
                     <li th:if="${isAdmin}"><a th:href="@{/api/v1/admin/adminPage/boardList}">관리자 페이지</a></li>
                 </ul>
                 <div class="nav-right">
-                    <div sec:authorize="!isAuthenticated()">
-                        <button class="auth-button" id="authButton"><a th:href="@{/loginForm}">로그인/회원가입</a></button>
-                    </div>
-                    <div sec:authorize="isAuthenticated()">
-                        <form th:action="@{/api/logout}" method="post">
-                            <button type="submit" class="auth-button" id="logoutButton">로그아웃</button>
-                        </form>
-                    </div>
                     <div sec:authorize="isAuthenticated()">
                         <button id="sidebarToggle">☰</button>
                     </div>
@@ -84,11 +76,10 @@
 
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.0/js/bootstrap.bundle.min.js" defer></script>
-        <script th:src="@{/js/toggleSideBar.js}" defer>
-        </script>
+        <script th:src="@{/js/toggleSideBar.js}" defer></script>
+        <script th:src="@{/js/updateAuthButton.js}" defer></script>
         <script th:src="@{/js/sidebarButton.js}" defer></script>
-        <script th:src="@{/js/editMyPageModal.js}" defer>
-        </script>
+        <script th:src="@{/js/editMyPageModal.js}" defer></script>
     </th:block>
 </body>
 </html>
