@@ -21,16 +21,24 @@ public class CorsConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration corsConfig = new CorsConfiguration();
 
-        if ("dev".equals(env)){
-            corsConfig.setAllowCredentials(true);
-    //        corsConfig.addAllowedOrigin("http://localhost:3000");
-            corsConfig.addAllowedOrigin("http://" + serverAddress);
-            corsConfig.addAllowedHeader("*");
-            corsConfig.addAllowedMethod("*");
-            corsConfig.addExposedHeader("Authorization");
-            source.registerCorsConfiguration("/**", corsConfig);
+//        if ("dev".equals(env)){
+//            corsConfig.setAllowCredentials(true);
+//    //        corsConfig.addAllowedOrigin("http://localhost:3000");
+//            corsConfig.addAllowedOrigin("http://" + serverAddress);
+//            corsConfig.addAllowedHeader("*");
+//            corsConfig.addAllowedMethod("*");
+//            corsConfig.addExposedHeader("Authorization");
+//            source.registerCorsConfiguration("/**", corsConfig);
+//
+//        }
+        corsConfig.setAllowCredentials(true);
+ //        corsConfig.addAllowedOrigin("http://localhost:3000");
+        corsConfig.addAllowedOrigin("http://" + serverAddress + ":" + serverPort);
+        corsConfig.addAllowedHeader("*");
+        corsConfig.addAllowedMethod("*");
+        corsConfig.addExposedHeader("Authorization");
+        source.registerCorsConfiguration("/**", corsConfig);
 
-        }
 
         return new CorsFilter(source);
     }
