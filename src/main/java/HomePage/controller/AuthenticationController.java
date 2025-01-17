@@ -56,5 +56,4 @@ public class AuthenticationController {
 
         return "redirect:/loginForm";
     }
-
 }
