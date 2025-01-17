@@ -1,8 +1,10 @@
 package HomePage.config;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.CacheControl;
 import org.springframework.http.MediaType;
+import org.springframework.web.filter.ShallowEtagHeaderFilter;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -11,6 +13,15 @@ import java.util.concurrent.TimeUnit;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
+
+
+
+    // 응답 본문의 해시값을 계산해서 ETag 헤더를 생성
+    @Bean
+    public ShallowEtagHeaderFilter shallowEtagHeaderFilter() {
+        return new ShallowEtagHeaderFilter();
+    }
+
 
     @Override
     public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
