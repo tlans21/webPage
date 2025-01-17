@@ -3,9 +3,7 @@ package HomePage.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.CacheControl;
-import org.springframework.http.MediaType;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
-import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -24,25 +22,18 @@ public class WebConfig implements WebMvcConfigurer {
 
 
     @Override
-    public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
-        configurer
-                .mediaType("js", MediaType.valueOf("application/javascript"))
-                .mediaType("css", MediaType.valueOf("text/css"));
-    }
-
-    @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        // 모든 정적 리소스에 대한 공통 캐시 정책 적용
-        registry.addResourceHandler("/**")
-                    .addResourceLocations("classpath:/static/")
-                    .setCacheControl(CacheControl.maxAge(365, TimeUnit.DAYS)
-                        .cachePublic()
-                        .mustRevalidate())
-                    .resourceChain(true);
-
-        // 이미지 파일에 대한 추가 설정
-        registry.addResourceHandler("/**/*.jpg", "/**/*.jpeg", "/**/*.png", "/**/*.gif")
+        // 이미지 파일에 대한 설정
+        registry.addResourceHandler("/images/**")
                 .addResourceLocations("classpath:/static/images/")
+                .setCacheControl(CacheControl.maxAge(365, TimeUnit.DAYS)
+                    .cachePublic()
+                    .mustRevalidate())
+                .resourceChain(true);
+
+        // 나머지 정적 리소스 설정
+        registry.addResourceHandler("/**")
+                .addResourceLocations("classpath:/static/")
                 .setCacheControl(CacheControl.maxAge(365, TimeUnit.DAYS)
                     .cachePublic()
                     .mustRevalidate())
