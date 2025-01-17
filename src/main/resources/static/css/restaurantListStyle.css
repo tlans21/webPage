@@ -1,0 +1,50 @@
+#main {
+    width: 100%; /* 또는 원하는 너비 */
+/* 고정 높이 대신 최소 높이 사용 */
+}
+
+#food-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 20px;
+    width: 100%;
+    height: 100%;
+}
+.food-item {
+    flex: 0 1 calc(33.333% - 20px); /* 3개씩 배치할 경우 */
+    /* flex: 0 1 calc(25% - 20px); */ /* 4개씩 배치할 경우 */
+    border: 1px solid #ddd;
+    padding: 10px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+.food-item img {
+    width: 100%;
+    height: 200px; /* 고정 높이 또는 auto */
+    object-fit: cover;
+    cursor: pointer;
+}
+.food-item h3 {
+    margin: 10px 0;
+    font-size: 1.2em;
+}
+.food-item p {
+    margin: 5px 0;
+}
+
+
+@media (max-width: 1024px) {
+    .food-item {
+        flex: 0 1 calc(50% - 20px); /* 2개씩 배치 */
+    }
+}
+
+@media (max-width: 768px) {
+    .food-item {
+        flex: 0 1 100%; /* 1개씩 배치 */
+    }
+}
