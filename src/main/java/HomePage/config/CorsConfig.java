@@ -33,7 +33,7 @@ public class CorsConfig {
 //        }
         corsConfig.setAllowCredentials(true);
  //        corsConfig.addAllowedOrigin("http://localhost:3000");
-        corsConfig.addAllowedOrigin("http://" + serverAddress + ":" + serverPort);
+        corsConfig.addAllowedOrigin("http://" + serverAddress);
         corsConfig.addAllowedHeader("*");
         corsConfig.addAllowedMethod("*");
         corsConfig.addExposedHeader("ETag");
