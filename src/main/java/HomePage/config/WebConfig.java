@@ -1,7 +1,9 @@
 package HomePage.config;
 
+import HomePage.config.interceptor.DynamicEtagInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.CacheControl;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -36,5 +38,10 @@ public class WebConfig implements WebMvcConfigurer {
                     .cachePublic()
                     .mustRevalidate())
                 .resourceChain(true);
+    }
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(new DynamicEtagInterceptor());
     }
 }
