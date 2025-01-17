@@ -36,7 +36,10 @@ public class CorsConfig {
         corsConfig.addAllowedOrigin("http://" + serverAddress + ":" + serverPort);
         corsConfig.addAllowedHeader("*");
         corsConfig.addAllowedMethod("*");
-        corsConfig.addExposedHeader("Authorization");
+        corsConfig.addExposedHeader("ETag");
+        corsConfig.addExposedHeader("ETag");         // ETag 헤더 노출
+        corsConfig.addExposedHeader("If-None-Match"); // If-None-Match 헤더 노출
+
         source.registerCorsConfiguration("/**", corsConfig);
 
 
