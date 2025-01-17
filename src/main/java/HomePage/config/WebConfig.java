@@ -21,14 +21,20 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/js/**")
-                      .addResourceLocations("classpath:/static/js/")
-                      .setCacheControl(CacheControl.maxAge(365, TimeUnit.DAYS))
-                      .resourceChain(true);
-        // CSS 리소스 핸들러 추가
-        registry.addResourceHandler("/css/**")
-                .addResourceLocations("classpath:/static/css/")
-                .setCacheControl(CacheControl.maxAge(365, TimeUnit.DAYS))
+        // 모든 정적 리소스에 대한 공통 캐시 정책 적용
+        registry.addResourceHandler("/**")
+                    .addResourceLocations("classpath:/static/")
+                    .setCacheControl(CacheControl.maxAge(365, TimeUnit.DAYS)
+                        .cachePublic()
+                        .mustRevalidate())
+                    .resourceChain(true);
+
+        // 이미지 파일에 대한 추가 설정
+        registry.addResourceHandler("/**/*.jpg", "/**/*.jpeg", "/**/*.png", "/**/*.gif")
+                .addResourceLocations("classpath:/static/images/")
+                .setCacheControl(CacheControl.maxAge(365, TimeUnit.DAYS)
+                    .cachePublic()
+                    .mustRevalidate())
                 .resourceChain(true);
     }
 }
