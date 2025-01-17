@@ -25,6 +25,7 @@ public class DynamicEtagInterceptor implements HandlerInterceptor {
 
            if (annotation != null) {
                String ifNoneMatch = request.getHeader("If-None-Match");
+               System.out.println(ifNoneMatch);
 
                if (ifNoneMatch != null) {
                    // 현재 인증 상태 확인
@@ -72,6 +73,7 @@ public class DynamicEtagInterceptor implements HandlerInterceptor {
 
             if (annotation != null && modelAndView != null) {
                 String etag = generateETag(modelAndView.getModel(), annotation.properties());
+                System.out.println(etag);
                 response.setHeader("ETag", etag);
             }
         }
