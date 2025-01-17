@@ -1,9 +1,7 @@
 package HomePage.config;
 
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.CacheControl;
-import org.springframework.web.filter.ShallowEtagHeaderFilter;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -14,11 +12,11 @@ public class WebConfig implements WebMvcConfigurer {
 
 
 
-    // 응답 본문의 해시값을 계산해서 ETag 헤더를 생성
-    @Bean
-    public ShallowEtagHeaderFilter shallowEtagHeaderFilter() {
-        return new ShallowEtagHeaderFilter();
-    }
+    // 응답 본문의 해시값을 계산해서 ETag 헤더를 생성 (응답 본문 전체를 etag 해시로 변환하기 때문에 커스텀 DynamicETagInterceptor에서 처리하기로 변경)
+//    @Bean
+//    public ShallowEtagHeaderFilter shallowEtagHeaderFilter() {
+//        return new ShallowEtagHeaderFilter();
+//    }
 
 
     @Override
