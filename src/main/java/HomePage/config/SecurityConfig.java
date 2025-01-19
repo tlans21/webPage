@@ -47,6 +47,9 @@ public class SecurityConfig{
         AuthenticationManager authenticationManager = authenticationManager(http.getSharedObject(AuthenticationConfiguration.class));
 
         http
+                .headers((headers) ->
+                    headers.disable()
+                )
 //                .addFilterBefore(new Filter3(), SecurityContextHolderFilter.class)
                 .csrf((csrfConfig) ->
                         csrfConfig.disable()
