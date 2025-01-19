@@ -73,6 +73,7 @@ public class DynamicEtagInterceptor implements HandlerInterceptor {
 
             if (annotation != null && modelAndView != null) {
                 String etag = generateETag(modelAndView.getModel(), annotation.properties());
+                etag = "\"" + etag + "\"";
                 System.out.println(etag);
                 response.setHeader("ETag", etag);
             }

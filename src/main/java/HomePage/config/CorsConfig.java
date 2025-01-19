@@ -36,9 +36,14 @@ public class CorsConfig {
         corsConfig.addAllowedOrigin("http://" + serverAddress);
         corsConfig.addAllowedHeader("*");
         corsConfig.addAllowedMethod("*");
+
+
+
+        // 노출할 헤더 설정
         corsConfig.addExposedHeader("ETag");
-        corsConfig.addExposedHeader("ETag");         // ETag 헤더 노출
-        corsConfig.addExposedHeader("If-None-Match"); // If-None-Match 헤더 노출
+        corsConfig.addExposedHeader("Cache-Control");
+        corsConfig.addExposedHeader("If-None-Match");
+        corsConfig.addExposedHeader("If-Match");
 
         source.registerCorsConfiguration("/**", corsConfig);
 
