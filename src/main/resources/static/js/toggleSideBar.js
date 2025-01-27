@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const sidebarToggle = document.getElementById('sidebarToggle');
     const closeSidebar = document.getElementById('closeSidebar');
     const sidebar = document.getElementById('sidebar');
-
+    
     function toggleSidebar() {
         sidebar.classList.toggle('active');
     }

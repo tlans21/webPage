@@ -40,10 +40,10 @@ public class CorsConfig {
 
 
         // 노출할 헤더 설정
-        corsConfig.addExposedHeader("ETag");
-        corsConfig.addExposedHeader("Cache-Control");
-        corsConfig.addExposedHeader("If-None-Match");
-        corsConfig.addExposedHeader("If-Match");
+                corsConfig.addExposedHeader("ETag");
+                corsConfig.addExposedHeader("Cache-Control");
+                corsConfig.addExposedHeader("If-None-Match");
+                corsConfig.addExposedHeader("If-Match");
 
         source.registerCorsConfiguration("/**", corsConfig);
 

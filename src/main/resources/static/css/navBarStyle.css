@@ -126,6 +126,7 @@ body {
 
 #sidebar {
     position: fixed;
+    box-sizing: border-box;
     top: 0;
     right: -300px; /* 넓이 늘림 */
     height: 100vh;
@@ -178,7 +179,7 @@ body {
     right: 0;
 }
 
-.close-btn {
+.close-btn { 
     position: absolute;
     top: 10px;
     right: 10px;
