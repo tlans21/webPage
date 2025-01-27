@@ -19,10 +19,9 @@
                     <li th:if="${isAdmin}"><a th:href="@{/api/v1/admin/adminPage/boardList}">관리자 페이지</a></li>
                 </ul>
                 <div class="nav-right">
-                    <div sec:authorize="isAuthenticated()">
-                        <button id="sidebarToggle">☰</button>
-                    </div>
+                    <button id="sidebarToggle" sec:authorize="isAuthenticated()">☰</button>
                 </div>
+                
             </div>
         </nav>
 
