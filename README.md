@@ -20,7 +20,8 @@ Yummuity (얌뮤티)
 ![123](https://github.com/user-attachments/assets/ee807e9a-787d-4f72-a43f-387824259aa8)
 
 ### Entity Diagram
-![image.png](attachment:a7ef82a2-9ef8-41ab-af26-0422c7f825da:image.png)
+![image](https://github.com/user-attachments/assets/f9da8f9b-fa2a-4118-8b32-d81cbd54e479)
+
 
 주요 기능
 --------------
