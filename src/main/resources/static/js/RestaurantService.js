@@ -118,59 +118,6 @@ class RestaurantService {
        
         this.totalPage = data.payload.Page.totalPages;
         const restaurants = data.payload.Page.content;
-        // const foodList = document.getElementById('food-list');
-        // const temporaryItems = [];  // 임시 저장소
-    //    for (const restaurant of restaurants) {
-    //        if (this.abortController.signal.aborted) break;
-    //        try {
-    //            const foodItem = await createFoodItem(
-    //                restaurant, 
-    //                (event) => modalService.openModal(event)
-    //            );
-    //            if (!this.abortController.signal.aborted) {
-    //                 console.log("1");  
-    //                 foodList.appendChild(foodItem);
-    //            }
-               
-    //        } catch(error) {
-    //            this.imageLoadErrorCount++;
-    //            console.log(`Failed to load image for ${restaurant.title}`);
-    //        }
-    //    }
-       
-       
-       
-    //    if (!this.abortController.signal.aborted) {  // 추가
-    //         this.page++;
-    //         console.log("renderRestaurants");
-    //    }
-        // for (const restaurant of restaurants) {
-        //     if (this.abortController.signal.aborted) break;
-        //     try {
-        //         const foodItem = await createFoodItem(
-        //             restaurant, 
-        //             (event) => modalService.openModal(event)
-        //         );
-        //         if (!this.abortController.signal.aborted) {
-        //             temporaryItems.push(foodItem);  // DOM에 바로 추가하지 않고 임시 저장
-        //         }
-        //     } catch(error) {
-        //         this.imageLoadErrorCount++;
-        //         console.log(`Failed to load image for ${restaurant.title}`);
-        //     }
-        // }
-        
-        // // 모든 아이템이 준비되고 abort되지 않았을 때만 한 번에 DOM에 추가
-        // if (!this.abortController.signal.aborted) {
-        //     for (const item of temporaryItems){
-        //         if (this.abortController.signal.aborted) return;
-        //         foodList.appendChild(item);
-        //     }
-        //     if (!this.abortController.signal.aborted) {
-        //         this.page++;
-        //         console.log("renderRestaurants");
-        //     }
-        // }
         this.currentRenderingPromise = (async () => {
             const temporaryItems = [];
             

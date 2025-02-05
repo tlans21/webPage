@@ -11,7 +11,7 @@
         <!-- Navgation Bar -->
         <nav class="nav-menu">
             <div class="nav-container">
-                <a th:href="@{/}" class="logo">Foody</a>
+                <a th:href="@{/}" class="logo">얌뮤티</a>
                 <ul class="nav-items">
                     <li><a th:href="@{/map}">맛집 탐색</a></li>
 <!--                    <li><a href="#">리뷰 작성</a></li>-->
@@ -33,7 +33,7 @@
                 <div class="logo-container">
                     <img th:src="@{/images/logo.png}" alt="로고" class="logo">
                 </div>
-                <h3 class="header-title">Foody</h3>
+                <h3 class="header-title">얌뮤티</h3>
                 <p class="header-subtitle">맛있는 경험을 공유하세요</p>
             </div>
             
@@ -41,18 +41,6 @@
                 <div class="menu-item" th:classappend="${currentMenu == 'mypage'} ? 'active'">
                     <span class="menu-icon">👤</span>
                     <button id="myPageButton">마이 페이지</button>
-                </div>
-                <div class="menu-item" th:classappend="${currentMenu == 'settings'} ? 'active'">
-                    <span class="menu-icon">⚙️</span>
-                    <a th:href="@{/settings}" class="menu-link">설정</a>
-                </div>
-                <div class="menu-item">
-                    <span class="menu-icon">📝</span>
-                    <a th:href="@{/reviews}" class="menu-link">리뷰 관리</a>
-                </div>
-                <div class="menu-item">
-                    <span class="menu-icon">🔔</span>
-                    <a th:href="@{/notifications}" class="menu-link">알림 센터</a>
                 </div>
             </div>
         </div>
