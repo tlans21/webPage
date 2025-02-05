@@ -1,4 +1,4 @@
-:root {
+    :root {
     --primary-color: #ff6b6b;
     --secondary-color: #4ecdc4;
     --accent-color: #feca57;
@@ -21,7 +21,7 @@ body {
     right: 0;
     z-index: 1000;
 }
-.nav-container {
+.nav-container {  /* 특정성을 높여줌 */
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 20px;
@@ -63,7 +63,7 @@ body {
 .logo {
     font-size: 28px;
     font-weight: bold;
-    color: var(--primary-color);
+    color: #6246EA;
     text-decoration: none;
 }
 .nav-items {
