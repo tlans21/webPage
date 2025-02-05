@@ -1,36 +1,42 @@
-오늘 뭐 먹지?
+Yummuity (얌뮤티)
 ===========
 ### 개요
-음식 커뮤니티 및 AI API를 통한 음식 메뉴 추천 사이트입니다.  
-이 프로젝트는 Spring Boot 기반의 웹 애플리케이션으로, 보안 강화된 사용자 인증 시스템과 서버 사이드 렌더링을 구현하였습니다.
+맛집을 찾고 공유하는 과정에서 성능과 사용성을 모두 고려한 커뮤니티 서비스입니다.
+특히 동시 접속자가 많은 상황에서도 안정적인 서비스 제공을 위해 다양한 성능 최적화를 진행했습니다.
 
 ### 기술 스택
 
-- Backend: Java Spring Boot
+- Backend: OpenJDK 17, Spring Boot 3.2.2, Spring Security 3.2.2
 - Database: MySQL
-- ORM: MyBatis, JDBC Template
+- ORM: MyBatis, JdbcTemplate
 - Frontend: Thymeleaf (Server-Side Rendering)
-- Authentication: JWT + OAuth2
-- Security: Spring Security
-- Testing: JUnit, Mockito
+- Authentication: JWT, OAuth2.0
+- Infrastructure: AWS EC2, Docker, Nginx
+- Testing: K6 부하 테스트, Junit6, mockito
 - Version Control: Git
-
-
 
 주요 기능
 --------------
-### 보안 및 인증
+### 성능 개선
 
-- JWT와 OAuth2 기반의 사용자 인증 시스템 구현
-- Spring Security를 활용한 보안 강화
-    - SecurityContextHolder를 통한 Authentication 관리
-    - 커스텀 JWT 인증 및 인가 필터 구현
-      - JWTAuthentication Filter
-      - JwtAuthorization Filter
+- K6로 200명 동시접속 상황 테스트
+- Nginx 캐시로 평균 응답시간 65% 개선
+- BCrypt 설정 최적화로 CPU 사용률 79% → 37%
+- 리뷰 조회 N+1 문제 해결로 응답시간 82% 단축
 
 
+### 캐시 전략
+
+- 정적/동적 리소스 분리해서 캐시 적용
+- ETag 기반 브라우저 캐싱 구현
+- Keepalive로 연결 재사용 최적화
 
 
+### 서비스 안정성
+
+- 필터링 중 발생하는 데이터 충돌 해결
+- Promise 기반 렌더링 작업 관리
+- Docker & Nginx로 무중단 배포 구현
 
 ### 프론트엔드
 
@@ -70,11 +76,8 @@ type: 간단한 설명
 
 ### 아키텍처
 
-추후 예정
+
                                        
-                          
-
-
 ### 코드 구조화 전략
 
 - 레이어드 아키텍처 적용: Controller, Service, Repository 레이어 분리  
@@ -85,15 +88,19 @@ type: 간단한 설명
 
 - XSS 방지: Thymeleaf의 자동 이스케이핑 기능 활용  
 - CSRF 방지: Spring Security의 CSRF 토큰 사용  
-- SQL Injection 방지: PreparedStatement 및 MyBatis의 파라미터 바인딩 활용  
+
 
 ### 모니터링 및 로깅
 
-추후 예정
+- AWS CloudWatch를 통한 서버의 리소스를 모니터링하여 병목 지점을 확인할 수 있도록 설정
 
-### CI/CD
 
+### 배포
+
+- EC2에 Docker 컨테이너로 구성
+- Nginx 리버스 프록시 설정
 - Docker를 통해 컨테이너 세팅 후, nginx 포트 변경을 이용하는 blue-green 전략 / 무중단 배포
+- certbot 라이브러리를 통해 ssl 인증서 발급에 대한 값을 ec2 호스트에 설정하여 nginx 웹 서버에 볼륨 마운트 지정
 
 
 향후 개선 계획
