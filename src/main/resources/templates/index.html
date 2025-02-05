@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>오늘 뭐 먹지? - 음식 추천 AI 서비스</title>
+    <title>얌뮤티</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.0/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" th:href="@{/css/indexStyle.css}">
@@ -12,6 +12,13 @@
     <header th:replace="~{fragments/navBar :: navBar}"></header>
     <main>
         <section class="hero">
+            <div class="container">
+                <h1>얌뮤티</h1>
+                <p class="subtitle">맛있는 음식과 이야기가 가득한 커뮤니티</p>
+                <div class="button-group">
+                    <a th:href="@{/loginForm}" class="btn btn-primary">로그인하기/회원가입하기</a>
+                </div>
+            </div>
         </section>
         <section id="features" class="features">
             <div class="container">
