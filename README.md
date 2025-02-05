@@ -19,6 +19,8 @@ Yummuity (얌뮤티)
 ### 서비스 아키텍처
 ![123](https://github.com/user-attachments/assets/ee807e9a-787d-4f72-a43f-387824259aa8)
 
+
+
 ### Entity Diagram
 ![image](https://github.com/user-attachments/assets/f9da8f9b-fa2a-4118-8b32-d81cbd54e479)
 
