@@ -54,11 +54,11 @@ jobs:
     steps:
       - name: Set target IP
         run: |
-          STATUS=$(curl -o /dev/null -w "%{http_code}" "http://${{ secrets.LIVE_SERVER_IP }}/env")
+          STATUS=$(curl -o /dev/null -w "%{http_code}" "https://${{ secrets.DOMAIN_NAME }}/env")
           echo $STATUS
           
           if [ $STATUS = 200 ]; then
-            CURRENT_UPSTREAM=$(curl -s "http://${{ secrets.LIVE_SERVER_IP }}/env")
+            CURRENT_UPSTREAM=$(curl -s "https://${{ secrets.DOMAIN_NAME }}/env")
           else
             # 초기 상태일 경우 blue로 설정
             CURRENT_UPSTREAM=blue
