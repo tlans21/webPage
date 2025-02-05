@@ -15,6 +15,13 @@ Yummuity (얌뮤티)
 - Testing: K6 부하 테스트, Junit6, mockito
 - Version Control: Git
 
+
+### 서비스 아키텍처
+![123](https://github.com/user-attachments/assets/ee807e9a-787d-4f72-a43f-387824259aa8)
+
+### Entity Diagram
+![image.png](attachment:a7ef82a2-9ef8-41ab-af26-0422c7f825da:image.png)
+
 주요 기능
 --------------
 ### 성능 개선
