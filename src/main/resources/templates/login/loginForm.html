@@ -3,6 +3,9 @@
     <title>얌뮤티 - 로그인 페이지</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- CSRF 메타 태그 포함 -->
+    <th:block th:replace="~{fragments/csrfTokenHeader :: csrf-header}"></th:block>
+
     <link href="https://fonts.googleapis.com/css?family=Noto+Sans KR&display=swap" rel="stylesheet">
     <link rel="stylesheet" th:href="@{css/loginstyles.css}">
   </head>
@@ -12,6 +15,7 @@
         <div class="forms-container">
             <div class="signin-signup">
                 <form action="/api/login" class="sign-in-form" method="post">
+                    <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
                     <h2 class="title">로그인</h2>
                     <div class="input-field">
                         <i class="fas fa-user"></i>

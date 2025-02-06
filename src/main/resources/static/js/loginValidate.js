@@ -7,13 +7,23 @@ async function validateLogin() {
         return false;
     }
 
+
+    const token = document.querySelector("meta[name='_csrf']").content;
+    const header = document.querySelector("meta[name='_csrf_header']").content;
+
     const response = await fetch('/api/check-user', {
         method: 'POST',
+        credentials: 'same-origin',
         headers: {
-            'Content-type': 'application/json'
+            'Content-Type': 'application/json',
+            [header]: token  // CSRF 토큰 추가
         },
-        body: JSON.stringify({username: username, password: password})
+        body: JSON.stringify({
+            username: username, 
+            password: password
+        })
     });
+    
     const data = await response.json();
     if (data.exists) {
         return true;
