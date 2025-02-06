@@ -6,6 +6,9 @@
     <title>얌뮤티</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- CSRF 메타 태그 포함 -->
+    <th:block th:replace="~{fragments/csrfTokenHeader :: csrf-header}"></th:block>
+
     <link rel="stylesheet" type="text/css" th:href="@{/css/indexStyle.css}">
 </head>
 <body>
@@ -16,7 +19,7 @@
             <h1 class="main-title">맛집이 찾던</h1>
             <h1 class="main-title accent">#커뮤니티</h1>
             <div class="button-group">
-                <a th:href="@{/auth/login}" class="btn btn-primary">시작하기</a>
+                <a th:href="@{/loginForm}" class="btn btn-primary">시작하기</a>
             </div>
             <div class="sub-content">
                 <div class="divider">
@@ -27,7 +30,6 @@
                 </h2>
             </div>
         </div>
-    <span>test1</span>
     </main>
 </body>
 

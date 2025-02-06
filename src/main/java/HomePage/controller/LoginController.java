@@ -35,6 +35,4 @@ public class LoginController {
         System.out.println("/api/check-user 실행");
         return ResponseEntity.ok(response);
     }
-
-
 }
