@@ -31,7 +31,6 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         String accessToken = tokenProvider.getAccessTokenFromRequest(request);
-
         if (accessToken == null){  // accessToken이 없으면 종료하고 다음 체인
             chain.doFilter(request, response);
             return;

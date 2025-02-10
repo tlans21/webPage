@@ -1,29 +1,33 @@
 async function validateLogin() {
-    var username = document.getElementById("LoginUsername").value;
-    var password = document.getElementById("LoginPassword").value;
-    
-    if (!username || !password){
+    const username = document.getElementById("LoginUsername").value;
+    const password = document.getElementById("LoginPassword").value;
+
+    if (!username || !password) {
         alert('아이디나 패스워드를 입력해주세요');
         return false;
     }
 
+    // CSRF 토큰 가져오기 (서버에서 전달하는 방식 사용)
+    const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content'); // 예시: meta 태그 사용
 
-    const token = document.querySelector("meta[name='_csrf']").content;
-    const header = document.querySelector("meta[name='_csrf_header']").content;
-
+    if (!csrfToken) {
+        console.error("CSRF token not found!");
+        alert("CSRF 토큰을 찾을 수 없습니다. 다시 시도해주세요.");
+        return false;
+    }
+    console.log(csrfToken);
     const response = await fetch('/api/check-user', {
         method: 'POST',
-        credentials: 'same-origin',
         headers: {
             'Content-Type': 'application/json',
-            [header]: token  // CSRF 토큰 추가
+            'X-XSRF-TOKEN': csrfToken // 서버에서 사용하는 CSRF 토큰 헤더 이름에 맞게 변경
         },
         body: JSON.stringify({
-            username: username, 
+            username: username,
             password: password
         })
     });
-    
+
     const data = await response.json();
     if (data.exists) {
         return true;

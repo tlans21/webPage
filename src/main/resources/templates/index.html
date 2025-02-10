@@ -30,7 +30,18 @@
                 </h2>
             </div>
         </div>
+        <form action="/api/logout" method="post">
+            <input type="hidden" name="${_csrf_header}" value="${_csrf.token}" />
+           <button type="submit" class="auth-button" id="logoutButton">로그아웃</button>
+       </form>
     </main>
+    <script>
+        const token = document.querySelector("meta[name='_csrf']").content;
+        const header = document.querySelector("meta[name='_csrf_header']").content;
+        
+        console.log(token);
+        console.log(header);
+    </script>
 </body>
 
 </html>
