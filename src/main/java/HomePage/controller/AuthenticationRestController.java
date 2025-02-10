@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class AuthenticationRestController {
-   @GetMapping("/auth/status")
+   @GetMapping("/api/auth/status")
    public ResponseEntity<String> getAuthStatus(Authentication authentication) {
        boolean isAuthenticated = false;
 
@@ -21,7 +21,7 @@ public class AuthenticationRestController {
                isAuthenticated = true;
            }
        }
-       System.out.println(isAuthenticated);
+       System.out.println("isAuthenticated" + isAuthenticated);
 
        return ResponseEntity.ok()
            .cacheControl(CacheControl.noCache())

@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.io.IOException;
+
 @Controller
 @CrossOrigin(origins = "http://localhost:3000", exposedHeaders = "Authorization")
 public class AuthenticationController {
@@ -40,7 +42,7 @@ public class AuthenticationController {
         return "login/loginForm";
     }
     @PostMapping("/api/logout")
-    public String logout(HttpServletRequest request, HttpServletResponse response){
+    public void logout(HttpServletRequest request, HttpServletResponse response) throws IOException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication != null){
@@ -53,7 +55,7 @@ public class AuthenticationController {
         cookie.setPath("/");
         response.addCookie(cookie);
 
-
-        return "redirect:/loginForm";
+        // redirect를 직접 수행
+        response.sendRedirect("/loginForm");
     }
 }
