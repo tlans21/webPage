@@ -24,14 +24,14 @@ public class CustomCookieTokenRepository implements CsrfTokenRepository {
                       .httpOnly(false)
                       .maxAge(3600)
                       .sameSite("None")
-                      .domain(sslEnabled ? "yummuity.com" : "localhost");
+                      .domain("localhost");
             } else {
                 cookie.path("/")
                         .secure(true)
                         .httpOnly(true)
                         .maxAge(3600)
                         .sameSite("None")
-                        .domain(sslEnabled ? "yummuity.com" : "localhost");
+                        .domain("yummuity.com");
             }
 
         });
