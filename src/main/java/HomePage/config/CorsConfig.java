@@ -33,10 +33,15 @@ public class CorsConfig {
 //        }
  //        corsConfig.addAllowedOrigin("http://localhost:3000");
         corsConfig.addAllowedOrigin("http://" + serverAddress);
+        corsConfig.addAllowedOrigin("https://yummuity.com");
+        corsConfig.addAllowedOrigin("https://www.yummuity.com");
         corsConfig.addAllowedHeader("*");
         corsConfig.addAllowedMethod("*");
 
 
+
+        // CSRF 관련 헤더 노출
+        corsConfig.addExposedHeader("X-XSRF-TOKEN");
 
         // 노출할 헤더 설정
         corsConfig.addExposedHeader("ETag");
