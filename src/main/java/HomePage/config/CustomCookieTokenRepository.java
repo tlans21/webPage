@@ -20,20 +20,19 @@ public class CustomCookieTokenRepository implements CsrfTokenRepository {
         delegate.setCookieCustomizer(cookie -> {
             if(sslEnabled){
                 cookie.path("/")
+                        .secure(true)
+                        .httpOnly(false)
+                        .maxAge(3600)
+                        .sameSite("None")
+                        .domain("yummuity.com");
+            } else {
+                cookie.path("/")
                       .secure(true)
                       .httpOnly(false)
                       .maxAge(3600)
                       .sameSite("None")
                       .domain("localhost");
-            } else {
-                cookie.path("/")
-                        .secure(true)
-                        .httpOnly(true)
-                        .maxAge(3600)
-                        .sameSite("None")
-                        .domain("yummuity.com");
             }
-
         });
     }
 
