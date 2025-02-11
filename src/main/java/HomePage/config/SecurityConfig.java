@@ -17,6 +17,7 @@
     import org.springframework.security.config.http.SessionCreationPolicy;
     import org.springframework.security.web.SecurityFilterChain;
     import org.springframework.security.web.csrf.CsrfFilter;
+    import org.springframework.security.web.csrf.CsrfTokenRepository;
 
     @Configuration
     @EnableWebSecurity
@@ -37,7 +38,7 @@
         private OAuth2LoginSuccessHandler oAuthLoginSuccessHandler;
 
         @Autowired
-        private CustomCookieTokenRepository customCookieTokenRepository;
+        private CsrfTokenRepository customCsrfTokenRepository;
 
         //AuthenticationConfiguration을 통해서 AuthenticationManager을 가져올 수 있다.
         @Bean
@@ -57,8 +58,7 @@
                     .addFilterBefore(corsConfig.corsFilter(), CsrfFilter.class)
                     .addFilterBefore(jwtAuthenticationFilter(authenticationManager), CsrfFilter.class)  // CSRF 필터 전에 실행
                     .addFilterBefore(jwtAuthorizationFilter(authenticationManager), CsrfFilter.class)   // CSRF 필터 전에 실행
-                    .csrf(csrf -> csrf
-                        .csrfTokenRepository(customCookieTokenRepository)
+                    .csrf(csrf -> csrf.csrfTokenRepository(customCsrfTokenRepository)
                     )
                     .sessionManagement((sessionManagementConfig) -> sessionManagementConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                     )

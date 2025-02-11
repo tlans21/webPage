@@ -8,6 +8,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.io.IOException;
+
 @Controller
 public class IndexController {
 
@@ -22,5 +24,9 @@ public class IndexController {
 
         model.addAttribute("authentication", isAuthenticated);
         return "index"; // 인덱스 페이지 뷰 이름
+    }
+    @GetMapping("/testRedirect")
+    public void redirectPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        response.sendRedirect("/");
     }
 }

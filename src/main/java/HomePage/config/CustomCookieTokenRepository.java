@@ -2,14 +2,13 @@ package HomePage.config;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 
 import java.time.LocalDateTime;
 
-@Configuration
+
 public class CustomCookieTokenRepository implements CsrfTokenRepository {
     private final CookieCsrfTokenRepository delegate;
     private boolean sslEnabled = true;  // 또는 주입받을 수 있음
@@ -21,7 +20,7 @@ public class CustomCookieTokenRepository implements CsrfTokenRepository {
             if(sslEnabled){
                 cookie.path("/")
                         .secure(true)
-                        .httpOnly(false)
+                        .httpOnly(true)
                         .maxAge(3600)
                         .sameSite("None")
                         .domain("yummuity.com");
