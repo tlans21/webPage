@@ -24,9 +24,13 @@ export class ModalService {
     }
 
     async fetchModalContent(restaurantId) {
+        const csrfToken =  document.querySelector('meta[name="_csrf"]').getAttribute('content');
         const response = await fetch('/api/map/modal-map', {
             method: 'POST',
-            headers: { 'Content-type': 'application/json' },
+            headers: { 
+                'Content-type': 'application/json',
+                'X-XSRF-TOKEN': csrfToken, 
+            },
             body: JSON.stringify({id: restaurantId})
         });
         

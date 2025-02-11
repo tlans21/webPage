@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 
 public class CustomCookieTokenRepository implements CsrfTokenRepository {
     private final CookieCsrfTokenRepository delegate;
-    private boolean sslEnabled = true;  // 또는 주입받을 수 있음
+    private boolean sslEnabled = false;  // 또는 주입받을 수 있음
 
     public CustomCookieTokenRepository() {
         this.delegate = CookieCsrfTokenRepository.withHttpOnlyFalse();
@@ -20,7 +20,7 @@ public class CustomCookieTokenRepository implements CsrfTokenRepository {
             if(sslEnabled){
                 cookie.path("/")
                         .secure(true)
-                        .httpOnly(true)
+                        .httpOnly(false)
                         .maxAge(3600)
                         .sameSite("None")
                         .domain("yummuity.com");

@@ -68,10 +68,13 @@ function handleProfileSubmit(event) {
     
     const nickname = document.getElementById('nickname').value;
 
+    const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+    console.log(csrfToken);
     fetch('/api/v1/user/mypage-content/edit/profile', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
+            'X-XSRF-TOKEN': csrfToken,
         },
         body: JSON.stringify({ nickname: nickname })
     })
@@ -84,7 +87,8 @@ function handleProfileSubmit(event) {
     .then(data => {
         console.log('Success:', data);
         // 성공 처리
-        if (data.success) {
+        const isSuccess = data.payload.success;
+        if (isSuccess) {
             // 프로필 정보 업데이트
             document.querySelector('.card-body h4').textContent = nickname;
             // 편집 폼 숨기기 및 활동 표시

@@ -44,10 +44,12 @@ class ReviewLikeService {
 
     async handleLike(event, reviewId) {
         try {
+            const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
             const response = await fetch(`/api/v1/user/review/${reviewId}/like`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'X-XSRF-TOKEN': csrfToken, 
                 }
             });
             const data = await response.json();
@@ -63,10 +65,12 @@ class ReviewLikeService {
 
     async handleDislike(event, reviewId) {
         try {
+            const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
             const response = await fetch(`/api/v1/user/review/${reviewId}/dislike`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'X-XSRF-TOKEN': csrfToken, 
                 }
             });
             const data = await response.json();
