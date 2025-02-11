@@ -15,10 +15,12 @@ class ReviewService {
         const rating = ratingInput.value;
 
         try {
+            const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
             const response = await fetch(`/api/v1/user/create/review/${restaurantId}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-XSRF-TOKEN': csrfToken,
                 },
                 body: `content=${encodeURIComponent(content)}&rating=${encodeURIComponent(rating)}`
             });
