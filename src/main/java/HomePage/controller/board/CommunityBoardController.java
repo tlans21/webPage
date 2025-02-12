@@ -1,10 +1,12 @@
 package HomePage.controller.board;
 
+import HomePage.config.auth.PrincipalDetails;
+import HomePage.domain.model.dto.CommunityCommentDTO;
 import HomePage.domain.model.entity.CommunityBoard;
-import HomePage.domain.model.entity.CommunityComment;
 import HomePage.domain.model.entity.Page;
 import HomePage.service.CommunityBoardService;
 import HomePage.service.CommunityCommentService;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -94,6 +96,7 @@ public class CommunityBoardController {
     public String viewBoard(@PathVariable Long id,
                               @RequestParam(required = false) String topic,
                               @RequestParam(defaultValue = "1") int page,
+                              Authentication authentication,
                               Model model) {
 
         // 게시글 상세 정보 조회 로직
@@ -101,8 +104,17 @@ public class CommunityBoardController {
         if (board == null){
             return "error/404";
         }
+        List<CommunityCommentDTO> comments;
+        if (authentication == null){
+            comments = commentService.getCommentByBoardId(id);// 게시글 id를 통해서 해당 게시글의 댓글들을 불러온다.
+        } else {
+            PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+            Long userId = principalDetails.getUser().getId();
 
-        List<CommunityComment> comments = commentService.getCommentByBoardId(id);// 게시글 id를 통해서 해당 게시글의 댓글들을 불러온다.
+            comments = commentService.getCommentByBoardId(id, userId);// 게시글 id와 userId 를 통해서 해당 게시글의 댓글들을 불러온다.l
+
+        }
+
         int commentCnt = commentService.getCommentCntById(id); // 게시글 id를 통해서 해당 게시글의 댓글 수를 불러온다.
 
 

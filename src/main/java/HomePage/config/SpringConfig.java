@@ -1,8 +1,9 @@
 package HomePage.config;
 
-import HomePage.repository.*;
-import HomePage.service.CommunityBoardService;
-import HomePage.service.CommunityCommentService;
+import HomePage.repository.JdbcTemplateCommunityBoardRepository;
+import HomePage.repository.JdbcTemplateCommunityCommentRepository;
+import HomePage.repository.JdbcTemplateUserRepository;
+import HomePage.repository.UserRepository;
 import HomePage.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -30,12 +31,6 @@ public class SpringConfig {
         return new JdbcTemplateUserRepository(dataSource);
     }
 
-
-    @Bean
-    public CommunityBoardService communityBoardService(){
-        return new CommunityBoardService(communityBoardRepository(), communityCommentRepository());
-    }
-
     @Bean
     public JdbcTemplateCommunityBoardRepository communityBoardRepository(){
         return new JdbcTemplateCommunityBoardRepository(dataSource);
@@ -45,10 +40,4 @@ public class SpringConfig {
     public JdbcTemplateCommunityCommentRepository communityCommentRepository(){
         return new JdbcTemplateCommunityCommentRepository(dataSource);
     }
-
-    @Bean
-    public CommunityCommentService communityCommentService(){
-        return new CommunityCommentService(communityCommentRepository(), communityBoardRepository());
-    }
-
 }

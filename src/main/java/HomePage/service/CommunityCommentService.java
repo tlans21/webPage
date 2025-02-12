@@ -1,27 +1,31 @@
 package HomePage.service;
 
+import HomePage.domain.model.dto.CommunityCommentDTO;
 import HomePage.domain.model.entity.CommunityBoard;
 import HomePage.domain.model.entity.CommunityComment;
+import HomePage.mapper.CommunityCommentMapper;
 import HomePage.repository.BoardRepository;
-import HomePage.repository.CommentRepository;
+import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
 import java.util.List;
 
-
+@Service
+@NoArgsConstructor
 public class CommunityCommentService implements CommentService<CommunityComment> {
-    private final CommentRepository<CommunityComment> commentRepository;
-    private final BoardRepository<CommunityBoard> boardRepository;
 
-    public CommunityCommentService(CommentRepository commentRepository, BoardRepository boardRepository) {
-        this.commentRepository = commentRepository;
-        this.boardRepository = boardRepository;
-    }
+    @Autowired
+    private CommunityCommentMapper commentMapper;
+    @Autowired
+    private BoardRepository<CommunityBoard> boardRepository;
 
 
 
     public int getCommentCntById(Long boardId){
-        return commentRepository.countByBoardId(boardId);
+        return commentMapper.countByBoardId(boardId);
     }
 
     @Override
@@ -34,11 +38,12 @@ public class CommunityCommentService implements CommentService<CommunityComment>
 
     @Override
     public void saveComment(CommunityComment comment){
-        commentRepository.save(comment);
+        comment.setRegisterDate(new Timestamp(System.currentTimeMillis()));
+        commentMapper.save(comment);
     }
     @Override
     public int countByBoardId(Long BoardId){
-        return commentRepository.countByBoardId(BoardId);
+        return commentMapper.countByBoardId(BoardId);
     }
     @Override
     public boolean incrementCommentCnt(Long id, int commentCnt){
@@ -51,7 +56,7 @@ public class CommunityCommentService implements CommentService<CommunityComment>
     @Override
     @Transactional
     public void updateComment(CommunityComment comment) {
-        if (!commentRepository.update(comment)) {
+        if (commentMapper.update(comment) <= 0) {
             throw new RuntimeException("Failed to update board with id: " + comment.getId());
         }
     }
@@ -59,15 +64,14 @@ public class CommunityCommentService implements CommentService<CommunityComment>
     @Override
     @Transactional
     public CommunityComment getCommentByCommentId(Long commentId) {
-        return commentRepository.findCommentById(commentId)
-                               .orElseThrow(() -> new RuntimeException("Board not found with id: " + commentId));
+        return commentMapper.findCommentById(commentId);
     }
 
     @Override
     @Transactional
     public void deleteCommentByCommentId(Long id) {
         CommunityComment comment = getCommentByCommentId(id);
-        if (!commentRepository.deleteByCommentId(comment.getId())) {
+        if (commentMapper.deleteByCommentId(comment.getId()) <= 0) {
             throw new RuntimeException("Failed to delete board with comment_id: " + id);
         }
     }
@@ -75,7 +79,7 @@ public class CommunityCommentService implements CommentService<CommunityComment>
     @Override
     @Transactional
     public void deleteCommentsByBoardId(Long id) {
-        if(!commentRepository.deleteByBoardId(id)){
+        if(commentMapper.deleteByBoardId(id) <= 0){
             throw new RuntimeException("Failed to delete board with board_id: " + id);
         }
     }
@@ -83,18 +87,25 @@ public class CommunityCommentService implements CommentService<CommunityComment>
     @Override
     @Transactional
     public void deleteCommentByWriter(String writer) {
-        if (!commentRepository.deleteByWriter(writer)){
+        if (commentMapper.deleteByWriter(writer) <= 0){
             throw new RuntimeException("Failed to delete board with writer: " + writer);
         }
     }
 
     @Override
-    public List<CommunityComment> getCommentByBoardId(Long id) {
-        return commentRepository.selectByBoardId(id);
+    public List<CommunityCommentDTO> getCommentByBoardId(Long boardId) {
+        List<CommunityCommentDTO> communityCommentDTOS = commentMapper.selectByBoardId(boardId);
+        return communityCommentDTOS;
     }
 
     @Override
-    public List<CommunityComment> getAllComments() {
-        return commentRepository.selectAll();
+    public List<CommunityCommentDTO> getCommentByBoardId(Long boardId, Long userId) {
+        List<CommunityCommentDTO> communityCommentDTOS = commentMapper.selectByBoardId(boardId, userId);
+        return communityCommentDTOS;
+    }
+
+    @Override
+    public List<CommunityCommentDTO> getAllComments() {
+        return commentMapper.selectAll();
     }
 }

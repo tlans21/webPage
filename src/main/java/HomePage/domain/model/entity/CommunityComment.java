@@ -1,7 +1,19 @@
 package HomePage.domain.model.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class CommunityComment extends Comment {
     private Long boardId;
+    private Long userId;
+    private int likeCount;
+    private int dislikeCount;
 
     @Override
     public Long getParentId() {
@@ -21,7 +33,4 @@ public class CommunityComment extends Comment {
         this.boardId = boardId;
     }
 
-    public CommunityComment(){
-
-    }
 }

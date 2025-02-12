@@ -1,11 +1,12 @@
 package HomePage.service;
 
 import HomePage.domain.model.entity.CommunityBoard;
-import HomePage.domain.model.entity.CommunityComment;
 import HomePage.domain.model.entity.Page;
+import HomePage.mapper.CommunityCommentMapper;
 import HomePage.repository.BoardRepository;
-import HomePage.repository.CommentRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
@@ -15,19 +16,16 @@ import java.util.List;
 import java.util.Map;
 
 
+@Service
 public class CommunityBoardService implements BoardService<CommunityBoard>{
 
     @Value("${communityBoard.page-size}")
     private int pageSize = 10;
 
-    private final BoardRepository<CommunityBoard> communityBoardRepository;
-    private final CommentRepository<CommunityComment> communityCommentRepository;
-
-
-    public CommunityBoardService(BoardRepository<CommunityBoard> communityBoardRepository, CommentRepository<CommunityComment> communityCommentRepository) {
-        this.communityBoardRepository = communityBoardRepository;
-        this.communityCommentRepository = communityCommentRepository;
-    }
+    @Autowired
+    private BoardRepository<CommunityBoard> communityBoardRepository;
+    @Autowired
+    private CommunityCommentMapper communityCommentMapper;
 
     @Transactional(readOnly = true)
     public Map<String, String> validateCommunityForm(Errors errors){
@@ -144,7 +142,7 @@ public class CommunityBoardService implements BoardService<CommunityBoard>{
     @Override
     @Transactional
     public void deleteBoard(Long id) {
-        if(!communityCommentRepository.deleteByBoardId(id)){
+        if(communityCommentMapper.deleteByBoardId(id) <= 0){
             throw new RuntimeException("Failed to delete comment with board_id: " + id);
         }
         if (!communityBoardRepository.deleteById(id)) {

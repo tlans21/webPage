@@ -35,6 +35,7 @@ public class MapModalController {
 
         List<RestaurantReviewCommentDTO> commentDTOs;
 
+        // 좋아요 누른 상태를 표시하기 위해 비로그인, 로그인 사용자를 분기별로 나누었다.
         if (authentication == null){
             commentDTOs = restaurantReviewService.findByRestaurantIdWithoutJoin(restaurantId);
         } else {

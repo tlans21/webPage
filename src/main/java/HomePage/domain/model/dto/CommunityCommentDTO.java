@@ -1,15 +1,29 @@
 package HomePage.domain.model.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import java.sql.Timestamp;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class CommunityCommentDTO {
     private Long id;
-    private Long board_id;
+    private Long userId;
+    private Long boardId;
     private String writer;
     private String content;
     private Timestamp registerDate;
     private Timestamp updateDate;
     private Timestamp deleteDate;
+
+    private int likeCount;
+    private int dislikeCount;
+    private Boolean userLikeStatus; // null: 좋아요/싫어요 없음, true: 좋아요, false: 싫어요
 
     private BoardInfo relatedBoard;
 
@@ -32,69 +46,5 @@ public class CommunityCommentDTO {
         public void setTitle(String title) {
             this.title = title;
         }
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getBoard_id() {
-        return board_id;
-    }
-
-    public void setBoard_id(Long board_id) {
-        this.board_id = board_id;
-    }
-
-    public String getWriter() {
-        return writer;
-    }
-
-    public void setWriter(String writer) {
-        this.writer = writer;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public Timestamp getRegisterDate() {
-        return registerDate;
-    }
-
-    public void setRegisterDate(Timestamp registerDate) {
-        this.registerDate = registerDate;
-    }
-
-    public Timestamp getUpdateDate() {
-        return updateDate;
-    }
-
-    public void setUpdateDate(Timestamp updateDate) {
-        this.updateDate = updateDate;
-    }
-
-    public Timestamp getDeleteDate() {
-        return deleteDate;
-    }
-
-    public void setDeleteDate(Timestamp deleteDate) {
-        this.deleteDate = deleteDate;
-    }
-
-    public BoardInfo getRelatedBoard() {
-        return relatedBoard;
-    }
-
-    public void setRelatedBoard(BoardInfo relatedBoard) {
-        this.relatedBoard = relatedBoard;
     }
 }
