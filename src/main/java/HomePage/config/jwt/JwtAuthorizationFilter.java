@@ -31,6 +31,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         String accessToken = tokenProvider.getAccessTokenFromRequest(request);
+
         if (accessToken == null){  // accessToken이 없으면 종료하고 다음 체인
             chain.doFilter(request, response);
             return;
@@ -42,9 +43,10 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
             boolean isExpired = tokenProvider.isTokenExpired(accessToken);
             if (isExpired){
                 System.out.println("액세스토큰이 만료되었습니다.");
+
             }
             chain.doFilter(request, response);
-            return;
+
         }
 
         String username = tokenProvider.getUsernameFromToken(accessToken);
@@ -61,7 +63,6 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
             // 세션에 authentication 저장이 되어야지만 접근 제한이 있는 리소스에 접근이 가능함.
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
-
         chain.doFilter(request, response);
     }
 

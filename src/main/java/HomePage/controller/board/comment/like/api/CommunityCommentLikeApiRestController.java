@@ -1,4 +1,4 @@
-package HomePage.controller.like;
+package HomePage.controller.board.comment.like.api;
 
 import HomePage.common.response.CommonResponse;
 import HomePage.config.auth.PrincipalDetails;
@@ -15,34 +15,29 @@ import java.util.Map;
 
 @RequestMapping("/api/v1/user")
 @RestController
-public class LikeApiRestController {
+public class CommunityCommentLikeApiRestController {
     @Autowired
     LikeService likeService;
-    @PostMapping("/review/{reviewId}/{action}")
+
+    @PostMapping("/comment/{commentId}/{action}")
     public CommonResponse<?> toggleLike(
-            @PathVariable Long reviewId,
+            @PathVariable Long commentId,
             @PathVariable String action,
             Authentication authentication
-
     ){
-        System.out.println(reviewId);
-        System.out.println(action);
-
-        try{
+        try {
             PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
             Long userId = principalDetails.getUser().getId();
 
             boolean isLike = "like".equals(action);
 
-            Map<String, Integer> counts = likeService.toggleLikeFromReview(reviewId, userId, isLike);
-            System.out.println("test3");
+            Map<String, Integer> counts = likeService.toggleLikeFromComment(commentId, userId, isLike);
+            System.out.println("게시판 코멘트 테스트 로깅");
             return CommonResponse.success(counts,
                 (isLike ? "좋아요" : "싫어요") + " 처리가 완료되었습니다",
                 HttpStatus.OK);
-        } catch (Exception e) {
+        } catch (Exception e){
             return CommonResponse.error("처리 중 오류가 발생했습니다", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
 }
-

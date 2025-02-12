@@ -50,7 +50,6 @@ public class MapModalReviewApiController implements MapModalReviewApiDocs{
         RestaurantReviewCommentDTO review = restaurantReviewService.createReview(restaurantId, userId, content, rating); // 리뷰 생성
 
         // 최신 리뷰 목록 조회
-//        List<RestaurantReviewCommentDTO> reviewDTOs = restaurantReviewService.findByRestaurantIdWithoutJoin(restaurantId);
         List<RestaurantReviewCommentDTO> reviewDTOs = restaurantReviewService.findByRestaurantIdWithJoin(restaurantId, userId);
         System.out.println(reviewDTOs);
         RestaurantDto restaurantDto = restaurantService.getRestaurantById(restaurantId);

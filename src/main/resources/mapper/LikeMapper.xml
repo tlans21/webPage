@@ -22,23 +22,46 @@
     </insert>
 
     <update id="updateReviewCounts" parameterType="HomePage.domain.model.entity.Like">
-        UPDATE restaurant_review_comments
-        SET
-            like_count = (
-                SELECT COUNT(*)
-                FROM security.likes
-                WHERE target_type = #{targetType}
-                AND target_id = #{targetId}
-                AND isLike = true
-            ),
-            dislike_count = (
-                SELECT COUNT(*)
-                FROM security.likes
-                WHERE target_type = #{targetType}
-                AND target_id = #{targetId}
-                AND isLike = false
-            )
-        WHERE id = #{targetId}
+        <choose>
+            <when test="targetType == 'REVIEW'">
+                UPDATE restaurant_review_comments
+                SET
+                    like_count = (
+                        SELECT COUNT(*)
+                        FROM security.likes
+                        WHERE target_type = #{targetType}
+                        AND target_id = #{targetId}
+                        AND isLike = true
+                    ),
+                    dislike_count = (
+                        SELECT COUNT(*)
+                        FROM security.likes
+                        WHERE target_type = #{targetType}
+                        AND target_id = #{targetId}
+                        AND isLike = false
+                    )
+                WHERE id = #{targetId}
+            </when>
+            <when test="targetType == 'COMMENT'">
+                UPDATE security.communitycomment
+                SET
+                    like_count = (
+                        SELECT COUNT(*)
+                        FROM security.likes
+                        WHERE target_type = #{targetType}
+                        AND target_id = #{targetId}
+                        AND isLike = true
+                    ),
+                    dislike_count = (
+                        SELECT COUNT(*)
+                        FROM security.likes
+                        WHERE target_type = #{targetType}
+                        AND target_id = #{targetId}
+                        AND isLike = false
+                    )
+                WHERE comment_id = #{targetId}
+            </when>
+        </choose>
     </update>
 
     <delete id="delete">

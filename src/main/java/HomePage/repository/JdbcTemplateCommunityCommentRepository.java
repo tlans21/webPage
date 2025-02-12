@@ -25,8 +25,8 @@ public class JdbcTemplateCommunityCommentRepository implements CommentRepository
 
     @Override
     public CommunityComment save(CommunityComment comment) {
-        String sql = "INSERT INTO " + tableName + " (writer, board_id, content, createdAt, updatedAt, deletedAt) " +
-                                        "VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO " + tableName + " (writer, board_id, content, createdAt, updatedAt, deletedAt, like_count, dislike_count) " +
+                                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         comment.setRegisterDate(new Timestamp(System.currentTimeMillis()));
         jdbcTemplate.update(connection -> {
@@ -37,6 +37,8 @@ public class JdbcTemplateCommunityCommentRepository implements CommentRepository
                 ps.setTimestamp(4, comment.getRegisterDate());
                 ps.setTimestamp(5, comment.getUpdateDate());
                 ps.setTimestamp(6, comment.getDeleteDate());
+                ps.setInt(7, comment.getLikeCount());
+                ps.setInt(8, comment.getLikeCount());
                return ps;
         }, keyHolder);
 
@@ -140,6 +142,8 @@ public class JdbcTemplateCommunityCommentRepository implements CommentRepository
            communityComment.setRegisterDate(rs.getTimestamp("createdAt"));
            communityComment.setUpdateDate(rs.getTimestamp("updatedAt"));
            communityComment.setDeleteDate(rs.getTimestamp("deletedAt"));
+           communityComment.setLikeCount(rs.getInt("like_count"));
+           communityComment.setDislikeCount(rs.getInt("dislike_count"));
            return communityComment;
        };
     }

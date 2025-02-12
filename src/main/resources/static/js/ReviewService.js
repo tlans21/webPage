@@ -29,7 +29,7 @@ class ReviewService {
             document.querySelector('.comments-section').innerHTML = html;
             form.reset();
             
-            await this.updateReviewCount(restaurantId);
+            await this.updateReviewCount(restaurantId); // 리뷰 업데이트 
             this.initializeReviewForm(restaurantId);
         } catch (error) {
             console.error('Error:', error);

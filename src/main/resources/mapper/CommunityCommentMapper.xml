@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="HomePage.mapper.CommunityCommentMapper">
+    <resultMap id="communityCommentResultMap" type="HomePage.domain.model.dto.CommunityCommentDTO">
+        <id property="id" column="comment_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="boardId" column="board_id"/>
+        <result property="writer" column="writer"/>
+        <result property="content" column="content"/>
+        <result property="registerDate" column="createdAt"/>
+        <result property="updateDate" column="updatedAt"/>
+        <result property="deleteDate" column="deletedAt"/>
+        <result property="likeCount" column="like_count"/>       <!-- 추가 -->
+        <result property="dislikeCount" column="dislike_count"/>
+        <result property="userLikeStatus" column="user_like_status"/>
+        <association property="relatedBoard" javaType="HomePage.domain.model.dto.CommunityCommentDTO$BoardInfo">
+            <id property="id" column="board_id"/>
+            <result property="title" column="board_title"/>
+        </association>
+    </resultMap>
+    <!-- 기본 Comment 엔티티용 resultMap -->
+    <resultMap id="commentEntityMap" type="HomePage.domain.model.entity.CommunityComment">
+        <id property="id" column="comment_id"/>
+        <result property="boardId" column="board_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="content" column="content"/>
+        <result property="writer" column="writer"/>
+        <result property="registerDate" column="createdAt"/>
+        <result property="updateDate" column="updatedAt"/>
+        <result property="deleteDate" column="deletedAt"/>
+        <result property="likeCount" column="like_count"/>
+        <result property="dislikeCount" column="dislike_count"/>
+    </resultMap>
+
+    <!-- 댓글 저장 -->
+    <insert id="save" parameterType="CommunityComment" useGeneratedKeys="true" keyProperty="id" keyColumn="comment_id">
+        INSERT INTO security.communitycomment (
+            board_id, writer, user_id, content, createdAt, updatedAt, deletedAt, like_count, dislike_count
+        ) VALUES (
+            #{boardId}, #{writer}, #{userId}, #{content}, #{registerDate}, #{updateDate}, #{deleteDate},
+            #{likeCount}, #{dislikeCount}
+        )
+    </insert>
+
+    <!-- 전체 댓글 수 조회 -->
+    <select id="count" resultType="int">
+        SELECT COUNT(*) FROM security.communitycomment
+    </select>
+
+    <!-- 특정 날짜 이후의 댓글 수 조회 -->
+    <select id="countByCreatedAtAfter" parameterType="java.time.LocalDateTime" resultType="int">
+        SELECT COUNT(*)
+        FROM security.communitycomment
+        WHERE createdAt > #{date}
+    </select>
+
+    <!-- 게시글별 댓글 수 조회 -->
+    <select id="countByBoardId" parameterType="Long" resultType="int">
+        SELECT COUNT(*)
+        FROM security.communitycomment
+        WHERE board_id = #{boardId}
+    </select>
+
+    <!-- 날짜 범위 내 댓글 수 조회 -->
+    <select id="countByCreatedAtBetween" resultType="int">
+        SELECT COUNT(*)
+        FROM security.communitycomment
+        WHERE createdAt BETWEEN #{start} AND #{end}
+    </select>
+
+    <!-- 댓글 수정 -->
+    <update id="update" parameterType="CommunityComment">
+        UPDATE security.communitycomment
+        SET content = #{content},
+            updatedAt = #{updateDate}
+        WHERE comment_id = #{id}
+    </update>
+
+    <!-- 댓글 ID로 조회 -->
+    <select id="findCommentById" parameterType="Long" resultMap="commentEntityMap">
+        SELECT *
+        FROM security.communitycomment
+        WHERE comment_id = #{commentId}
+    </select>
+
+    <!-- 작성자별 댓글 조회 -->
+    <select id="selectByWriter" parameterType="String" resultMap="communityCommentResultMap">
+        SELECT *
+        FROM security.communitycomment
+        WHERE writer = #{writer}
+    </select>
+
+    <!-- 작성자별 최근 댓글 조회 -->
+    <select id="selectRecentByWriter" resultMap="communityCommentResultMap">
+        SELECT *
+        FROM security.communitycomment
+        WHERE writer = #{writer}
+        ORDER BY createdAt DESC
+        LIMIT #{limit}
+    </select>
+
+    <!-- 작성자별 댓글 삭제 -->
+    <delete id="deleteByWriter" parameterType="String">
+        DELETE FROM security.communitycomment
+        WHERE writer = #{writer}
+    </delete>
+
+    <!-- 댓글 ID로 삭제 -->
+    <delete id="deleteByCommentId" parameterType="Long">
+        DELETE FROM security.communitycomment
+        WHERE comment_id = #{id}
+    </delete>
+
+    <!-- 게시글별 댓글 삭제 -->
+    <delete id="deleteByBoardId" parameterType="Long">
+        DELETE FROM security.communitycomment
+        WHERE board_id = #{id}
+    </delete>
+
+    <select id="selectByBoardId" resultMap="communityCommentResultMap">
+        SELECT
+            c.comment_id,
+            c.board_id,
+            c.writer,
+            c.content,
+            c.createdAt,
+            c.updatedAt,
+            c.deletedAt,
+            b.title as board_title,
+            ul.isLike as user_like_status
+        FROM
+            security.communitycomment c
+            LEFT JOIN security.communityboard b ON c.board_id = b.board_id
+            LEFT JOIN security.likes ul ON c.comment_id = ul.target_id
+                AND ul.target_type = 'COMMENT'
+                AND ul.user_id = #{userId}
+        WHERE
+            c.board_id = #{boardId}
+        ORDER BY
+            c.createdAt DESC
+    </select>
+
+    <select id="selectAll" resultMap="communityCommentResultMap">
+        SELECT
+            c.comment_id,
+            c.board_id,
+            c.writer,
+            c.content,
+            c.createdAt,
+            c.updatedAt,
+            c.deletedAt,
+            b.title as board_title
+        FROM
+            security.communitycomment c
+            LEFT JOIN security.communityboard b ON c.board_id = b.board_id
+        ORDER BY
+            c.createdAt DESC
+    </select>
+</mapper>

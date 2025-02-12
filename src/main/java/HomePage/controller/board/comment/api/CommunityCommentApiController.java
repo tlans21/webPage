@@ -34,6 +34,4 @@ public class CommunityCommentApiController {
 
         return "redirect:/community/" + id + "?topic=community&page=" + page;
     }
-
-
 }

@@ -83,7 +83,7 @@
     <update id="updateRatingByRestaurantId">
         UPDATE security.restaurant_review_comments
         SET rating = #{rating}
-        WHERE id = #{rest
+        WHERE id = #{restaurantId}
     </update>
 
     <delete id="deleteById" parameterType="long">
