@@ -117,6 +117,8 @@
         WHERE board_id = #{id}
     </delete>
 
+
+    <!-- 비로그인 사용자용 -->
     <select id="selectByBoardId" resultMap="communityCommentResultMap">
         SELECT
             c.comment_id,
@@ -127,17 +129,62 @@
             c.updatedAt,
             c.deletedAt,
             b.title as board_title,
-            ul.isLike as user_like_status
+            c.like_count,
+            c.dislike_count,
+            NULL as user_like_status
         FROM
             security.communitycomment c
             LEFT JOIN security.communityboard b ON c.board_id = b.board_id
-            LEFT JOIN security.likes ul ON c.comment_id = ul.target_id
-                AND ul.target_type = 'COMMENT'
-                AND ul.user_id = #{userId}
         WHERE
             c.board_id = #{boardId}
         ORDER BY
             c.createdAt DESC
+    </select>
+
+    <!-- 로그인 사용자용 -->
+    <select id="selectByBoardIdWithUser" resultMap="communityCommentResultMap">
+<!--        SELECT-->
+<!--            c.comment_id,-->
+<!--            c.board_id,-->
+<!--            c.writer,-->
+<!--            c.content,-->
+<!--            c.createdAt,-->
+<!--            c.updatedAt,-->
+<!--            c.deletedAt,-->
+<!--            b.title as board_title,-->
+<!--            ul.isLike as user_like_status-->
+<!--        FROM-->
+<!--            security.communitycomment c-->
+<!--            LEFT JOIN security.communityboard b ON c.board_id = b.board_id-->
+<!--            LEFT JOIN security.likes ul ON c.comment_id = ul.target_id-->
+<!--                AND ul.target_type = 'COMMENT'-->
+<!--                AND ul.user_id = #{userId}-->
+<!--        WHERE-->
+<!--            c.board_id = #{boardId}-->
+<!--        ORDER BY-->
+<!--            c.createdAt DESC-->
+        SELECT
+               c.comment_id,
+               c.board_id,
+               c.writer,
+               c.content,
+               c.createdAt,
+               c.updatedAt,
+               c.deletedAt,
+               b.title as board_title,
+               c.like_count,
+               c.dislike_count,
+               ul.isLike as user_like_status
+           FROM
+               security.communitycomment c
+               LEFT JOIN security.communityboard b ON c.board_id = b.board_id
+               LEFT JOIN security.likes ul ON c.comment_id = ul.target_id
+                   AND ul.target_type = 'COMMENT'
+                   AND ul.user_id = #{userId}
+           WHERE
+               c.board_id = #{boardId}
+           ORDER BY
+               c.createdAt DESC
     </select>
 
     <select id="selectAll" resultMap="communityCommentResultMap">

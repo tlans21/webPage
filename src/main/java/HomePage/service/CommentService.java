@@ -15,7 +15,7 @@ public interface CommentService <T extends Comment> {
     void deleteCommentsByBoardId(Long id);
     T getCommentByCommentId(Long CommentId);
     List<CommunityCommentDTO> getCommentByBoardId(Long boardId);
-    List<CommunityCommentDTO> getCommentByBoardId(Long boardId, Long userId);
+    List<CommunityCommentDTO> getCommentByBoardIdWithUser(Long boardId, Long userId);
     List<CommunityCommentDTO> getAllComments();
 
     int countByBoardId(Long id);
