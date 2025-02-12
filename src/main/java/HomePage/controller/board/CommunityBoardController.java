@@ -111,7 +111,7 @@ public class CommunityBoardController {
             PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
             Long userId = principalDetails.getUser().getId();
 
-            comments = commentService.getCommentByBoardId(id, userId);// 게시글 id와 userId 를 통해서 해당 게시글의 댓글들을 불러온다.l
+            comments = commentService.getCommentByBoardIdWithUser(id, userId);// 게시글 id와 userId 를 통해서 해당 게시글의 댓글들을 불러온다.l
 
         }
 

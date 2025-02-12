@@ -99,8 +99,8 @@ public class CommunityCommentService implements CommentService<CommunityComment>
     }
 
     @Override
-    public List<CommunityCommentDTO> getCommentByBoardId(Long boardId, Long userId) {
-        List<CommunityCommentDTO> communityCommentDTOS = commentMapper.selectByBoardId(boardId, userId);
+    public List<CommunityCommentDTO> getCommentByBoardIdWithUser(Long boardId, Long userId) {
+        List<CommunityCommentDTO> communityCommentDTOS = commentMapper.selectByBoardIdWithUser(boardId, userId);
         return communityCommentDTOS;
     }
 
