@@ -110,9 +110,9 @@ spring:
       client:
         registration:
           google:
-            redirect-uri: http://13.124.17.205/login/oauth2/code/google
+            redirect-uri: https://www.yummuity.com/login/oauth2/code/google
           naver:
-            redirect-uri: http://13.124.17.205/login/oauth2/code/naver
+            redirect-uri: https://www.yummuity.com/login/oauth2/code/naver
 
 server:
   port: 8080
@@ -131,9 +131,9 @@ spring:
       client:
         registration:
           google:
-            redirect-uri: http://13.124.17.205/login/oauth2/code/google
+            redirect-uri: https://www.yummuity.com/login/oauth2/code/google
           naver:
-            redirect-uri: http://13.124.17.205/login/oauth2/code/naver
+            redirect-uri: https://www.yummuity.com/login/oauth2/code/naver
 
 server:
   port: 8081
