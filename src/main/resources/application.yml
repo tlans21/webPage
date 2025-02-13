@@ -83,7 +83,7 @@ spring:
             scope:
               - profile
               - email
-            redirect-uri: https://www.yummuity.com/login/oauth2/code/google
+            redirect-uri: https://yummuity.com/login/oauth2/code/google
           naver:
             client-id: eIvKv0fVk3F91SiQY8FW
             client-secret: p1s0EWxv_H
@@ -110,9 +110,9 @@ spring:
       client:
         registration:
           google:
-            redirect-uri: https://www.yummuity.com/login/oauth2/code/google
+            redirect-uri: https://yummuity.com/login/oauth2/code/google
           naver:
-            redirect-uri: https://www.yummuity.com/login/oauth2/code/naver
+            redirect-uri: https://yummuity.com/login/oauth2/code/naver
 
 server:
   port: 8080
@@ -131,9 +131,9 @@ spring:
       client:
         registration:
           google:
-            redirect-uri: https://www.yummuity.com/login/oauth2/code/google
+            redirect-uri: https://yummuity.com/login/oauth2/code/google
           naver:
-            redirect-uri: https://www.yummuity.com/login/oauth2/code/naver
+            redirect-uri: https://yummuity.com/login/oauth2/code/naver
 
 server:
   port: 8081
