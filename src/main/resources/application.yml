@@ -83,6 +83,7 @@ spring:
             scope:
               - profile
               - email
+            redirect-uri: https://www.yummuity.com/login/oauth2/code/google
           naver:
             client-id: eIvKv0fVk3F91SiQY8FW
             client-secret: p1s0EWxv_H
